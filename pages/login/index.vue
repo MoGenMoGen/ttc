@@ -53,7 +53,7 @@ export default {
   },
   methods:{
     summit(){
-      uni.redirectTo({
+      uni.reLaunch({
          url: '/pages/index/index'
       });
     }

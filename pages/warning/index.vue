@@ -43,11 +43,12 @@
 					</view>
 				</view>
 			</view>
+		<nomore/>
 		</view>
 
 	</view>
 
-</template>
+</template>     
 
 <!-- app中使用vconsole -->
 <!-- <script module="vconsole" lang="renderjs">  
@@ -59,6 +60,8 @@
 <script>
 	// 头部引入组件
 	import searchBox from "components/searchBox";
+	// 引入触底提示组件
+	import nomore from "components/nomore";
 	// 提醒类型
 	import type from "static/type.png";
 	// 提交日期
@@ -74,7 +77,7 @@
 		data() {
 			// loginType:1.企业侧 2.服务商侧 3.监管机构侧
 			return {
-				loginType: 3, //1：企业 2：服务商 3：监管机构
+				loginType: 1, //1：企业 2：服务商 3：监管机构
 				//预警提醒列表
 				warnList: [{
 						//提醒类型
@@ -113,7 +116,7 @@
 			}
 		},
 		components: {
-			searchBox
+			searchBox,nomore
 		},
 		methods:{
 			// 跳转到预警提醒详情页面
@@ -124,7 +127,6 @@
 			},
 		},
 		onShow() {
-
 			// loginType==3标题改为逾期预警提醒
 			if (this.loginType == 3) {
 				uni.setNavigationBarTitle({

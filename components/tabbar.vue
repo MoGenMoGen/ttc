@@ -59,7 +59,7 @@ export default {
       rectifySelected,
       selfCheck,
       selfCheckSelected,
-      current:0,//当前选中
+      current:2,//当前选中
       // 1.企业
       tabList1: [
         {
@@ -118,15 +118,20 @@ export default {
   },
   methods:{
     //   切换tab
-      changeactive(index, item){
+      changeactive(index, item){   
+		     
         uni.setStorageSync('tabIndex', index)
         this.current=uni.getStorageSync('tabIndex')
+		console.log(2222,this.current)
         //  将item.path传给父组件，父组件跳转页面,index作为新页面的current
         this.$emit("tabChange",item.path)
       }
   },
   beforeMount(){
+	  
+	  console.log(1111,uni.getStorageSync('tabIndex'))
     this.current=uni.getStorageSync('tabIndex')
+	// console.log(this.current)
   }
 };
 </script>

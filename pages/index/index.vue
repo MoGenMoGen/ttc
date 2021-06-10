@@ -126,6 +126,7 @@
           </view>
         </view>
       </view>
+	  <nomore/>
       <!-- 企业查 结束 -->
     </view>
 
@@ -134,6 +135,8 @@
 </template>
 
 <script>
+	// 引入触底提示组件
+	import nomore from "components/nomore";
 import tabbar from "components/tabbar";
 import bg from "static/bg.png";
 // 企业查询
@@ -384,7 +387,7 @@ export default {
     },
   },
   components: {
-    tabbar,
+    tabbar,nomore
   },
   onLoad(){
 			uni.setStorageSync('tabIndex', 0)

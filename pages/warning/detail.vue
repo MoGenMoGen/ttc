@@ -1,7 +1,7 @@
 <template>
 	<!-- 预警详情页面 -->
 	<view class="pages_warn_detail">
-		<view class="container">
+		<view class="container">    
 
 			<view class="list">
 				<view class="item" v-if="loginType==3">
