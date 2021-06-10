@@ -94,13 +94,21 @@
 				"navigationBarTitleText": "修改密码"
 
 			}
+		},
+		{
+			"path": "pages/rectify/detail",
+			"style": {
+				"navigationBarTitleText": "整改单"
+		
+			}
 		}
 
 		
 		
 		
 		
-	],
+	   
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "天天查",

@@ -1,3 +1,4 @@
+<!-- 自检页面 -->
 <template>
   <view class="pages_selfCheck">
     <view class="selfCheckContainer">
@@ -154,7 +155,7 @@ export default {
   background-color: #fafafa;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 88upx);
+  height: 100vh;
 }
 .selfCheckContainer {
   flex: 1;

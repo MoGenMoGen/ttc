@@ -1,3 +1,4 @@
+<!-- 自检详情页面 -->
 <template>
   <view class="taskDetails">
     <view class="taskContent">
@@ -118,6 +119,7 @@
       <view class="note">
         <view class="noteTitle">备注</view>
         <textarea
+		v-if="loginType==1"
           class="textIn"
           name=""
           id=""
@@ -127,10 +129,14 @@
           placeholder-class="textInPlaceholder"
         ></textarea>
       </view>
-      <view class="bottomBtn">
+      <view class="bottomBtn" v-if="loginType==1">
         <button class="cancel">取消</button>
         <button class="confirm">确认完成</button>
       </view>
+	  <view class="taskState" v-if="loginType==3&&currentIndex!=2">
+	  	<text>任务状态</text>
+		<text class="perform">待执行</text>
+	  </view>
     </view>
     <view class="taskBodyTwo" v-if="currentIndex == 2">
       <view class="taskIn">
@@ -282,6 +288,7 @@ export default {
   opacity: 1;
 }
 .taskChose {
+	box-sizing: border-box;
   width: 710rpx;
   background: #ffffff;
   box-shadow: 0px 4rpx 10rpx rgba(0, 0, 0, 0.04);
@@ -338,12 +345,18 @@ export default {
   width: 100%;
   height: 100%;
 }
+.choseImg {
+	position: absolute;
+	width: 160rpx;
+	height: 160rpx;
+	top: 148rpx;
+	left: 210rpx;
+}
 .choseImg .imgs {
-  width: 160rpx;
-  height: 160rpx;
+  
   position: absolute;
-  top: 148rpx;
-  left: 210rpx;
+  width: 100%;
+  height: 100%;
 }
 .choseImg .deleteImg {
   position: absolute;
@@ -353,8 +366,8 @@ export default {
   right: -16rpx;
 }
 .note {
+	box-sizing: border-box;
   width: 710rpx;
-  height: 368rpx;
   background: #ffffff;
   box-shadow: 0rpx 4rpx 10rpx rgba(0, 0, 0, 0.04);
   opacity: 1;
@@ -376,6 +389,7 @@ export default {
 .textIn {
   margin-top: 20rpx;
   margin-left: 20rpx;
+  margin-bottom: 40rpx;
   width: 610rpx;
   height: 206rpx;
   background: #ffffff;
@@ -465,5 +479,26 @@ export default {
 .imgContainer image {
   width: 100%;
   height: 100%;
+}
+.taskState{
+  padding: 20rpx 30rpx;
+  box-sizing: border-box;
+  background: #FFFFFF;
+  box-shadow: 0rpx 4rpx 10rpx rgba(0, 0, 0, 0.04);
+  opacity: 1;
+  border-radius: 12rpx;
+  margin-top: 20rpx;
+}
+	
+.taskState text{
+	font-size: 28rpx;
+	font-family: PingFang SC;
+	font-weight: 400;
+	line-height: 40rpx;
+	color: #303030;
+	opacity: 1;
+}
+.perform{
+	margin-left: 108rpx;
 }
 </style>
