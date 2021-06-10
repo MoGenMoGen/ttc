@@ -1,0 +1,111 @@
+{
+	
+	
+	"pages": [ 
+		
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/login/index",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/selfCheck/index",
+			"style": {
+				"navigationBarTitleText": "自检任务",
+				"navigationBarBackgroundColor":"#fff",
+				"navigationBarTextStyle":"black"
+			}
+		},
+		{
+			"path": "pages/rectify/index",
+			"style": {
+				"navigationBarTitleText": "整改单"
+			}
+		},
+		{
+			"path": "pages/firmQuery/index",
+			"style": {
+				"navigationBarTitleText": "企业查"
+			}
+		},
+		{
+			"path": "pages/profile/index",
+			"style": {
+		"navigationStyle":"custom"
+			}
+		},
+		{
+
+			"path": "pages/warning/index",
+			"style": {
+				"navigationBarTitleText": "预警提醒"
+			}
+		},
+		{
+			"path": "pages/warning/detail",
+			"style": {
+				"navigationBarTitleText": "预警提醒详情"
+			}
+		},
+		{
+			"path": "pages/inspection/index",
+			"style": {
+				"navigationBarTitleText": "巡检任务"
+			}
+		},
+		{
+			"path": "pages/selfCheck/details",
+			"style": {
+				"navigationBarTitleText": "任务详情"
+
+			}
+		},
+		{
+			"path": "pages/profile/personinfo",
+			"style": {
+				"navigationBarTitleText": "个人信息"
+
+			}
+		},
+		{
+			"path": "pages/profile/database",
+			"style": {
+				"navigationBarTitleText": "资料库"
+
+			}
+		},
+		{
+			"path": "pages/profile/help",
+			"style": {
+				"navigationBarTitleText": "帮助中心"
+
+			}
+		},
+		{
+			"path": "pages/profile/modifyPass",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+
+			}
+		}
+
+		
+		
+		
+		
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "天天查",
+		"navigationBarBackgroundColor": "#fff",
+		"backgroundColor": "#fff"
+	}
+
+}

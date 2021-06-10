@@ -1,0 +1,165 @@
+<template>
+  <view class="componet_tabbar">
+    <view class="tab_container">
+      <view
+        class="item"
+        v-for="(item, index) in tabList"
+        :key="index"
+        @click="changeactive(index, item)"
+      >
+        <image class="icon" v-show="current !== index" :src="item.icon[0]" mode="widthFix"></image>
+        <image class="icon" v-show="current == index" :src="item.icon[1]" mode="widthFix"></image>
+        <text :class="{isSelected:current == index}">{{ item.title }}</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+// 首页图
+import home from "@/static/home.png";
+import homeSelected from "@/static/homeSelected.png";
+// 企业查图
+import firmQuery from "@/static/firmQuery.png";
+import firmQuerySelected from "@/static/firmQuerySelected.png";
+// 我的图
+import profile from "@/static/profile.png";
+import profileSelected from "@/static/profileSelected.png";
+// 整改单图
+import rectify from "@/static/rectify.png";
+import rectifySelected from "@/static/rectifySelected.png";
+// 自检任务图
+import selfCheck from "@/static/selfCheck.png";
+import selfCheckSelected from "@/static/selfCheckSelected.png";
+export default {
+  props: {
+    loginType: {
+      type: Number,
+      default() {
+        return 1; //1：企业 2：服务商 3：监管机构
+      },
+    },
+    // current:{
+    //   type:Number,
+    //   default(){
+    //     return 0;
+    //   }
+    // }
+  },
+  data() {
+    return {
+      // 图片
+      home,
+      homeSelected,
+      firmQuery,
+      firmQuerySelected,
+      profile,
+      profileSelected,
+      rectify,
+      rectifySelected,
+      selfCheck,
+      selfCheckSelected,
+      current:0,//当前选中
+      // 1.企业
+      tabList1: [
+        {
+          path: "/pages/index/index",
+          title: "首页",
+          icon: [home, homeSelected],
+        },
+        {
+          path: "/pages/selfCheck/index",
+          title: "自检任务",
+          icon: [selfCheck, selfCheckSelected],
+        },
+        {
+          path: "/pages/rectify/index",
+          title: "整改单",
+          icon: [rectify, rectifySelected],
+        },
+        {
+          path: "/pages/profile/index",
+          title: "我的",
+          icon: [profile, profileSelected],
+        },
+      ],
+      // 2：服务商3:监管机构相同
+      tabList2: [
+        {
+          path: "/pages/index/index",
+          title: "首页",
+          icon: [home, homeSelected],
+        },
+        
+        {
+          path: "/pages/rectify/index",
+          title: "整改单",
+          icon: [rectify, rectifySelected],
+        },
+        {
+          path: "/pages/firmQuery/index",
+          title: "企业查",
+          icon: [firmQuery, firmQuerySelected],
+        },
+        {
+          path: "/pages/profile/index",
+          title: "我的",
+          icon: [profile, profileSelected],
+        },
+      ],
+     
+    };
+  },
+  computed:{
+      tabList() {
+      //loginTye=1为tabList1、loginTye=2|3为tabList2
+      return this.loginType==1?this.tabList1:this.tabList2
+      }
+  },
+  methods:{
+    //   切换tab
+      changeactive(index, item){
+        uni.setStorageSync('tabIndex', index)
+        this.current=uni.getStorageSync('tabIndex')
+        //  将item.path传给父组件，父组件跳转页面,index作为新页面的current
+        this.$emit("tabChange",item.path)
+      }
+  },
+  beforeMount(){
+    this.current=uni.getStorageSync('tabIndex')
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.componet_tabbar {
+  width: 100%;
+    border-top:3upx solid #D8D8D8;
+    // padding-bottom: 0;  
+		// padding-bottom: constant(safe-area-inset-bottom);  
+		// padding-bottom: env(safe-area-inset-bottom);
+  .tab_container{
+  height: 170upx;
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: space-around;
+  align-items: center;
+  .item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .icon {
+      width: 48upx;
+    }
+    text {
+      padding-top: 14upx;
+      font-size: 24upx;
+    }
+    .isSelected{
+     color: #2B89F7;
+    }
+  }
+}
+}
+</style>
