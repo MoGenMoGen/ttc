@@ -12,9 +12,7 @@
           <view class="uni-input">{{ date }}</view>
         </picker>
       </view>
-      <view>
         <image class="iconimg" src="../static/dateicon.png" mode="widthFix" />
-      </view>
     </view>
     <view class="taskBox">
       <textarea

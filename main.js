@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 import init from "./utils/init.js";
+
 Vue.use(init);
 
 Vue.config.productionTip = false

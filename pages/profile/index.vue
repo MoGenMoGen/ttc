@@ -117,7 +117,7 @@ export default {
       help,
       modifyPass,
       arrow2,
-      loginType: 3,
+      loginType: 2,
       info: {
         name: "雨新斯",
         tel: "13590001234",

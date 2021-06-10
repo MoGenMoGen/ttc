@@ -56,22 +56,22 @@
           <text class="warning_info_more" @click="goToWarning">查看更多</text>
         </view>
         <view class="warning_container">
-          <!-- 提醒类型 -->
-          <!-- logintype==3,监管侧没有提醒类型 -->
           <view class="warning_item" v-for="item in  warnList" :key="item.id" @click="goToWarnDetail(item.id)">
-            <view class="warning_type" v-if="loginType != 3">
-              <image :src="type" mode="widthFix" class="warning_icon" />
-              <text>提醒类型</text
-              ><text
-                :class="{ yellow: item.status == 0, red: item.status == -1 }"
-                >{{ item.type }}</text
-              >
-            </view>
             <!-- 提醒内容 -->
             <view class="warning_content">
               <image :src="workcontent" mode="widthFix" class="warning_icon" />
               <text>提醒内容</text><text>{{ item.content }}</text>
             </view>
+			<!-- 提醒类型 -->
+			<!-- logintype==3,监管侧没有提醒类型 -->
+			<view class="warning_type" v-if="loginType != 3">
+			  <image :src="type" mode="widthFix" class="warning_icon" />
+			  <text>提醒类型</text
+			  ><text
+			    :class="{ yellow: item.status == 0, red: item.status == -1 }"
+			    >{{ item.type }}</text
+			  >
+			</view>
             <!-- 提交日期 -->
             <view class="warning_submitDate">
               <image :src="clock" mode="widthFix" class="warning_icon" />
@@ -395,7 +395,7 @@ export default {
 <style lang="scss" scoped>
 .pages_home_tab {
   width: 100%;
-  height:calc(100vh - 88upx);
+  height:100vh;
   display: flex;
   flex-direction: column;
   .pages_home_container {
@@ -495,7 +495,7 @@ export default {
           opacity: 1;
           border-radius: 12px;
           padding: 36upx;
-
+			margin-bottom: 20upx;
           .warning_type {
             width: 100%;
             margin-bottom: 20upx;
@@ -657,6 +657,7 @@ font-size: 24upx;
           opacity: 1;
           border-radius: 12px;
           padding: 36upx;
+		  margin-bottom: 20upx;
       .item_container {
         display: flex;
         padding:20upx 42upx;
