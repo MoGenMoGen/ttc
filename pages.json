@@ -27,7 +27,7 @@
 		{
 			"path": "pages/rectify/index",
 			"style": {
-				"navigationBarTitleText": "整改单"
+				"navigationStyle":"custom"
 			}
 		},
 		{

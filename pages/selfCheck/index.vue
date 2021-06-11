@@ -64,6 +64,7 @@
 
     <tabbar
       :loginType="loginType"
+	  :tabIndex=1
       @tabChange="change"
       v-if="loginType != 3"
     ></tabbar>

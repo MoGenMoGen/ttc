@@ -1,15 +1,21 @@
 <template>
 <view class="pages_rectify">
+	<view class="navHeader">
+		<view class="title">
+			整改单
+		</view>
+		<image src="../../static/add.png" mode="widthFix"></image>
+	</view>
 	<view class="rectifyContainer">
 		<view class="rectifyBar">
-			<view class="rectifyTop" v-for="(item,index) in listBar" :key="index"  :class="{ active: currentIndex == index } " @click="changeNav(index)">
+			<view class="rectifyTop" v-if="(loginType!=1&&index>0)||loginType==1"  v-for="(item,index) in listBar" :key="index"  :class="{ active: currentIndex == index } " @click="changeNav(index)">
 				{{item}}
 			</view>
 		
 		</view>
 		<searchBox :placeholderIn="placeholderIn"></searchBox>
 		<view class="rectifyBody">
-			<view class="rectifyList" v-for="(item,index) in listBody" :key="index">
+			<view class="rectifyList" v-for="(item,index) in listBody" :key="index" @click="changePage()">
 				<view class="rectifyListIn">
 					<image src="../../static/worktype.png" mode=""></image>
 					<view class="rectifyListTitle">
@@ -73,6 +79,7 @@
 
   <tabbar
     :loginType="loginType"
+	:tabIndex="tabIndex"
     @tabChange="change"
   ></tabbar>
   </view>
@@ -128,6 +135,16 @@ components:{
 	searchBox,
 	nomore
 },
+computed:{
+	tabIndex(){
+		if(this.loginType==1){
+			return 2
+		}
+		else{
+			return 1
+		}
+	}
+},
 methods:{
 	changeNav(index){
 		this.currentIndex=index
@@ -137,6 +154,12 @@ methods:{
 	    url: path,
 	  });
 	},
+	changePage(){
+		uni.navigateTo({
+			url:`./detail?currentIndex=${this.currentIndex}`,
+
+		})
+	}
 },
 
 
@@ -149,6 +172,19 @@ methods:{
 	  display: flex;
 	  flex-direction: column;
 	  height: 100vh;
+	  .navHeader{
+		  height: 88rpx;
+		  background: #FFFFFF;
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		  .title{
+			  
+		  }
+		  image{
+			  width: 20rpx;
+		  }
+	  }
 	  .rectifyContainer{
 		  flex: 1;
 		  overflow: auto;
