@@ -13,7 +13,7 @@
           <input
             type="number"
             placeholder="请输入手机号码"
-            maxlength="120"
+            maxlength="11"
             placeholder-style="color:#909090"
             v-model="info.account"
           />
@@ -23,7 +23,7 @@
           <input
             type="password"
             placeholder="请输入密码"
-            maxlength="150"
+            maxlength="20"
             placeholder-style="color:#909090"
             v-model="info.password"
           />

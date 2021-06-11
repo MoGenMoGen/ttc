@@ -34,7 +34,7 @@ export default {
 <style lang="scss" scoped>
 .pages_database {
   width: 100%;
-  height: calc(100vh - 88upx);
+  height: 100vh;
   padding: 20upx;
   background: #fafafa;
   box-sizing: border-box;

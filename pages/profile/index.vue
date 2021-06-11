@@ -89,7 +89,7 @@
       <!-- 退出 结束 -->
     </view>
 
-    <tabbar :loginType="loginType" @tabChange="tabChange"> </tabbar>
+    <tabbar :loginType="loginType" :tabIndex=3 @tabChange="tabChange"> </tabbar>
   </view>
 </template>
 
