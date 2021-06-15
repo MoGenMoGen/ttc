@@ -4,7 +4,7 @@
 		<view class="title">
 			整改单
 		</view>
-		<image src="../../static/add.png" mode="widthFix"></image>
+		<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo"></image>
 	</view>
 	<view class="rectifyContainer">
 		<view class="rectifyBar">
@@ -94,7 +94,7 @@ export default {
 data(){
 	return{
 		placeholderIn:"任务编号、任务内容",
-		loginType:1,
+		loginType:3,
 		currentIndex:0,
 		listBar:["代签收","待执行","待结案","已完成"],
 		listBody:[
@@ -159,6 +159,11 @@ methods:{
 			url:`./detail?currentIndex=${this.currentIndex}`,
 
 		})
+	},
+	addNewTo(){
+		uni.navigateTo({
+			url:"./new"
+		})
 	}
 },
 
@@ -174,15 +179,28 @@ methods:{
 	  height: 100vh;
 	  .navHeader{
 		  height: 88rpx;
+		  position: relative;
 		  background: #FFFFFF;
 		  display: flex;
 		  align-items: center;
 		  justify-content: center;
 		  .title{
-			  
+			  width: 102rpx;
+			  height: 48rpx;
+			  font-size: 34rpx;
+			  font-family: PingFang SC;
+			  font-weight: 500;
+			  line-height: 48rpx;
+			  color: #000000;
+			  opacity: 1;
 		  }
 		  image{
-			  width: 20rpx;
+			 width: 36rpx;
+			 height: 40rpx;
+			 opacity: 1;
+			 position: absolute;
+			 top: 36rpx;
+			 right: 40rpx;
 		  }
 	  }
 	  .rectifyContainer{

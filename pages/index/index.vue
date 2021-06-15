@@ -150,7 +150,7 @@
 			// loginType:1.企业侧 2.服务商侧 3.监管机构侧
 			return {
 				current: 1, //tab下标
-				loginType: 2, //1：企业 2：服务商 3：监管机构
+				loginType: 1, //1：企业 2：服务商 3：监管机构
 				bg,
 				iconFirmQuery,
 				iconSelfCheck,

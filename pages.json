@@ -108,6 +108,13 @@
 				"navigationBarTitleText": "整改单"
 
 			}
+		},
+		{
+			"path": "pages/rectify/new",
+			"style": {
+				"navigationBarTitleText": "整改单"
+		
+			}
 		}
 
 
