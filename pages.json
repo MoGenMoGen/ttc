@@ -114,6 +114,20 @@
 				"navigationBarTitleText": "整改单"
 		
 			}
+		},
+		{
+			"path": "pages/rectify/newNext",
+			"style": {
+				"navigationBarTitleText": "整改单"
+		
+			}
+		},
+		{
+			"path": "pages/rectify/newDetail",
+			"style": {
+				"navigationBarTitleText": "整改单"
+		
+			}
 		}
 
 

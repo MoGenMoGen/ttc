@@ -43,7 +43,7 @@
 						{{item.issueDay}}
 					</view>
 				</view>
-				<view class="rectifyListIn" v-if="currentIndex==0||currentIndex==1">
+				<view class="rectifyListIn" v-if="(currentIndex==0||currentIndex==1)&&loginType==1">
 					<image src="../../currentstate.png" mode=""></image>
 					<view class="rectifyListTitle">
 						当前状态
@@ -94,7 +94,7 @@ data(){
 	return{
 		placeholderIn:"任务编号、任务内容",
 		loginType:3,
-		currentIndex:0,
+		currentIndex:1,
 		listBar:["代签收","待执行","待结案","已完成"],
 		listBody:[
 			{
@@ -134,6 +134,7 @@ components:{
 	searchBox,
 	nomore
 },
+
 computed:{
 	tabIndex(){
 		if(this.loginType==1){
@@ -142,7 +143,7 @@ computed:{
 		else{
 			return 1
 		}
-	}
+	},
 },
 methods:{
 	changeNav(index){
@@ -165,13 +166,15 @@ methods:{
 		})
 	}
 },
- onShow() {
-  	//隐藏默认tabbar显示自定义tabbar
-              uni.hideTabBar({
-                  animation: false,
-  				
-              })
-          },
+
+onShow() {
+	if(this.loginType==1){
+		return this.currentIndex=0
+	}
+	else{
+		return this.currentIndex=1
+	}
+}
 
 
 }
@@ -184,12 +187,14 @@ methods:{
 	  flex-direction: column;
 	  height: 100vh;
 	  .navHeader{
-		  height: 88rpx;
+		  height: 60rpx;
 		  position: relative;
-		  background: #FFFFFF;
+		
 		  display: flex;
 		  align-items: center;
 		  justify-content: center;
+		  padding: 14rpx 6rpx;
+		  margin-top: var(--status-bar-height);
 		  .title{
 			  width: 102rpx;
 			  height: 48rpx;

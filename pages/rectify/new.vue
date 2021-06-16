@@ -13,19 +13,19 @@
 					<view class="newListTitle">
 					整改名称
 					</view>
-					<input type="text" value="" placeholder="请输入整改名称" class="newListContent"/>
+					<input type="text" value="" placeholder="请输入整改名称"  placeholder-class="placeholderIn"class="newListContent"/>
 				</view>
 				<view class="newList">
 				<view class="newListTitle">
 					整改单位
 				</view>
-				<input type="text" value="" placeholder="请输入整改单位"class="newListContent" />
+				<input type="text" value="" placeholder="请输入整改单位"class="newListContent"  placeholder-class="placeholderIn"/>
 				</view>
 				<view class="newList">
 				<view class="newListTitle">
 					检查区域
 				</view>
-				<input type="text" value="" class="newListContent" placeholder="请输入检查区域"/>
+				<input type="text" value="" class="newListContent" placeholder="请输入检查区域" placeholder-class="placeholderIn"/>
 				</view>
 				<view class="newList">
 					<view class="newListTitle">
@@ -40,7 +40,7 @@
 				<view class="newListTitle">
 					隐患说明
 				</view>
-				<textarea value="" placeholder="请输入主要事项内容详情"  class="text"/>
+				<textarea value="" placeholder="请输入主要事项内容详情" placeholder-class="placeholderIn"  class="text"/>
 				</view>
 				<view class="newList">
 				<view class="newListTitle">
@@ -54,7 +54,7 @@
 				<view class="newListTitle">
 					整改要求
 				</view>
-				<textarea value="" placeholder="请按照要求进行整改"  class="text"/>
+				<textarea value="" placeholder="请按照要求进行整改"  placeholder-class="placeholderIn" class="text"/>
 				</view>
 				<view class="newList">
 				<view class="newListTitle">
@@ -65,10 +65,15 @@
 					<image src="../../static/choosedate.png" mode="" class="date"></image>
 				</view>
 			</view>
-			<view class="newList" style="display: flex; flex-direction: column;" >
+			<view class="photograpBox"  >
 			<view class="newListTitle">
 				隐患图片
 			</view>
+			<view class="hint">
+				上传完图片后，可以点击图片进行编辑
+			</view>
+			<view class="photo">
+			
 			<view class="photograp">
 				 <image src="../../static/takephoto.png" mode="" @click="toPhoto()" />
 			</view>
@@ -78,9 +83,10 @@
 			</view>
 			</view>
 			</view>
+			</view>
 			<view class="newBtn">
 				<button type="default" class="cancel">取消</button>
-				<button type="default" class="next">下一步</button>
+				<button type="default" class="next" @click="changePageTo">下一步 </button>
 			</view>
 		</view>
 </template>
@@ -92,6 +98,28 @@ export default{
 		return{
 			del,
 			imgList: ["/static/takephoto.png"],
+		}
+	},
+	methods:{
+		toPhoto() {
+		  uni.chooseImage({
+		    sourceType: ["camera", "album "],
+		    success: function(res) {
+		      console.log(JSON.stringify(res.tempFilePaths));
+		    },
+		    fail(err) {
+		      console.log(err);
+		    },
+		  });
+		},
+		deleimg(index){
+			this.imgList.splice(index);
+			console.log("dele");
+		},
+		changePageTo(){
+			uni.navigateTo({
+				url:"./newNext"
+			})
 		}
 	}
 }
@@ -106,6 +134,7 @@ export default{
 	.newBtn{
 		margin-top: 50rpx;
 		display: flex;
+		padding:100rpx 0 ;
 		.cancel{
 			width: 355rpx;
 			height: 88rpx;
@@ -138,6 +167,7 @@ export default{
 	box-sizing:border-box;
 	.newList{
 		display: flex;
+		
 		padding: 20rpx 14rpx;
 		width: 656rpx;
 		background: #FFFFFF;
@@ -145,14 +175,24 @@ export default{
 		border-bottom:1rpx solid #D0CED8 ;
 		// align-items: center;
 		box-sizing: border-box;
+		.textBox{
+			padding: 18rpx 22rpx;
+			width: 624rpx;
+			height: 206rpx;
+			border: 1rpx solid #D0CED8;
+			opacity: 1;
+			border-radius: 6rpx
+		}
 		.newListTitle{
 			width: 200rpx;
-			
+			font-size: 28rpx;
+			color: #303030;
 		}
 		.newListContent{
 			width: 456rpx;
 			margin-left: 30rpx;
 			word-wrap: break-word;
+			font-size: 28rpx;
 			.location{
 				width: 48rpx;
 				height: 48rpx;
@@ -171,19 +211,65 @@ export default{
 			opacity: 1;
 			border-radius: 6rpx;
 			font-size: 28rpx;
-			color: #D0CED8;
+		
 			padding: 18rpx 36rpx;
 			box-sizing: border-box;
 			margin-top: 20rpx;
 		}
+		.placeholderIn{
+			color: #D0CED8;
+		}
 		input{
 			font-size: 28rpx;
-			color: #D0CED8;
+			
+		}
 		}
 		
 	}
+	.photograpBox{
+	padding: 20rpx 14rpx;
+	.hint{
+		font-size: 28rpx;
+		color: #D0CED8;
+		margin: 20rpx 0; 
+	}
+	.newListTitle{
+		font-size: 28rpx;
+		color: #303030;
+	}
+	.photo{
+		margin-top: 74rpx;
+		display: flex;
+		.photograp{
+			width: 160rpx;
+			height: 160rpx;
+			image{
+				width: 100%;
+				height: 100%;
+			}
 		}
-}
+		.choseImg{
+			margin-left:20rpx ;
+			width: 160rpx;
+			height: 160rpx;
+			position: relative;
+			.imgs{
+				width: 100%;
+				height: 100%;
+			}
+			.deleteImg{
+				width: 32rpx;
+				height: 32rpx;
+				position: absolute;
+				top: -16rpx;
+				right: -16rpx;
+			}
+		}
+	}
+	}
+	
+		}
+
 
 
 </style>
