@@ -2,6 +2,7 @@
 
 
 	"pages": [
+		
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -121,6 +122,29 @@
 
 
 	],
+	"tabBar": {
+	        "selectedColor":"#79D5AD",
+	        "color": "#999999",
+	        "backgroundColor":"#ffffff",
+	        "borderStyle": "white",
+	        "height":"0px",
+	        "list": [{
+	            "pagePath":"pages/index/index",
+	            "text": "首页"
+	        },{
+	            "pagePath":"pages/selfCheck/index",
+	            "text": " "
+	        },{
+	            "pagePath":"pages/firmQuery/index",
+	            "text": " "
+	        },{
+	            "pagePath":"pages/profile/index",
+	            "text": "我的"
+	        },{
+	            "pagePath":"pages/rectify/index",
+	            "text": "整改单"
+	        }]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "天天查",

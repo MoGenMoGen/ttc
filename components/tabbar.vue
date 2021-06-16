@@ -1,6 +1,6 @@
 <template>
 	<view class="componet_tabbar">
-		<view class="tab_container">
+		<view class="tab_container" :style="{'padding-bottom': paddingBottomHeight + 'upx'}">
 			<view class="item" v-for="(item, index) in tabList" :key="index" @click="changeactive(index, item)">
 				<image class="icon" v-show="current !== index" :src="item.icon[0]" mode="widthFix"></image>
 				<image class="icon" v-show="current == index" :src="item.icon[1]" mode="widthFix"></image>
@@ -55,6 +55,7 @@
 				selfCheck,
 				selfCheckSelected,
 				current: 0, //当前选中
+				paddingBottomHeight: 0, //苹果X以上手机底部适配高度
 				// 1.企业
 				tabList1: [{
 						path: "/pages/index/index",
@@ -112,20 +113,35 @@
 		methods: {
 			//   切换tab
 			changeactive(index, item) {
-
-				uni.setStorageSync('tabIndex', index)
-				this.current = uni.getStorageSync('tabIndex')
-				console.log(2222, this.current)
+			// this.current = this.tabIndex;
+			// console.log('tab',this.tabIndex);
+			console.log(index,item);   
+			uni.switchTab({
+				url: item.path
+			})
+			
 				//  将item.path传给父组件，父组件跳转页面,index作为新页面的current
-				this.$emit("tabChange", item.path)
+				// this.$emit("tabChange", item.path)
 			}
 		},
+		created() {
+			// 适配iphone底部
+			let that = this;
+			uni.getSystemInfo({
+				success: function(res) {
+					let model = ['X', 'XR', 'XS', '11', '12', '13', '14', '15'];
+					model.forEach(item => {
+						//适配iphoneX以上的底部，给tabbar一定高度的padding-bottom
+						if (res.model.indexOf(item) != -1 && res.model.indexOf('iPhone') != -1) {
+							that.paddingBottomHeight = 40;
+						}
+					})
+				}
+			});
+		},
 		mounted() {
-			console.log('mounted')
-			console.log(1111, uni.getStorageSync('tabIndex'))
-			uni.setStorageSync('tabIndex', this.tabIndex)
-			this.current = uni.getStorageSync('tabIndex')
-			// console.log(this.current)
+			this.current = this.tabIndex;
+			console.log(this.current);
 		}
 	};
 </script>

@@ -5,14 +5,14 @@
 			<view class="search_bar">
 				<view class="inputbox">
 					<image :src="search" mode="widthFix"></image>
-					<input type="text" placeholder="请输入企业名称、联系人等信息查询" maxlength="15"
-						placeholder-style="color:#909090" v-model="info" />
+					<input type="text" placeholder="请输入企业名称、联系人等信息查询" maxlength="15" placeholder-style="color:#909090"
+						v-model="info" />
 				</view>
 				<view class="btn_search" @click="handlesearch">
 					搜索
 				</view>
 			</view>
-			<view class="firm_query_container" >
+			<view class="firm_query_container">
 				<view class="firm_query_item" v-for="item in queryList" :key="item.id" @click="GoToDetail(item.id)">
 					<view class="item_container">
 						<view class="item_title">公司名称:</view>
@@ -36,7 +36,7 @@
 			</view>
 			<nomore />
 		</view>
-		<tabbar :loginType="loginType" :tabIndex=2 @tabChange="tabChange"> </tabbar>
+		<tabbar :loginType="loginType" :tabIndex='2'> </tabbar>
 	</view>
 </template>
 
@@ -60,7 +60,7 @@
 						contact: "张章",
 						tel: "13900110000", //联系电话
 						corcode: corcode, //企业码
-						id:0
+						id: 0
 					},
 					{
 						//公司名称
@@ -69,7 +69,7 @@
 						contact: "张章",
 						tel: "13900110000", //联系电话
 						corcode: corcode, //企业码
-						id:0
+						id: 0
 					},
 					{
 						//公司名称
@@ -78,21 +78,19 @@
 						contact: "张章",
 						tel: "13900110000", //联系电话
 						corcode: corcode, //企业码
-						id:0
+						id: 0
 					},
 				],
 			}
 		},
 		components: {
 			tabbar,
-			nomore
+			nomore,
+
 		},
 		methods: {
 			// 切换tab 
-			tabChange(path) {
-				// if(this.current!=index)
-				//     this.current=index;
-				// console.log(path);
+			 tabChange(path) {
 				uni.reLaunch({
 					url: path,
 					success() {
@@ -102,19 +100,26 @@
 						console.log("fail", err);
 					},
 				});
-			},
+			}, 
 			// 搜索功能
 			handlesearch() {
 				console.log("搜索按钮触发");
 			},
 			// 进入详情
-			GoToDetail(id){
+			GoToDetail(id) {
 				console.log("detail");
 				uni.navigateTo({
 					url: `/pages/firmQuery/detail?id=${id}`
 				})
 			}
-		}
+		},
+		onShow() {
+			//隐藏默认tabbar显示自定义tabbar
+		            uni.hideTabBar({
+		                animation: false,
+						
+		            })
+		        },
 	}
 </script>
 

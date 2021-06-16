@@ -65,7 +65,6 @@
     <tabbar
       :loginType="loginType"
 	  :tabIndex=1
-      @tabChange="change"
       v-if="loginType != 3"
     ></tabbar>
   </view>
@@ -148,6 +147,13 @@ export default {
     tabbar,
     nomore,
   },
+  onShow() {
+  	//隐藏默认tabbar显示自定义tabbar
+              uni.hideTabBar({
+                  animation: false,
+  				
+              })
+          },
 };
 </script>
 

@@ -113,7 +113,7 @@
 			<!-- 企业查 结束 -->
 		</view>
 
-		<tabbar :loginType="loginType" :tabIndex=0 @tabChange="tabChange"> </tabbar>
+		<tabbar :loginType="loginType" :tabIndex='0' > </tabbar>
 	</view>
 </template>
 
@@ -150,7 +150,7 @@
 			// loginType:1.企业侧 2.服务商侧 3.监管机构侧
 			return {
 				current: 1, //tab下标
-				loginType: 1, //1：企业 2：服务商 3：监管机构
+				loginType: 2, //1：企业 2：服务商 3：监管机构
 				bg,
 				iconFirmQuery,
 				iconSelfCheck,
@@ -376,7 +376,14 @@
 			console.log("onload")
 			uni.setStorageSync('tabIndex', 0)
 
-		}
+		},
+		onShow() {
+			//隐藏默认tabbar显示自定义tabbar
+		            uni.hideTabBar({
+		                animation: false,
+						
+		            })
+		        },
 	};
 </script>
 <style lang="scss" scoped>

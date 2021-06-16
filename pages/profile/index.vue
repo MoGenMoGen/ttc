@@ -100,7 +100,8 @@
 			<!-- 退出 结束 -->
 		</view>
 
-		<tabbar :loginType="loginType" :tabIndex=3 @tabChange="tabChange"> </tabbar>
+		<tabbar :loginType="loginType" :tabIndex='3' > </tabbar>
+		<!-- <tabnew :loginType="loginType" :tabIndex='3'> </tabnew> -->
 	</view>
 </template>
 
@@ -424,6 +425,12 @@
 			this.info.redifyrate = this.turn(this.info.redifyrate);
 			this.info.inspection = this.turn(this.info.inspection);
 		},
+		onShow() {
+			//隐藏默认tabbar显示自定义tabbar
+			uni.hideTabBar({
+				animation: false
+			})
+		},
 	};
 </script>
 
@@ -591,7 +598,7 @@
 			}
 
 			.graph {
-				margin:10upx 0;
+				margin: 10upx 0;
 				width: 100%;
 
 				.content {
@@ -600,6 +607,7 @@
 					align-items: center;
 					justify-content: center;
 					width: 100%;
+
 					.echarts {
 						margin-top: 20upx;
 						width: 100%;

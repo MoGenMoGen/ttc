@@ -80,7 +80,6 @@
   <tabbar
     :loginType="loginType"
 	:tabIndex="tabIndex"
-    @tabChange="change"
   ></tabbar>
   </view>
     
@@ -166,6 +165,13 @@ methods:{
 		})
 	}
 },
+ onShow() {
+  	//隐藏默认tabbar显示自定义tabbar
+              uni.hideTabBar({
+                  animation: false,
+  				
+              })
+          },
 
 
 }
