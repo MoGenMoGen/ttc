@@ -113,13 +113,13 @@
 		methods: {
 			//   切换tab
 			changeactive(index, item) {
-			// this.current = this.tabIndex;
-			// console.log('tab',this.tabIndex);
-			console.log(index,item);   
-			uni.switchTab({
-				url: item.path
-			})
-			
+				// this.current = this.tabIndex;
+				// console.log('tab',this.tabIndex);
+				console.log(index, item);
+				uni.switchTab({
+					url: item.path
+				})
+
 				//  将item.path传给父组件，父组件跳转页面,index作为新页面的current
 				// this.$emit("tabChange", item.path)
 			}
@@ -166,9 +166,12 @@
 				display: flex;
 				flex-direction: column;
 				align-items: center;
+				justify-content: center;
+				height: 170upx;
 
 				.icon {
 					width: 48upx;
+					height: 48upx;
 				}
 
 				text {
