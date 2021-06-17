@@ -1,7 +1,13 @@
 <template>
 	<view class="pages_home_tab">
+		<!--自定义 navbar -->
+		<view class="navbar">
+			首页
+		</view>
 		<!-- 轮播图 开始 -->
+
 		<view class="pages_home_container">
+
 			<swiper class="swiper" :indicator-dots="true" autoplay="true" interval="5000" duration="500"
 				indicator-color="white" indicator-active-color="red">
 				<swiper-item v-for="(item, index) in swiperList" :key="index">
@@ -113,7 +119,7 @@
 			<!-- 企业查 结束 -->
 		</view>
 
-		<tabbar :loginType="loginType" :tabIndex='0' > </tabbar>
+		<tabbar :loginType="loginType" :tabIndex='0'> </tabbar>
 	</view>
 </template>
 
@@ -150,7 +156,7 @@
 			// loginType:1.企业侧 2.服务商侧 3.监管机构侧
 			return {
 				current: 1, //tab下标
-				loginType: 1, //1：企业 2：服务商 3：监管机构
+				loginType: 2, //1：企业 2：服务商 3：监管机构
 				bg,
 				iconFirmQuery,
 				iconSelfCheck,
@@ -379,11 +385,11 @@
 		},
 		onShow() {
 			//隐藏默认tabbar显示自定义tabbar
-		            uni.hideTabBar({
-		                animation: false,
-						
-		            })
-		        },
+			uni.hideTabBar({
+				animation: false,
+
+			})
+		},
 	};
 </script>
 <style lang="scss" scoped>
@@ -392,8 +398,20 @@
 		height: 100vh;
 		display: flex;
 		flex-direction: column;
+		background-color: #fafafa;
+
+		.navbar {
+			text-align: center;
+			height: 88upx;
+			line-height: 88upx;
+			width: 100%;
+			margin-top: var(--status-bar-height);
+			font-size: 34rpx;
+			color: #000000;
+		}
 
 		.pages_home_container {
+			background-color: #fff;
 			width: 100%;
 			flex: 1;
 			overflow: auto;
@@ -407,9 +425,11 @@
 			.swiper {
 				width: 100%;
 				height: 400upx;
+
 				swiper-item {
 					width: 100%;
 					height: 400upx;
+
 					image {
 						box-sizing: border-box;
 						width: 100%;

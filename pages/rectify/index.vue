@@ -93,7 +93,7 @@ export default {
 data(){
 	return{
 		placeholderIn:"任务编号、任务内容",
-		loginType:3,
+		loginType:2,
 		currentIndex:1,
 		listBar:["代签收","待执行","待结案","已完成"],
 		listBody:[
@@ -168,16 +168,17 @@ methods:{
 },
 
 onShow() {
+	uni.hideTabBar({
+	    animation: false,
+		
+	})
 	if(this.loginType==1){
 		return this.currentIndex=0
 	}
 	else{
 		return this.currentIndex=1
 	}
-	uni.hideTabBar({
-	    animation: false,
-		
-	})
+	
 }
 
 
@@ -198,13 +199,13 @@ onShow() {
 		  align-items: center;
 		  justify-content: center;
 		  padding: 14rpx 6rpx;
-		  margin-top: var(--status-bar-height);
+		  margin-top: var(--status-bar-height); 
 		  .title{
 			  width: 102rpx;
 			  height: 48rpx;
 			  font-size: 34rpx;
 			  font-family: PingFang SC;
-			  font-weight: 500;
+			  // font-weight: 500;
 			  line-height: 48rpx;
 			  color: #000000;
 			  opacity: 1;

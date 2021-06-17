@@ -1,6 +1,10 @@
 <!-- 自检页面 -->
 <template>
 	<view class="pages_selfCheck">
+		<!--自定义 navbar -->
+		<view class="navbar">
+			自检任务
+		</view>
 		<view class="selfCheckContainer">
 			<view class="nav-top">
 				<view class="navheader" v-for="(item, index) in navList" :key="index"
@@ -134,11 +138,11 @@
 		},
 		onShow() {
 			//隐藏默认tabbar显示自定义tabbar
-		            uni.hideTabBar({
-		                animation: false,
-						
-		            })
-		        },
+			uni.hideTabBar({
+				animation: false,
+
+			})
+		},
 	};
 </script>
 
@@ -148,11 +152,23 @@
 		display: flex;
 		flex-direction: column;
 		height: 100vh;
+
+	}
+
+	.navbar {
+		text-align: center;
+		height: 88upx;
+		line-height: 88upx;
+		width: 100%;
+		margin-top: var(--status-bar-height);
+		font-size: 34rpx;
+		color: #000000;
 	}
 
 	.selfCheckContainer {
 		flex: 1;
 		overflow: auto;
+		background-color: #fff;
 	}
 
 	.nav-top {

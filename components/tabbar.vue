@@ -2,8 +2,8 @@
 	<view class="componet_tabbar">
 		<view class="tab_container" :style="{'padding-bottom': paddingBottomHeight + 'upx'}">
 			<view class="item" v-for="(item, index) in tabList" :key="index" @click="changeactive(index, item)">
-				<image class="icon" v-show="current !== index" :src="item.icon[0]" mode="widthFix"></image>
-				<image class="icon" v-show="current == index" :src="item.icon[1]" mode="widthFix"></image>
+				<image class="icon" v-if="current !== index" :src="item.icon[0]" mode="widthFix"></image>
+				<image class="icon" v-else :src="item.icon[1]" mode="widthFix"></image>
 				<text :class="{isSelected:current == index}">{{ item.title }}</text>
 			</view>
 		</view>
@@ -150,11 +150,12 @@
 	.componet_tabbar {
 		width: 100%;
 		border-top: 3upx solid #D8D8D8;
-
+			height: 170upx;
 		// padding-bottom: 0;  
 		// padding-bottom: constant(safe-area-inset-bottom);  
 		// padding-bottom: env(safe-area-inset-bottom);
 		.tab_container {
+			background-color: #fff;
 			height: 170upx;
 			display: flex;
 			width: 100%;

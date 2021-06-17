@@ -2,6 +2,7 @@
 	<!-- 我的页面 -->
 	<view class="pages_profile_tab">
 		<view class="profile_container">
+			
 			<!-- 个人中心头部背景部分 开始 -->
 			<view class="profile_info_bg">
 				<view class="profile_info" @click="goToperson">
@@ -101,7 +102,6 @@
 		</view>
 
 		<tabbar :loginType="loginType" :tabIndex='3' > </tabbar>
-		<!-- <tabnew :loginType="loginType" :tabIndex='3'> </tabnew> -->
 	</view>
 </template>
 
@@ -476,25 +476,22 @@
 		display: flex;
 		flex-direction: column;
 
-		// align-items: center;
 		.profile_container {
 			padding-bottom: 80upx;
 
 			background: #fafafa;
 			width: 100%;
-			// margin-height:581upx;
-			// height: calc(100vh - 186upx);
+			
 			flex: 1;
 			overflow: auto;
 			-webkit-overflow-scrolling: touch;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-
+			
 			.profile_info_bg {
 				padding: 200upx 0;
 				width: 100%;
-				// height: 1000upx;
 				background: #2b89f7;
 				display: flex;
 				align-items: center;

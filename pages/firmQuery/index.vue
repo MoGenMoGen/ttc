@@ -1,6 +1,10 @@
 <template>
 	<!-- 企业查页面 -->
 	<view class="pages_firmquery_tab">
+		<!--自定义 navbar -->
+		<view class="navbar">
+			企业查
+		</view>
 		<view class="container">
 			<view class="search_bar">
 				<view class="inputbox">
@@ -90,7 +94,7 @@
 		},
 		methods: {
 			// 切换tab 
-			 tabChange(path) {
+			tabChange(path) {
 				uni.reLaunch({
 					url: path,
 					success() {
@@ -100,7 +104,7 @@
 						console.log("fail", err);
 					},
 				});
-			}, 
+			},
 			// 搜索功能
 			handlesearch() {
 				console.log("搜索按钮触发");
@@ -115,11 +119,11 @@
 		},
 		onShow() {
 			//隐藏默认tabbar显示自定义tabbar
-		            uni.hideTabBar({
-		                animation: false,
-						
-		            })
-		        },
+			uni.hideTabBar({
+				animation: false,
+
+			})
+		},
 	}
 </script>
 
@@ -129,11 +133,22 @@
 		height: 100vh;
 		display: flex;
 		flex-direction: column;
+		background-color: #fafafa;
+
+		.navbar {
+			text-align: center;
+			height: 88upx;
+			line-height: 88upx;
+			width: 100%;
+			margin-top: var(--status-bar-height);
+			font-size: 34rpx;
+			color: #000000;
+		}
 
 		.container {
 			width: 100%;
 			box-sizing: border-box;
-			background-color: #fafafa;
+			background-color: #fff;
 			flex: 1;
 			overflow: auto;
 			-webkit-overflow-scrolling: touch;
