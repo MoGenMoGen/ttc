@@ -109,8 +109,9 @@ export default{
 	},
 	methods:{
 		lookTo(){
-			uni.navigateTo({
-				url:"./index"
+			console.log(1);
+			uni.switchTab({
+				url:"/pages/rectify/index"
 			})
 		}
 	}

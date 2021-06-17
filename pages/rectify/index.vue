@@ -174,6 +174,10 @@ onShow() {
 	else{
 		return this.currentIndex=1
 	}
+	uni.hideTabBar({
+	    animation: false,
+		
+	})
 }
 
 
