@@ -52,7 +52,7 @@
 						{{item.currentState}}
 					</view>
 				</view>
-				<view class="rectifyListIn" v-if="currentIndex==2">
+				<view class="rectifyListIn" v-if="currentIndex==2&&loginType!=2">
 					<image src="../../currentstate.png" mode=""></image>
 					<view class="rectifyListTitle">
 						签收日期
@@ -68,6 +68,15 @@
 					</view>
 					<view class="rectifyListContent">
 						{{item.finishDate}}
+					</view>
+				</view>
+				<view class="rectifyListIn" v-if="currentIndex==2&&loginType==2">
+					<image src="../../currentstate.png" mode=""></image>
+					<view class="rectifyListTitle">
+						当前状态
+					</view>
+					<view class="rectifyListContent" style="color: #F1C345;">
+						待结案
 					</view>
 				</view>
 			</view>

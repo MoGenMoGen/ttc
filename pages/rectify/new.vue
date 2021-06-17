@@ -1,275 +1,354 @@
 <template>
-		<view class="newContainer">
-			<view class="newBody">
-				<view class="newList">
-					<view class="newListTitle">
-						整改单号
-					</view>
-					<view class="newListContent">
-						ZG20210330001
-					</view>
+	<view class="newContainer">
+		<view class="newBody">
+			<view class="newList">
+				<view class="newListTitle">
+					整改单号
 				</view>
-				<view class="newList">
-					<view class="newListTitle">
+				<view class="newListContent">
+					ZG20210330001
+				</view>
+			</view>
+			<view class="newList">
+				<view class="newListTitle">
 					整改名称
-					</view>
-					<input type="text" value="" placeholder="请输入整改名称"  placeholder-class="placeholderIn"class="newListContent"/>
 				</view>
-				<view class="newList">
+				<input type="text" value="" placeholder="请输入整改名称" placeholder-class="placeholderIn"
+					class="newListContent" />
+			</view>
+			<view class="newList">
 				<view class="newListTitle">
 					整改单位
 				</view>
-				<input type="text" value="" placeholder="请输入整改单位"class="newListContent"  placeholder-class="placeholderIn"/>
+				<view class="newListContent">
+					<picker :range="info.AttrSystems" :value="index2" @change="bindPickerChange">
+						<span class="ct">{{
+				                  info.AttrSystem ? info.AttrSystem : "请选择整改单位"
+				                }}</span>
+					</picker>
 				</view>
-				<view class="newList">
+			</view>
+			<view class="newList">
 				<view class="newListTitle">
 					检查区域
 				</view>
-				<input type="text" value="" class="newListContent" placeholder="请输入检查区域" placeholder-class="placeholderIn"/>
+				<input type="text" value="" class="newListContent" placeholder="请输入检查区域"
+					placeholder-class="placeholderIn" />
+			</view>
+			<view class="newList"@click="getLoca">
+				<view class="newListTitle">
+					LBS位置
 				</view>
-				<view class="newList">
-					<view class="newListTitle">
-						LBS位置
-					</view>
-					<view class="newListContent">
+				<view class="newListContent">
 					宁波镇海329创业社区
 					<image src="../../location.png" mode="" class="location"></image>
-					</view>
 				</view>
-				<view class="newList" style="display: flex; flex-direction: column;">
+			</view>
+			<view class="newList" style="display: flex; flex-direction: column;">
 				<view class="newListTitle">
 					隐患说明
 				</view>
-				<textarea value="" placeholder="请输入主要事项内容详情" placeholder-class="placeholderIn"  class="text"/>
-				</view>
-				<view class="newList">
+				<textarea value="" placeholder="请输入主要事项内容详情" placeholder-class="placeholderIn" class="text" />
+			</view>
+			<view class="newList">
 				<view class="newListTitle">
 					责任整改人
 				</view>
 				<view class="newListContent">
 					张三
 				</view>
-				</view>
-				<view class="newList" style="display: flex; flex-direction: column;">
+			</view>
+			<view class="newList" style="display: flex; flex-direction: column;">
 				<view class="newListTitle">
 					整改要求
 				</view>
-				<textarea value="" placeholder="请按照要求进行整改"  placeholder-class="placeholderIn" class="text"/>
-				</view>
-				<view class="newList">
+				<textarea value="" placeholder="请按照要求进行整改" placeholder-class="placeholderIn" class="text" />
+			</view>
+			<view class="newList">
 				<view class="newListTitle">
 					整改期限
 				</view>
 				<view class="newListContent">
-					2021-10-20
-					<image src="../../static/choosedate.png" mode="" class="date"></image>
+					<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
+					                        <view class="uni-input">{{date}}<image src="../../static/choosedate.png" mode="" class="date"></image></view>
+					                    </picker>
+					
 				</view>
 			</view>
-			<view class="photograpBox"  >
-			<view class="newListTitle">
-				隐患图片
-			</view>
-			<view class="hint">
-				上传完图片后，可以点击图片进行编辑
-			</view>
-			<view class="photo">
-			
-			<view class="photograp">
-				 <image src="../../static/takephoto.png" mode="" @click="toPhoto()" />
-			</view>
-			<view class="choseImg" v-for="(item, index) in imgList" :key="index">
-				<image :src="item" mode="" class="imgs"></image>
-				<image :src="del" mode="" class="deleteImg" @click="deleimg(index)"></image>
-			</view>
-			</view>
-			</view>
-			</view>
-			<view class="newBtn">
-				<button type="default" class="cancel">取消</button>
-				<button type="default" class="next" @click="changePageTo">下一步 </button>
+			<view class="photograpBox">
+				<view class="newListTitle">
+					隐患图片
+				</view>
+				<view class="hint">
+					上传完图片后，可以点击图片进行编辑
+				</view>
+				<view class="photo">
+
+					<view class="photograp">
+						<image src="../../static/takephoto.png" mode="" @click="toPhoto()" />
+					</view>
+					<view class="choseImg" v-for="(item, index) in imgList" :key="index">
+						<image :src="item" mode="" class="imgs"></image>
+						<image :src="del" mode="" class="deleteImg" @click="deleimg(index)"></image>
+					</view>
+				</view>
 			</view>
 		</view>
+		<view class="newBtn">
+			<button type="default" class="cancel" @click="backTo">取消</button>
+			<button type="default" class="next" @click="changePageTo">下一步 </button>
+		</view>
+	</view>
 </template>
 
 <script>
 	import del from "static/delete.png";
-export default{
-	data(){
-		return{
-			del,
-			imgList: ["/static/takephoto.png"],
-		}
-	},
-	methods:{
-		toPhoto() {
-		  uni.chooseImage({
-		    sourceType: ["camera", "album "],
-		    success: function(res) {
-		      console.log(JSON.stringify(res.tempFilePaths));
-		    },
-		    fail(err) {
-		      console.log(err);
-		    },
-		  });
+	export default {
+		data() {
+			 const currentDate = this.getDate({
+			            format: true
+			        })
+			return {
+				del,
+				date: currentDate,
+				index2: 0,
+				imgList: ["/static/takephoto.png"],
+				info: {
+					AttrSystems: ["政法委", "公安系统", "法院系统"]
+				}
+			}
 		},
-		deleimg(index){
-			this.imgList.splice(index);
-			console.log("dele");
+		methods: {
+			toPhoto() {
+				uni.chooseImage({
+					sourceType: ["camera", "album "],
+					success: function(res) {
+						console.log(JSON.stringify(res.tempFilePaths));
+					},
+					fail(err) {
+						console.log(err);
+					},
+				});
+			},
+			bindPickerChange(e) {
+				this.index2 = e.mp.detail.value;
+				this.info.AttrSystem = this.info.AttrSystems[this.index2];
+			},
+			deleimg(index) {
+				this.imgList.splice(index);
+				console.log("dele");
+			},
+			changePageTo() {
+				uni.navigateTo({
+					url: "./newNext"
+				})
+			},
+			backTo() {
+				uni.navigateBack({})
+			},
+			getLoca(){
+				uni.getLocation({
+					geocode:true,
+					success:function(res){
+						console.log(res.address)
+					},
+					
+				})
+			},
+			   bindDateChange: function(e) {
+			            this.date = e.target.value
+			        },
+					getDate(type) {
+					            const date = new Date();
+					            let year = date.getFullYear();
+					            let month = date.getMonth() + 1;
+					            let day = date.getDate();
+					
+					            if (type === 'start') {
+					                year = year - 60;
+					            } else if (type === 'end') {
+					                year = year + 2;
+					            }
+					            month = month > 9 ? month : '0' + month;;
+					            day = day > 9 ? day : '0' + day;
+					            return `${year}-${month}-${day}`;
+					        }
 		},
-		changePageTo(){
-			uni.navigateTo({
-				url:"./newNext"
-			})
+		computed:{
+			 startDate() {
+			            return this.getDate('start');
+			        },
+			        endDate() {
+			            return this.getDate('end');
+			        }
 		}
 	}
-}
 </script>
 
 <style lang="scss" scoped>
-.newContainer{
-	background-color: #fafafa;
-	display: flex;
-	padding: 20rpx;
-	flex-direction:column;
-	.newBtn{
-		margin-top: 50rpx;
+	.newContainer {
+		background-color: #fafafa;
 		display: flex;
-		padding:100rpx 0 ;
-		.cancel{
-			width: 355rpx;
-			height: 88rpx;
+		padding: 20rpx;
+		flex-direction: column;
+
+		.newBtn {
+			margin-top: 50rpx;
+			display: flex;
+			padding: 100rpx 0;
+
+			.cancel {
+				width: 355rpx;
+				height: 88rpx;
+				background: #FFFFFF;
+				border: 2rpx solid #2B89F7;
+				opacity: 1;
+				border-radius: 12rpx 0rpx 0rpx 12rpx;
+				font-size: 28rpx;
+				color: #303030;
+			}
+
+			.next {
+				width: 355rpx;
+				height: 88rpx;
+				background: #2B89F7;
+				border: 2rpx solid #2B89F7;
+				opacity: 1;
+				border-radius: 0rpx 12rpx 12rpx 0rpx;
+				color: #ffffff;
+				font-size: 28rpx;
+			}
+		}
+
+		.newBody {
+			width: 710rpx;
+
 			background: #FFFFFF;
-			border: 2rpx solid #2B89F7;
+			box-shadow: 0rpx 4rpx 10rpx rgba(0, 0, 0, 0.04);
 			opacity: 1;
-			border-radius: 12rpx 0rpx 0rpx 12rpx;
-			font-size: 28rpx;
-			color:#303030;
-		}
-		.next{
-			width: 355rpx;
-			height: 88rpx;
-			background: #2B89F7;
-			border: 2rpx solid #2B89F7;
-			opacity: 1;
-			border-radius: 0rpx 12rpx 12rpx 0rpx;
-			color: #ffffff;
-			font-size: 28rpx;
-		}
-	}
-	.newBody{
-	width: 710rpx;
-	
-	background: #FFFFFF;
-	box-shadow: 0rpx 4rpx 10rpx rgba(0, 0, 0, 0.04);
-	opacity: 1;
-	border-radius: 12rpx;
-	padding: 40rpx;
-	box-sizing:border-box;
-	.newList{
-		display: flex;
-		
-		padding: 20rpx 14rpx;
-		width: 656rpx;
-		background: #FFFFFF;
-		opacity: 1;
-		border-bottom:1rpx solid #D0CED8 ;
-		// align-items: center;
-		box-sizing: border-box;
-		.textBox{
-			padding: 18rpx 22rpx;
-			width: 624rpx;
-			height: 206rpx;
-			border: 1rpx solid #D0CED8;
-			opacity: 1;
-			border-radius: 6rpx
-		}
-		.newListTitle{
-			width: 200rpx;
-			font-size: 28rpx;
-			color: #303030;
-		}
-		.newListContent{
-			width: 456rpx;
-			margin-left: 30rpx;
-			word-wrap: break-word;
-			font-size: 28rpx;
-			.location{
-				width: 48rpx;
-				height: 48rpx;
-				float: right;
-			}
-			.date{
-				width: 48rpx;
-				height: 48rpx;
-				float: right;
-			}
-		}
-		.text{
-			width: 624rpx;
-			height: 206rpx;
-			background: #FCFCFC;
-			opacity: 1;
-			border-radius: 6rpx;
-			font-size: 28rpx;
-		
-			padding: 18rpx 36rpx;
+			border-radius: 12rpx;
+			padding: 40rpx;
 			box-sizing: border-box;
-			margin-top: 20rpx;
-		}
-		.placeholderIn{
-			color: #D0CED8;
-		}
-		input{
-			font-size: 28rpx;
-			
-		}
-		}
-		
-	}
-	.photograpBox{
-	padding: 20rpx 14rpx;
-	.hint{
-		font-size: 28rpx;
-		color: #D0CED8;
-		margin: 20rpx 0; 
-	}
-	.newListTitle{
-		font-size: 28rpx;
-		color: #303030;
-	}
-	.photo{
-		margin-top: 74rpx;
-		display: flex;
-		.photograp{
-			width: 160rpx;
-			height: 160rpx;
-			image{
-				width: 100%;
-				height: 100%;
+
+			.newList {
+				display: flex;
+
+				padding: 20rpx 14rpx;
+				width: 656rpx;
+				background: #FFFFFF;
+				opacity: 1;
+				border-bottom: 1rpx solid #D0CED8;
+				// align-items: center;
+				box-sizing: border-box;
+
+				.textBox {
+					padding: 18rpx 22rpx;
+					width: 624rpx;
+					height: 206rpx;
+					border: 1rpx solid #D0CED8;
+					opacity: 1;
+					border-radius: 6rpx
+				}
+
+				.newListTitle {
+					width: 200rpx;
+					font-size: 28rpx;
+					color: #303030;
+				}
+
+				.newListContent {
+					width: 456rpx;
+					margin-left: 30rpx;
+					word-wrap: break-word;
+					font-size: 28rpx;
+
+					.location {
+						width: 48rpx;
+						height: 48rpx;
+						float: right;
+					}
+
+					.date {
+						width: 48rpx;
+						height: 48rpx;
+						float: right;
+					}
+				}
+
+				.text {
+					width: 624rpx;
+					height: 206rpx;
+					background: #FCFCFC;
+					opacity: 1;
+					border-radius: 6rpx;
+					font-size: 28rpx;
+
+					padding: 18rpx 36rpx;
+					box-sizing: border-box;
+					margin-top: 20rpx;
+				}
+
+				.placeholderIn {
+					color: #D0CED8;
+				}
+
+				input {
+					font-size: 28rpx;
+
+				}
 			}
-		}
-		.choseImg{
-			margin-left:20rpx ;
-			width: 160rpx;
-			height: 160rpx;
-			position: relative;
-			.imgs{
-				width: 100%;
-				height: 100%;
-			}
-			.deleteImg{
-				width: 32rpx;
-				height: 32rpx;
-				position: absolute;
-				top: -16rpx;
-				right: -16rpx;
-			}
-		}
-	}
-	}
-	
+
 		}
 
+		.photograpBox {
+			padding: 20rpx 14rpx;
 
+			.hint {
+				font-size: 28rpx;
+				color: #D0CED8;
+				margin: 20rpx 0;
+			}
 
+			.newListTitle {
+				font-size: 28rpx;
+				color: #303030;
+			}
+
+			.photo {
+				margin-top: 74rpx;
+				display: flex;
+
+				.photograp {
+					width: 160rpx;
+					height: 160rpx;
+
+					image {
+						width: 100%;
+						height: 100%;
+					}
+				}
+
+				.choseImg {
+					margin-left: 20rpx;
+					width: 160rpx;
+					height: 160rpx;
+					position: relative;
+
+					.imgs {
+						width: 100%;
+						height: 100%;
+					}
+
+					.deleteImg {
+						width: 32rpx;
+						height: 32rpx;
+						position: absolute;
+						top: -16rpx;
+						right: -16rpx;
+					}
+				}
+			}
+		}
+
+	}
 </style>

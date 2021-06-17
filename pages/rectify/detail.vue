@@ -21,7 +21,7 @@
 						整改单位
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.unit}}
+						广知科技有限公司
 					</view>
 				</view>
 				<view class="bodyList">
@@ -222,10 +222,25 @@
 				待执行
 			</view>
 		</view>
-		<view class="lastBtnTwo"v-if="currentIndex==2&&loginType==2">
-			<button type="default" class="cancel">取消</button>
-			<button type="default" class="confirm">确认结案</button>
-			<button type="default" class="again">再次下发</button>
+		<view class="lastBtnTwo" v-if="currentIndex==2&&loginType==2">
+			<button type="default" class="cancel"  @click="backTo">取消</button>
+			<button type="default" class="confirm" @click="backTo">确认结案</button>
+			<button type="default" class="again" @click="pop">再次下发</button>
+		</view>
+		<view class="mask" v-if="popshow" catchtouchmove="true">
+			
+		</view>
+		<view class="popBox" v-if="popshow" catchtouchmove="true">
+			<view class="title">
+				再次下发说明
+			</view>
+			<view class="text">
+				<textarea  class="textIn" value="" placeholder="请输入二次下发说明" placeholder-style="font-size: 28rpx;color: #D0CED8" />
+			</view>
+			<view class="btn">
+				<view class="btn1" type="default" @click="unshowpop">取消</view>
+				<view class="btn2" type="default"@click="finishshowpop">确定</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -235,8 +250,11 @@
 	export default {
 		data() {
 			return {
+				
 				del,
 				loginType: 2,
+				popshow:false,
+				
 				imgList: ["/static/takephoto.png"],
 				bodyList: {
 					number: "ZG20210330001",
@@ -256,7 +274,8 @@
 					state: "待结案",
 					casePeople: "章老师",
 					setTime: "2021-05-27"
-				}
+				},
+				
 			}
 		},
 		methods: {
@@ -275,6 +294,25 @@
 				this.imgList.splice(index);
 				console.log("dele");
 			},
+			pop(){
+				this.popshow=true
+			},
+			unshowpop(){
+			this.popshow=false	
+			},
+			finishshowpop(){
+				this.popshow=false;
+				uni.navigateBack({
+					
+				})
+				
+			},
+			backTo(){
+				uni.navigateBack({
+					
+				})
+			}
+			 
 		},
 		onLoad(e) {
 			this.currentIndex = e.currentIndex;
@@ -425,8 +463,9 @@
 				border-radius: 6rpx;
 				margin: 20rpx 50rpx 62rpx;
 				font-size: 24rpx;
-				color: #C9C9C9;
+				color: #303030;
 				padding: 14rpx 20rpx;
+				
 
 			}
 
@@ -547,10 +586,12 @@
 				}
 			}
 		}
-		.lastBtnTwo{
+
+		.lastBtnTwo {
 			margin-top: 50rpx;
 			display: flex;
-			.cancel{
+
+			.cancel {
 				width: 200rpx;
 				height: 88rpx;
 				background: #FFFFFF;
@@ -560,7 +601,8 @@
 				font-size: 28rpx;
 				line-height: 88rpx;
 			}
-			.confirm{
+
+			.confirm {
 				width: 200rpx;
 				height: 88rpx;
 				background: #F1C345;
@@ -571,7 +613,8 @@
 				line-height: 88rpx;
 				color: #FFFFFF
 			}
-			.again{
+
+			.again {
 				width: 200rpx;
 				height: 88rpx;
 				background: #2B89F7;
@@ -582,6 +625,73 @@
 				line-height: 88rpx;
 				color: #FFFFFF
 			}
+		}
+		.popBox{
+			width: 640rpx;
+		
+			background: #FFFFFF;
+			opacity: 1;
+			position: fixed;
+			top: 424rpx;
+			left: 56rpx;
+			z-index: 1000;
+			border-radius: 12rpx;
+			.title{
+				margin-top: 66rpx;
+				text-align: center;
+				font-size: 32rpx;
+				font-weight: 500;
+			}
+			.text{
+				margin-top: 34rpx;
+				display: flex;
+				justify-content: center;
+				.textIn{
+					padding: 22rpx;
+					width: 544rpx;
+					height: 306rpx;
+					background: #FCFCFC;
+					border-radius: 4rpx;
+				}
+			}
+			.btn{
+				margin-top: 40rpx;
+				display: flex;
+				.btn1{
+					width: 320rpx;
+					height: 112rpx;
+					background: #FFFFFF;
+					line-height: 112rpx;
+					text-align: center;
+					font-size: 34rpx;
+					font-weight: 500;
+					color: #000000;
+					border-top: 1rpx solid #E5E5E5;
+					border-right: 1rpx solid #E5E5E5;
+					// letter-spacing: 59rpx;
+				}
+				.btn2{
+					width: 320rpx;
+					height: 112rpx;
+					background: #FFFFFF;
+					line-height: 112rpx;
+					text-align: center;
+					color: #576B95;
+					font-size: 34rpx;
+					border-top: 1rpx solid #E5E5E5;
+					// letter-spacing: 59rpx;
+				}
+			}
+		}
+		.mask{
+			background-color:#8B8B8B;
+			 position: fixed;
+			 left: 0;
+			 top: 0;
+			    z-index: 1;
+				opacity: 0.5;
+				width: 100%;
+				height: 100%;
 		}
 	}
 </style>
