@@ -9,14 +9,29 @@ function get(url, data, header) {
 		uni.showLoading({
 			title: "加载中"
 		});
+	let BladeAuth = uni.getStorageSync("Blade-Auth")
+	let myheader = { "Blade-Auth": BladeAuth }
 	header = header ? header : {}
+	myheader={...myheader,...header}
+
 	let promise = new Promise((resolve, reject) => {
 		uni.request({
 			data: data,
 			method: "get",
-			header: header?header:{},
+			header: myheader,
 			url: config.serverURL + url,
 			success: function(res) {
+				// 登录失效重新登录
+				if(res.data.code=='401')
+				{
+					uni.showToast({
+						title:'登录失效了，重新登录',
+						duration:2000
+					})
+					uni.reLaunch({
+						url:'/pages/login/index'
+					})
+				}
 				console.log('get success')
 				resolve(res.data);
 			},
@@ -43,15 +58,30 @@ function post(url, data, header) {
 		title: "加载中"
 	});
 	
+	let BladeAuth = uni.getStorageSync("Blade-Auth")
+	let myheader = { "Blade-Auth": BladeAuth }
 	header = header ? header : {}
+	myheader={...myheader,...header}
 	let promise = new Promise((resolve, reject) => {
 		uni.request({
 			data: data,
-			header: header?header:{},
+			header: myheader,
 			method: "post",
 			url: config.serverURL + url,
 			success: function(res) {
 				console.log('post success')
+				// 登录失效重新登录
+				if(res.data.code=='401')
+				{
+					uni.showToast({
+						title:'登录失效了，重新登录',
+						duration:2000
+					})
+					uni.reLaunch({
+						url:'/pages/login/index'
+					})
+				}
+				else
 				resolve(res.data);
 
 			},
@@ -193,7 +223,14 @@ class api {
 			});
 		})
 	}
-
+// 整改单列表
+getRecityList(data){ 
+	return get("/blade-works/rectifybill/rectifyList",data,{"Content-Type":"application/json"})
+	
+}
+getRecityDetail(data){
+	return get("/blade-works/rectifybill/rectifyDetail",data,{"Content-Type":"application/json"})
+}
 
 
 

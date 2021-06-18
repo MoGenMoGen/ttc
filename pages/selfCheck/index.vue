@@ -142,6 +142,7 @@
 				animation: false,
 
 			})
+			this.loginType=uni.getStorageSync("loginType")
 		},
 	};
 </script>

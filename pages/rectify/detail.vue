@@ -13,7 +13,7 @@
 						整改单号
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.number}}
+						{{bodyList.cd}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -21,7 +21,7 @@
 						整改单位
 					</view>
 					<view class="bodyListContent">
-						广知科技有限公司
+						{{bodyList.buildOrgId}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -29,7 +29,7 @@
 						整改负责人
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.head}}
+						{{bodyList.responsibleId}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -37,7 +37,7 @@
 						整改日期
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.changeDate}}
+						{{bodyList.rectifyDate}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -45,7 +45,7 @@
 						下发日期
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.issuedDate}}
+						{{bodyList.issueDate}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -53,7 +53,7 @@
 						检查区域
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.area}}
+						{{bodyList.examRegion}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -61,7 +61,7 @@
 						隐患说明
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.instructions}}
+						{{bodyList.troubleReport}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -69,7 +69,7 @@
 						整改要求
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.requirements}}
+						{{bodyList.requReport}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -77,7 +77,7 @@
 						复查人
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.person}}
+						{{bodyList.reviewer}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -85,7 +85,7 @@
 						复查时间
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.reviewDate}}
+						{{bodyList.reviewTime}}
 					</view>
 				</view>
 				<view class="bodyList" style="border-bottom:0">
@@ -93,7 +93,7 @@
 						隐患图片
 					</view>
 					<view class="bodyListImg">
-						<image :src="bodyList.img" mode=""></image>
+						<image :src="bodyList.troublePic" mode=""></image>
 					</view>
 				</view>
 
@@ -109,7 +109,7 @@
 						整改上报
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.report}}
+						{{bodyList.rectifyReport}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -117,7 +117,7 @@
 						整改照片
 					</view>
 					<view class="bodyListImg">
-						<image :src="bodyList.img" mode=""></image>
+						<image :src="bodyList.rectifyPic" mode=""></image>
 					</view>
 				</view>
 				<view class="bodyList">
@@ -133,7 +133,7 @@
 						上报人
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.reportPerson}}
+						{{bodyList.reportUserId}}
 					</view>
 				</view>
 				<view class="bodyList" v-if="currentIndex==3">
@@ -141,7 +141,7 @@
 						结案人
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.casePeople}}
+						{{bodyList.closeUserId}}
 					</view>
 				</view>
 				<view class="bodyList" v-if="loginType==2&&currentIndex==2">
@@ -149,7 +149,7 @@
 						确认人
 					</view>
 					<view class="bodyListContent">
-						章老师
+						{{bodyList.reviewer}}
 					</view>
 				</view>
 				<view class="bodyList" v-if="currentIndex==3||(loginType==2&&currentIndex==2)"
@@ -158,7 +158,7 @@
 						确认时间
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.setTime}}
+						{{bodyList.closeDate}}
 					</view>
 				</view>
 
@@ -219,7 +219,7 @@
 				整改状态
 			</view>
 			<view class="content">
-				待执行
+				{{bodyList.state}}
 			</view>
 		</view>
 		<view class="lastBtnTwo" v-if="currentIndex==2&&loginType==2">
@@ -257,23 +257,7 @@
 				
 				imgList: ["/static/takephoto.png"],
 				bodyList: {
-					number: "ZG20210330001",
-					unit: "广知科技有限公司",
-					head: "张宁",
-					changeDate: "2021-05-20",
-					issuedDate: "2021-05-19",
-					area: "消防通道",
-					instructions: "消防通道堵塞",
-					requirements: "请按照要求进行整改",
-					person: "章老师",
-					reviewDate: "2021-05-19",
-					img: "/static/takephoto.png",
-					report: "已按整改要求完成整改",
-					reportDate: "2021-5-25",
-					reportPerson: "张宁",
-					state: "待结案",
-					casePeople: "章老师",
-					setTime: "2021-05-27"
+					
 				},
 				
 			}
@@ -314,8 +298,13 @@
 			}
 			 
 		},
-		onLoad(e) {
-			this.currentIndex = e.currentIndex;
+		async onLoad(e) {
+			this.id =e.id;
+			
+				let data=await this.api.getRecityDetail({id:this.id})
+				 this.bodyList=data.data;
+				console.log(data);
+
 		},
 
 	}

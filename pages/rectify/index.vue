@@ -15,14 +15,14 @@
 		</view>
 		<searchBox :placeholderIn="placeholderIn"></searchBox>
 		<view class="rectifyBody">
-			<view class="rectifyList" v-for="(item,index) in listBody" :key="index" @click="changePage()">
+			<view class="rectifyList" v-for="(item,index) in listBody" :key="index" @click="changePage(item.id)">
 				<view class="rectifyListIn">
 					<image src="../../static/worktype.png" mode=""></image>
 					<view class="rectifyListTitle">
 						整改单号
 					</view>
 					<view class="rectifyListContent">
-						{{item.number}}
+						{{item.cd}}
 					</view>
 				</view>
 				<view class="rectifyListIn">
@@ -31,7 +31,7 @@
 						整改内容
 					</view>
 					<view class="rectifyListContent">
-						{{item.content}}
+						{{item.requReport}}
 					</view>
 				</view>
 				<view class="rectifyListIn">
@@ -40,38 +40,38 @@
 						下发日期
 					</view>
 					<view class="rectifyListContent">
-						{{item.issueDay}}
+						{{item.issueDate}}
 					</view>
 				</view>
 				<view class="rectifyListIn" v-if="(currentIndex==0||currentIndex==1)&&loginType==1">
-					<image src="../../currentstate.png" mode=""></image>
+					<image src="../../static/currentstate.png" mode=""></image>
 					<view class="rectifyListTitle">
 						当前状态
 					</view>
 					<view class="rectifyListContent" style="color:#2B89F7">
-						{{item.currentState}}
+						{{currentState(item.state)}}
 					</view>
 				</view>
 				<view class="rectifyListIn" v-if="currentIndex==2&&loginType!=2">
-					<image src="../../currentstate.png" mode=""></image>
+					<image src="../../static/currentstate.png" mode=""></image>
 					<view class="rectifyListTitle">
 						签收日期
 					</view>
 					<view class="rectifyListContent">
-						{{item.receiptDate}}
+						{{item.reportDate}}
 					</view>
 				</view>
 				<view class="rectifyListIn" v-if="currentIndex==3">
-					<image src="../../currentstate.png" mode=""></image>
+					<image src="../../static/currentstate.png" mode=""></image>
 					<view class="rectifyListTitle">
 						完成日期
 					</view>
 					<view class="rectifyListContent">
-						{{item.finishDate}}
+						{{item.closeDate}}
 					</view>
 				</view>
 				<view class="rectifyListIn" v-if="currentIndex==2&&loginType==2">
-					<image src="../../currentstate.png" mode=""></image>
+					<image src="../../static/currentstate.png" mode=""></image>
 					<view class="rectifyListTitle">
 						当前状态
 					</view>
@@ -106,35 +106,35 @@ data(){
 		currentIndex:1,
 		listBar:["代签收","待执行","待结案","已完成"],
 		listBody:[
-			{
-				number:"RW20210330001",
-				content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-				issueDay:"2020-12-15",
-				currentState:"待签收",
-				receiptDate:"2020-3-20",
-				finishDate:'2020-3-20'
-			},
-			{
-				number:"RW20210330001",
-				content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-				issueDay:"2020-12-15",
-				currentState:"待签收",
-				receiptDate:"2020-3-20",finishDate:'2020-3-20'
-			},
-			{
-				number:"RW20210330001",
-				content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-				issueDay:"2020-12-15",
-				currentState:"待签收",
-				receiptDate:"2020-3-20",finishDate:'2020-3-20'
-			},
-			{
-				number:"RW20210330001",
-				content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-				issueDay:"2020-12-15",
-				currentState:"待签收",
-				receiptDate:"2020-3-20",finishDate:'2020-3-20'
-			},
+			// {
+			// 	cd:"RW20210330001",
+			// 	content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
+			// 	issueDay:"2020-12-15",
+			// 	currentState:"待签收",
+			// 	receiptDate:"2020-3-20",
+			// 	finishDate:'2020-3-20'
+			// },
+			// {
+			// 	cd:"RW20210330001",
+			// 	content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
+			// 	issueDay:"2020-12-15",
+			// 	currentState:"待签收",
+			// 	receiptDate:"2020-3-20",finishDate:'2020-3-20'
+			// },
+			// {
+			// 	cd:"RW20210330001",
+			// 	content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
+			// 	issueDay:"2020-12-15",
+			// 	currentState:"待签收",
+			// 	receiptDate:"2020-3-20",finishDate:'2020-3-20'
+			// },
+			// {
+			// 	cd:"RW20210330001",
+			// 	content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
+			// 	issueDay:"2020-12-15",
+			// 	currentState:"待签收",
+			// 	receiptDate:"2020-3-20",finishDate:'2020-3-20'
+			// },
 		]
 	}
 },
@@ -153,19 +153,34 @@ computed:{
 			return 1
 		}
 	},
+	currentState(){
+		return function(state){
+			if(state==0)
+			return "待下发";
+			else if(state==1)
+			return "待签收";
+			else if(state==2)
+			return "待执行";
+			else if(state==3)
+			return "已完成"
+			else if(state==4)
+			return "已结案"
+		}
+	}
 },
 methods:{
 	changeNav(index){
-		this.currentIndex=index
+		this.currentIndex=index;
+		this.getList({state:this.currentIndex+1})
 	},
 	change(path) {
 	  uni.reLaunch({
 	    url: path,
 	  });
 	},
-	changePage(){
+	changePage(id){
 		uni.navigateTo({
-			url:`./detail?currentIndex=${this.currentIndex}`,
+			url:`./detail?id=${id}`,
 
 		})
 	},
@@ -173,20 +188,29 @@ methods:{
 		uni.navigateTo({
 			url:"./new"
 		})
+	},
+	async getList(state){
+		console.log(1111);
+		let data=await this.api.getRecityList(state)
+		this.listBody=data.data.records;
+		console.log(data);
 	}
 },
-
-onShow() {
+onLoad() {
+	this.loginType=uni.getStorageSync("loginType")
+},
+ onShow() {
 	uni.hideTabBar({
 	    animation: false,
 		
 	})
 	if(this.loginType==1){
-		return this.currentIndex=0
+		 this.currentIndex=0
 	}
 	else{
-		return this.currentIndex=1
+		 this.currentIndex=1
 	}
+	this.getList({state:this.currentIndex+1})
 	
 }
 

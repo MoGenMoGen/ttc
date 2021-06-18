@@ -1,4 +1,4 @@
-<!-- 自检详情页面 -->
+<!-- 巡检详情页面 -->
 <template>
   <view class="taskDetails">
     <view class="taskContent">
@@ -15,13 +15,13 @@
         <text class="taskContentInListHead" v-else>任务内容</text>
         <text class="taskContentInListContent">{{ arr.content }}</text>
       </view>
-      <view class="taskContentInListTwo" v-if="loginType == 3">
+      <view class="taskContentInListTwo">
         <text class="taskContentInListHead">整改单位</text>
         <text class="taskContentInListContent">{{ arr.reform }}</text>
       </view>
       <view
         class="taskContentInList"
-        v-if="loginType == 3 && currentIndex != 0"
+        v-if="currentIndex==1||currentIndex==2"
       >
         <text class="taskContentInListHead">施工单位 </text>
         <text class="taskContentInListContent">{{ arr.Construction }}</text>
@@ -36,11 +36,11 @@
         <text class="taskContentInListContent">{{ arr.subdate }}</text>
       </view>
 
-      <view class="taskContentInList" v-if="loginType == 3">
+      <view class="taskContentInList" >
         <text class="taskContentInListHead">复查日期</text>
         <text class="taskContentInListContent">{{ arr.reviewdate }}</text>
       </view>
-      <view class="taskContentInList" v-if="loginType == 3">
+      <view class="taskContentInList">
         <text class="taskContentInListHead">任务状态</text>
         <text class="taskContentInListContent">{{ arr.taskStatus }}</text>
       </view>
@@ -52,8 +52,7 @@
       <view
         class="taskContentInList"
         v-if="
-          (currentIndex != 0 && loginType == 1) ||
-            (currentIndex == 1 && loginType == 3)
+		currentIndex==1
         "
       >
         <text class="taskContentInListHead">逾期天数</text>
@@ -129,13 +128,14 @@
           placeholder-class="textInPlaceholder"
         ></textarea>
       </view>
-      <view class="bottomBtn" v-if="loginType==1">
-        <button class="cancel" @click="backTo">取消</button>
-        <button class="confirm"  @click="backTo">确认完成</button>
-      </view>
-	  <view class="taskState" v-if="loginType==3&&currentIndex!=2">
+     
+	  <view class="taskState" >
 	  	<text>任务状态</text>
 		<text class="perform">待执行</text>
+	  </view>
+	  <view class="bottomBtn" v-if="loginType==2">
+	    <button class="cancel" @click="backTo">取消</button>
+	    <button class="confirm"  @click="backTo">确认完成</button>
 	  </view>
     </view>
     <view class="taskBodyTwo" v-if="currentIndex == 2">
@@ -145,7 +145,7 @@
           v-for="(item, index) in taskChoseArr"
           :key="index"
         >
-          <text>{{ index }}、 </text>
+          <text>{{ index +1}}、 </text>
           <text>{{ item.name }}</text>
           <view class="taskInCase">{{ item.case }}</view>
         </view>
@@ -164,6 +164,7 @@ import del from "static/delete.png";
 export default {
   data() {
     return {
+		loginType:2,
       del,
       activeRadio: "",
       check: "10",
@@ -228,8 +229,7 @@ export default {
   },
   onLoad(e) {
     this.currentIndex = e.currentIndex;
-    this.loginType = e.loginType;
-    console.log(e);
+
   },
   components: {},
 };

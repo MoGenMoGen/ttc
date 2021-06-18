@@ -70,6 +70,12 @@
 			}
 		},
 		{
+			"path": "pages/inspection/detail",
+			"style": {
+				"navigationBarTitleText": "任务详情"
+			}
+		},
+		{
 			"path": "pages/selfCheck/details",
 			"style": {
 				"navigationBarTitleText": "任务详情"

@@ -25,10 +25,18 @@
 						<text>{{ item.title }}</text>
 					</view>
 				</view>
-				<view class="icon_list" v-else>
-					<!-- loginType==1|3 一排放三个 -->
-					<view class="icon_item_two" v-for="(item, index) in loginType == 1 ? iconBar1 : iconBar3"
+				<view class="icon_list" v-else-if="loginType==1">
+					<!-- loginType==1 一排放三个 -->
+					<view class="icon_item_two" v-for="(item, index) in iconBar1"
 						:key="index" @click="toPage(item.path,item.flag,item.tabIndex)">
+						<image :src="item.img" mode="widthFix" />
+						<text>{{ item.title }}</text>
+					</view>
+				</view>
+				<view class="icon_list" v-else>
+					<!-- loginType==3 一排放三个 -->
+					<view class="icon_item_two" v-for="(item, index) in iconBar3"
+						:key="index" @click="toPage(item.path,item.flag,item.tabIndex,item.special)">
 						<image :src="item.img" mode="widthFix" />
 						<text>{{ item.title }}</text>
 					</view>
@@ -156,7 +164,7 @@
 			// loginType:1.企业侧 2.服务商侧 3.监管机构侧
 			return {
 				current: 1, //tab下标
-				loginType: 2, //1：企业 2：服务商 3：监管机构
+				loginType: 1, //1：企业 2：服务商 3：监管机构
 				bg,
 				iconFirmQuery,
 				iconSelfCheck,
@@ -239,6 +247,7 @@
 						path: "/pages/selfCheck/index",
 						flag: false,
 						tabIndex: 0,
+						special:true
 
 					},
 					{
@@ -339,18 +348,29 @@
 				});
 			},
 			// 图标栏的按钮点击跳转页面
-			toPage(path, flag, tabIndex) {
+			toPage(path, flag, tabIndex,special) {
 				// path：跳转地址，flag:是否是自定义tab
 				// tabIndex tab下标,不是tab页随意传值
+				console.log(path, flag, tabIndex);
 				if (flag) {
 					uni.setStorageSync('tabIndex', tabIndex)
 					uni.reLaunch({
 						url: path,
 					});
-				} else
+				} 
+				else if(!flag&&special)
+				{
+					uni.reLaunch({
+						url:path
+					})
+				}
+				else 
+				{
 					uni.navigateTo({
 						url: path,
 					});
+				}
+					
 			},
 			// 跳转到预警提醒主页面
 			goToWarning() {
