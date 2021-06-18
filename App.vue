@@ -1,6 +1,9 @@
 <script>
 export default {
   onLaunch: function () {
+	  uni.reLaunch({
+	  	url:"/pages/login/index"
+	  })
     console.log("app onlaunch");
    
   },

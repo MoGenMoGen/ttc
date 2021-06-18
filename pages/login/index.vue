@@ -56,7 +56,6 @@ export default {
   },
   methods: {
     summit() {
-      console.log(this.info);
       // 手机号校验信息
       let phonecheckinfo = this.reg.checkPhone(this.info.phone);
       // 密码校验信息
