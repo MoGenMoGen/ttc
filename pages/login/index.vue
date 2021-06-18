@@ -38,7 +38,10 @@
 				bg,
 				phoneimg,
 				passimg,
-				info: {} //用户信息
+				info: {
+					phone:"18825560203",
+					password:"000000"
+				} //用户信息
 			};
 		},
 		methods: {
@@ -63,9 +66,9 @@
 				} else {
 					this.api.login(this.info).then(res => {
 						// 后台不返回code代表成功
-						if (!res.code) {
+						if (!res.error_code) {
 							console.log('登陆成功', res);
-
+							uni.setStorageSync("loginType",res.post_id)
 							uni.switchTab({
 								url: "/pages/index/index"
 							})

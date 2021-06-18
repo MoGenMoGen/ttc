@@ -129,7 +129,7 @@
 				help,
 				modifyPass,
 				arrow2,
-				loginType: 2,
+				loginType: 1,
 				info: {
 					name: "雨新斯",
 					tel: "13590001234",

@@ -381,6 +381,7 @@
 		onLoad() {
 			console.log("onload")
 			uni.setStorageSync('tabIndex', 0)
+			this.loginType=uni.getStorageSync("loginType")
 
 		},
 		onShow() {

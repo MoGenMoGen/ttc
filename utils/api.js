@@ -1,72 +1,27 @@
 const config = require("./config");
-import store from '../store'
 import Vue from 'vue'
-Vue.prototype.store = store.store;
 const app = getApp()
 
 const hostUrl = config.serverURL;
 
-function get(url, data, header, loading) {
+function get(url, data, header) {
 	// console.log(url)
-	if (loading) {
 		uni.showLoading({
 			title: "加载中"
 		});
-	}
-	let myData = {};
-	if (data) {
-		//过滤掉空的参数
-		for (let [key, val] of Object.entries(data)) {
-			if (val) {
-				myData[key] = val;
-			}
-		}
-	}
-
+	header = header ? header : {}
 	let promise = new Promise((resolve, reject) => {
-		let token = uni.getStorageSync('yui3-token')
 		uni.request({
-			data: myData,
+			data: data,
 			method: "get",
-			header: {
-				"Content-Type": "application/x-www-form-urlencoded",
-				"yui3-token": token
-			},
+			header: header?header:{},
 			url: config.serverURL + url,
 			success: function(res) {
-				uni.hideLoading();
-				if (res.data.code == 0) {
-					resolve(res.data);
-				} else if (res.data.code == 401) {
-					uni.removeStorageSync('token')
-					uni.showModal({
-						title: '提示',
-						content: '登录失效了，重新登录',
-						success(res) {
-							if (res.confirm) {
-								uni.reLaunch({
-									url: '/pages/login/index/main'
-								})
-							} else if (res.cancel) {
-								uni.navigateBack()
-							}
-						}
-					})
-				} else {
-					console.log(url)
-					console.log(url.indexOf('infoByMob'))
-					if (url.indexOf('infoByMob') === -1) {
-						uni.showToast({
-							icon: "none",
-							title: res.data.msg,
-							duration: 2000
-						});
-					}
-
-					// reject(res.data)
-				}
+				console.log('get success')
+				resolve(res.data);
 			},
 			fail: function(err) {
+				console.log("get error");
 				uni.showToast({
 					icon: "none",
 					title: JSON.stringify(err),
@@ -74,7 +29,9 @@ function get(url, data, header, loading) {
 				});
 				reject(err);
 			},
-			complete: function() {}
+			complete: function() {
+				uni.hideLoading();
+			}
 		});
 	});
 	return promise;
@@ -85,54 +42,31 @@ function post(url, data, header) {
 	uni.showLoading({
 		title: "加载中"
 	});
+	
+	header = header ? header : {}
 	let promise = new Promise((resolve, reject) => {
-		let token = uni.getStorageSync('yui3-token')
 		uni.request({
 			data: data,
-			header: {
-				"Content-Type": "application/x-www-form-urlencoded",
-				"yui3-token": token
-			},
+			header: header?header:{},
 			method: "post",
 			url: config.serverURL + url,
 			success: function(res) {
-				uni.hideLoading();
-				if (res.data.code == 0) {
-					resolve(res.data);
-				} else if (res.data.code == 401) {
-					uni.removeStorageSync('yui3-token')
-					uni.showModal({
-						title: '提示',
-						content: '登录失效了，重新登录',
-						success(res) {
-							if (res.confirm) {
-								uni.reLaunch({
-									url: '/pages/login/index/main'
-								})
-							} else if (res.cancel) {
-								uni.navigateBack()
-							}
-						}
-					})
-				} else {
+				console.log('post success')
+				resolve(res.data);
 
-					uni.showToast({
-						icon: "none",
-						title: res.data.msg,
-						duration: 2000
-					});
-					// reject(res.data.msg)
-				}
 			},
 			fail: function(err) {
+				console.log('post fail')
 				uni.showToast({
 					icon: "none",
 					title: JSON.stringify(err),
 					duration: 2000
 				});
-				// reject(err)
+				reject(err)
 			},
-			complete: function() {}
+			complete: function() {
+				uni.hideLoading()
+			}
 		});
 	});
 	return promise;
@@ -142,8 +76,13 @@ class api {
 	//登录
 	login(data) {
 		return new Promise((resolve, reject) => {
-			post("/blade-auth/login", data).then(res => {
-				// uni.setStorageSync('userId', res.data.userInfo.subId)
+			post("/blade-auth/login", data, {
+				"Tenant-Id": "000000",
+				"Authorization": "Basic c3dvcmQ6c3dvcmRfc2VjcmV0",
+				"Content-Type": "application/x-www-form-urlencoded",
+				"user_id":uni.getStorageSync("user_id")
+			}).then(res => {
+				uni.setStorageSync("user_id", res.user_id)
 				resolve(res);
 			});
 		});
@@ -157,7 +96,7 @@ class api {
 		})
 	}
 	//登出
-	logOut(data) {
+	logOut() {
 		return new Promise((resolve, reject) => {
 			get("/general/access/logout", data).then(res => {
 				resolve(res);
