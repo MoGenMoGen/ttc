@@ -149,7 +149,7 @@ class api {
 		return new Promise(resolve => {
 			post("/sys/user/uniUpdPassword", data).then(res => {
 				resolve(res)
-			})
+			}) 
 		})
 	}
 	//图片选择
