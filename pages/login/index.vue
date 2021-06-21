@@ -85,16 +85,18 @@ export default {
               "Blade-Auth",
               `${res.token_type} ${res.access_token}`
             );
+			// 用户信息缓存
+			uni.setStorageSync("userinfo",res)
 
             uni.switchTab({
               url: "/pages/index/index",
             });
           } else {
-            uni.showToast({
-              icon: "loading",
-              title: "账号或密码错误",
-              duration: 2000,
-            });
+            // uni.showToast({
+            //   icon: "loading",
+            //   title: "账号或密码错误",
+            //   duration: 2000,
+            // });
             console.log("登录失败", res);
           }
         });

@@ -411,6 +411,7 @@
 			},
 			// 退出
 			exit() {
+				uni.removeStorageSync("Blade-Auth")
 				uni.reLaunch({
 					url: '/pages/login/index'
 				});

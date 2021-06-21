@@ -165,7 +165,7 @@
 			"pagePath": "pages/profile/index",
 			"text": "我的"
 		}, {
-			"pagePath": "pages/rectify/index",
+			"pagePath": "pages/rectify/index",    
 			"text": "整改单"
 		}]
 	},

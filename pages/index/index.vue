@@ -27,16 +27,16 @@
 				</view>
 				<view class="icon_list" v-else-if="loginType==1">
 					<!-- loginType==1 一排放三个 -->
-					<view class="icon_item_two" v-for="(item, index) in iconBar1"
-						:key="index" @click="toPage(item.path,item.flag,item.tabIndex)">
+					<view class="icon_item_two" v-for="(item, index) in iconBar1" :key="index"
+						@click="toPage(item.path,item.flag,item.tabIndex)">
 						<image :src="item.img" mode="widthFix" />
 						<text>{{ item.title }}</text>
 					</view>
 				</view>
 				<view class="icon_list" v-else>
 					<!-- loginType==3 一排放三个 -->
-					<view class="icon_item_two" v-for="(item, index) in iconBar3"
-						:key="index" @click="toPage(item.path,item.flag,item.tabIndex,item.special)">
+					<view class="icon_item_two" v-for="(item, index) in iconBar3" :key="index"
+						@click="toPage(item.path,item.flag,item.tabIndex,item.special)">
 						<image :src="item.img" mode="widthFix" />
 						<text>{{ item.title }}</text>
 					</view>
@@ -155,7 +155,7 @@
 	import overdue from "static/overdue.png";
 	// 提醒日期
 	import warnDate from "static/warnDate.png";
-	// 提醒内容
+	// 提醒内容   
 	import workcontent from "static/workcontent.png";
 	// 企业码
 	import corcode from "static/corcode.png";
@@ -247,7 +247,7 @@
 						path: "/pages/selfCheck/index",
 						flag: false,
 						tabIndex: 0,
-						special:true
+						special: true
 
 					},
 					{
@@ -348,7 +348,7 @@
 				});
 			},
 			// 图标栏的按钮点击跳转页面
-			toPage(path, flag, tabIndex,special) {
+			toPage(path, flag, tabIndex, special) {
 				// path：跳转地址，flag:是否是自定义tab
 				// tabIndex tab下标,不是tab页随意传值
 				console.log(path, flag, tabIndex);
@@ -357,20 +357,16 @@
 					uni.reLaunch({
 						url: path,
 					});
-				} 
-				else if(!flag&&special)
-				{
+				} else if (!flag && special) {
 					uni.reLaunch({
-						url:path
+						url: path
 					})
-				}
-				else 
-				{
+				} else {
 					uni.navigateTo({
 						url: path,
 					});
 				}
-					
+
 			},
 			// 跳转到预警提醒主页面
 			goToWarning() {
@@ -401,15 +397,34 @@
 		onLoad() {
 			console.log("onload")
 			uni.setStorageSync('tabIndex', 0)
-			this.loginType=uni.getStorageSync("loginType")
+			this.loginType = uni.getStorageSync("loginType")
 
 		},
 		onShow() {
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
-				animation: false,
+				animation: false,  
 
 			})
+			// 没有token,重新登录
+			// if (!uni.getStorageSync("Blade-Auth")) {
+			// 	uni.showToast({
+			// 		title: "您还没有登录,立即登录···",
+			// 		duration: 1500,
+			// 		icon: 'none',
+			// 		success() {
+						
+			// 			setTimeout(function(){
+			// 				uni.reLaunch({
+			// 					url:'/pages/login/index'
+			// 				})
+			// 			},1500)   
+						
+			// 		}
+			// 	});
+
+
+			// }
 		},
 	};
 </script>

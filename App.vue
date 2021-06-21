@@ -1,9 +1,17 @@
 <script>
 export default {
   onLaunch: function () {
-	  uni.reLaunch({
-	  	url:"/pages/login/index"
-	  })
+	  if(!uni.getStorageSync("Blade-Auth"))
+	  {
+		  uni.reLaunch({
+		  	url:"/pages/login/index"
+		  })
+	  }
+	  else{
+		  uni.reLaunch({
+		  	url:"/pages/index/index"
+		  })
+	  }
     console.log("app onlaunch");
    
   },
