@@ -89,6 +89,10 @@
 					url: "/pages/rectify/index"
 				})
 			}
+		},
+		onLoad() {
+			// 从缓存中获取loginType,角色信息
+			this.loginType = uni.getStorageSync("loginType")
 		}
 	}
 </script>

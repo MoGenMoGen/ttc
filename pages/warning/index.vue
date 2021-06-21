@@ -126,6 +126,10 @@
 			    });
 			},
 		},
+		onLoad() {
+		 	this.loginType = uni.getStorageSync("loginType")
+		 
+		 },
 		onShow() {
 			// loginType==3标题改为逾期预警提醒
 			if (this.loginType == 3) {

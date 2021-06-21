@@ -63,7 +63,10 @@ export default {
          url: '/pages/login/index'
       });
     }
-  }
+  },onLoad() {
+		 	this.loginType = uni.getStorageSync("loginType")
+		 
+		 }
 };
 </script>
 

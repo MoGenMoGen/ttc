@@ -341,7 +341,7 @@
 			},
 			// 小数变百分数
 			turn(num) {
-				return num * 100 + "%";
+				return Number(num) * 100 + "%";
 			},
 			// 处理任务1
 			handlework1() {
@@ -423,14 +423,20 @@
 			tabbar,
 		},
 		beforeMount() {
-			this.info.redifyrate = this.turn(this.info.redifyrate);
-			this.info.inspection = this.turn(this.info.inspection);
+			
 		},
+		onLoad() {
+		 	this.loginType = uni.getStorageSync("loginType")
+		 this.info.redifyrate = this.turn(this.info.redifyrate);
+		 this.info.inspection = this.turn(this.info.inspection);
+		 console.log(this.info.redifyrate,typeof(this.info.redifyrate));
+		 },
 		onShow() {
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
 				animation: false
 			})
+			
 		},
 	};
 </script>

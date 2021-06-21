@@ -401,6 +401,9 @@
 
 		},
 		onShow() {
+			console.log(11223, this.getDate({
+    format: true
+   }));
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
 				animation: false,  

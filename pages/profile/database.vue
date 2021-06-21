@@ -26,8 +26,13 @@ export default {
         "莫某莫某某资料资料资料名称",
       ],
       arrow2,
+	  loginType:1
     };
   },
+  onLoad() {
+  	this.loginType = uni.getStorageSync("loginType")
+  
+  }
 };
 </script>
 

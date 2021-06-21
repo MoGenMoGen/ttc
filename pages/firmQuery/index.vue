@@ -73,7 +73,7 @@
 						contact: "张章",
 						tel: "13900110000", //联系电话
 						corcode: corcode, //企业码
-						id: 0
+						id: 1
 					},
 					{
 						//公司名称
@@ -82,7 +82,7 @@
 						contact: "张章",
 						tel: "13900110000", //联系电话
 						corcode: corcode, //企业码
-						id: 0
+						id: 2
 					},
 				],
 			}
@@ -117,7 +117,11 @@
 				})
 			}
 		},
-		onShow() {
+		onLoad() {
+			// 从缓存中获取loginType,角色信息
+			this.loginType = uni.getStorageSync("loginType")
+		},
+		onShow() {  
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
 				animation: false,

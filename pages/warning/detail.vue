@@ -64,6 +64,10 @@
 				loginType: 3
 			};
 		},
+		onLoad() {
+		 	this.loginType = uni.getStorageSync("loginType")
+		 
+		 },
 	}
 </script>
 

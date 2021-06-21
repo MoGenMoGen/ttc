@@ -19,7 +19,10 @@
 
 <script>
 export default {
-
+ onLoad() {
+  	this.loginType = uni.getStorageSync("loginType")
+  
+  }
 }
 </script>
 

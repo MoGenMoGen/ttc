@@ -61,7 +61,7 @@
 						path: "/pages/index/index",
 						title: "首页",
 						icon: [home, homeSelected],
-					},
+					},   
 					{
 						path: "/pages/selfCheck/index",
 						title: "自检任务",
@@ -115,7 +115,7 @@
 			changeactive(index, item) {
 				// this.current = this.tabIndex;
 				// console.log('tab',this.tabIndex);
-				console.log(index, item);
+				console.log(index, item)
 				uni.switchTab({
 					url: item.path
 				})

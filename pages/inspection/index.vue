@@ -134,6 +134,10 @@
 			tabbar,
 			nomore,
 		},
+		onLoad() {
+			this.loginType = uni.getStorageSync("loginType")
+		
+		},
 		onShow() {
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
