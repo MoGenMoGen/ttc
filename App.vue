@@ -31,17 +31,18 @@ export default {
 	        })
 	      }
 		  
-	  if(!uni.getStorageSync("Blade-Auth"))
-	  {
-		  uni.reLaunch({
-		  	url:"/pages/login/index"
-		  })
-	  }
-	  else{
-		  uni.reLaunch({
-		  	url:"/pages/index/index"
-		  })
-	  }
+	 
+	  // if(!uni.getStorageSync("Blade-Auth"))
+	  // {
+		 //  uni.reLaunch({
+		 //  	url:"/pages/login/index"
+		 //  })
+	  // }
+	  // else{
+		 //  uni.reLaunch({
+		 //  	url:"/pages/index/index"
+		 //  })
+	  // }
     console.log("app onlaunch");
    
   },

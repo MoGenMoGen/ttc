@@ -1,6 +1,6 @@
 <template>
-	<view class="componet_tabbar">
-		<view class="tab_container" :style="{'padding-bottom': paddingBottomHeight + 'upx'}">
+	<view class="componet_tabbar" :style="{'margin-bottom': paddingBottomHeight + 'upx'}">
+		<view class="tab_container" >
 			<view class="item" v-for="(item, index) in tabList" :key="index" @click="changeactive(index, item)">
 				<image class="icon" v-if="current !== index" :src="item.icon[0]" mode="widthFix"></image>
 				<image class="icon" v-else :src="item.icon[1]" mode="widthFix"></image>
@@ -133,7 +133,7 @@
 					model.forEach(item => {
 						//适配iphoneX以上的底部，给tabbar一定高度的padding-bottom
 						if (res.model.indexOf(item) != -1 && res.model.indexOf('iPhone') != -1) {
-							that.paddingBottomHeight = 40;
+							that.paddingBottomHeight = -43;
 						}
 					})
 				}
@@ -151,10 +151,12 @@
 		width: 100%;
 		border-top: 3upx solid #D8D8D8;
 			height: 170upx;
+			box-sizing: border-box;  
 		// padding-bottom: 0;  
 		// padding-bottom: constant(safe-area-inset-bottom);  
 		// padding-bottom: env(safe-area-inset-bottom);
 		.tab_container {
+			box-sizing: border-box;
 			background-color: #fff;
 			height: 170upx;
 			display: flex;

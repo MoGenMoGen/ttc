@@ -1,19 +1,19 @@
 <template>
 	<view class="newContainer">
 		<view class="newBody">
-			<view class="newList">
+			<!-- <view class="newList">
 				<view class="newListTitle">
 					整改单号
 				</view>
 				<view class="newListContent">
 					ZG20210330001
 				</view>
-			</view>
+			</view> -->
 			<view class="newList">
-				<view class="newListTitle">
+				<view class="newListTitle" >
 					整改名称
 				</view>
-				<input type="text" value="" placeholder="请输入整改名称" placeholder-class="placeholderIn"
+				<input type="text" v-model="info.title" value="" placeholder="请输入整改名称" placeholder-class="placeholderIn"
 					class="newListContent" />
 			</view>
 			<view class="newList">
@@ -21,7 +21,7 @@
 					整改单位
 				</view>
 				<view class="newListContent">
-					<picker :range="info.AttrSystems" :value="index2" @change="bindPickerChange">
+					<picker :range="info.AttrSystems" range-key="fullName" :value="index2" @change="bindPickerChange">
 						<span class="ct">{{
 				                  info.AttrSystem ? info.AttrSystem : "请选择整改单位"
 				                }}</span>
@@ -32,47 +32,50 @@
 				<view class="newListTitle">
 					检查区域
 				</view>
-				<input type="text" value="" class="newListContent" placeholder="请输入检查区域"
+				<input type="text" v-model="info.examRegion" class="newListContent" placeholder="请输入检查区域"
 					placeholder-class="placeholderIn" />
 			</view>
-			<view class="newList"@click="getLoca">
+			<view class="newList" @click="getLoca">
 				<view class="newListTitle">
 					LBS位置
 				</view>
 				<view class="newListContent">
-					宁波镇海329创业社区
-					<image src="../../location.png" mode="" class="location"></image>
+					<text v-if="!info.address">请选择位置</text>
+					{{info.address}}
+					<image src="../../static/location.png" mode="" class="location"></image>
 				</view>
 			</view>
 			<view class="newList" style="display: flex; flex-direction: column;">
 				<view class="newListTitle">
 					隐患说明
 				</view>
-				<textarea value="" placeholder="请输入主要事项内容详情" placeholder-class="placeholderIn" class="text" />
+				<textarea value=""v-model="info.troubleReport" placeholder="请输入主要事项内容详情" placeholder-class="placeholderIn" class="text" />
 			</view>
 			<view class="newList">
 				<view class="newListTitle">
 					责任整改人
 				</view>
 				<view class="newListContent">
-					张三
+				{{info.responsibleId}}
 				</view>
 			</view>
 			<view class="newList" style="display: flex; flex-direction: column;">
 				<view class="newListTitle">
 					整改要求
 				</view>
-				<textarea value="" placeholder="请按照要求进行整改" placeholder-class="placeholderIn" class="text" />
+				<textarea value="" v-model="info.requReport" placeholder="请按照要求进行整改" placeholder-class="placeholderIn" class="text" />
 			</view>
 			<view class="newList">
 				<view class="newListTitle">
 					整改期限
 				</view>
 				<view class="newListContent">
-					<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
-					                        <view class="uni-input">{{date}}<image src="../../static/choosedate.png" mode="" class="date"></image></view>
-					                    </picker>
-					
+					<picker mode="date" :value="info.rectifyDate" :start="startDate" :end="endDate" @change="bindDateChange">
+						<view class="uni-input">{{info.rectifyDate}}
+							<image src="../../static/choosedate.png" mode="" class="date"></image>
+						</view>
+					</picker>
+
 				</view>
 			</view>
 			<view class="photograpBox">
@@ -85,9 +88,9 @@
 				<view class="photo">
 
 					<view class="photograp">
-						<image src="../../static/takephoto.png" mode="" @click="toPhoto()" />
+						<image src="/static/takephoto.png" mode="" @click="toPhoto()" />
 					</view>
-					<view class="choseImg" v-for="(item, index) in imgList" :key="index">
+					<view class="choseImg" v-for="(item, index) in info.imgList" :key="index">
 						<image :src="item" mode="" class="imgs"></image>
 						<image :src="del" mode="" class="deleteImg" @click="deleimg(index)"></image>
 					</view>
@@ -105,83 +108,135 @@
 	import del from "static/delete.png";
 	export default {
 		data() {
-			 const currentDate = this.getDate({
-			            format: true
-			        })
+			const currentDate = this.getDate({
+				format: true
+			})
 			return {
 				del,
-				date: currentDate,
 				index2: 0,
-				imgList: ["/static/takephoto.png"],
 				info: {
-					AttrSystems: ["政法委", "公安系统", "法院系统"]
+					title:"",
+					rectifyOrgId:1,
+					examRegion:"",
+					
+					lat:"",
+					lng:"",
+					troubleReport:"",
+					requReport:"",
+					responsibleId:1,
+		
+					troublePic:"",
+					AttrSystems: ["政法委", "公安系统", "法院系统"],
+					address: "",
+					rectifyDate: currentDate,
+					
+					imgList: [],
+					rectifyOrgId:1,//整改单位id
 				}
 			}
 		},
 		methods: {
-			toPhoto() {
-				uni.chooseImage({
-					sourceType: ["camera", "album "],
-					success: function(res) {
-						console.log(JSON.stringify(res.tempFilePaths));
-					},
-					fail(err) {
-						console.log(err);
-					},
+			async toPhoto() {
+				// uni.chooseImage({
+				// 	sourceType: ["camera", "album "],
+				// 	success: function(res) {
+				// 		console.log(JSON.stringify(res.tempFilePaths));
+				// 	},
+				// 	fail(err) {
+				// 		console.log(err);
+				// 	},
+				// });
+				this.info.imgList=[...this.info.imgList,...await this.api.chooseImages('',9)];
+				console.log(1111,this.info.imgList);
+				let path=this.info.imgList;//所有上传的图片的地址
+				// let path1=[];//上传到服务器的图片
+				this.info.troublePic='';
+				path.forEach((item,index,arr)=>{
+					if(index==arr.length-1)
+					this.info.troublePic+=this.api.upLoad(item)
+					else
+					this.info.troublePic+=this.api.upLoad(item)+","
 				});
+				
+					
+				
 			},
 			bindPickerChange(e) {
 				this.index2 = e.mp.detail.value;
-				this.info.AttrSystem = this.info.AttrSystems[this.index2];
+				this.info.AttrSystem = this.info.AttrSystems[this.index2].fullName;
+				this.info.rectifyOrgId=this.info.AttrSystems[this.index2].id;
 			},
 			deleimg(index) {
-				this.imgList.splice(index);
-				console.log("dele");
+				this.info.imgList.splice(index,1);
+				
 			},
 			changePageTo() {
 				uni.navigateTo({
 					url: "./newNext"
-				})
+				});
+				uni.setStorageSync('rectifyList',this.info);
+				console.log(this.info);
+				
 			},
 			backTo() {
 				uni.navigateBack({})
 			},
-			getLoca(){
-				uni.getLocation({
-					geocode:true,
-					success:function(res){
-						console.log(res.address)
+			getLoca() {
+				let that = this   
+
+				uni.chooseLocation({
+			
+					success: function(res) {
+						// console.log(res);
+						that.info.address = res.name;
+						that.info.lat=res.latitude;
+						that.info.lng=res.longitude;
+						console.log(res.latitude,res.longitude);
 					},
-					
+					fail() {
+						console.log(111);
+					}
+
 				})
 			},
-			   bindDateChange: function(e) {
-			            this.date = e.target.value
-			        },
-					getDate(type) {
-					            const date = new Date();
-					            let year = date.getFullYear();
-					            let month = date.getMonth() + 1;
-					            let day = date.getDate();
-					
-					            if (type === 'start') {
-					                year = year - 60;
-					            } else if (type === 'end') {
-					                year = year + 2;
-					            }
-					            month = month > 9 ? month : '0' + month;;
-					            day = day > 9 ? day : '0' + day;
-					            return `${year}-${month}-${day}`;
-					        }
+			bindDateChange: function(e) {
+				this.info.rectifyDate = e.target.value
+			},
+			getDate(type) {
+				const date = new Date();
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				let day = date.getDate();
+
+				if (type === 'start') {
+					year = year - 60;
+				} else if (type === 'end') {
+					year = year + 2;
+				}
+				month = month > 9 ? month : '0' + month;;
+				day = day > 9 ? day : '0' + day;
+				return `${year}-${month}-${day}`;
+			}
 		},
-		computed:{
-			 startDate() {
-			            return this.getDate('start');
-			        },
-			        endDate() {
-			            return this.getDate('end');
-			        }
+		computed: {
+			startDate() {
+				return this.getDate('start');
+			},
+			endDate() {
+				return this.getDate('end');
+			}
+		},
+		onLoad() {
+			this.loginType = uni.getStorageSync("loginType")
+		},
+			
+		async onShow(){
+			let unitList=await this.api.getUnitList();
+			this.info.AttrSystems=unitList
+			console.log(unitList)
 		}
+		
+		
 	}
 </script>
 
@@ -232,13 +287,13 @@
 
 			.newList {
 				display: flex;
-
+				position: relative;
 				padding: 20rpx 14rpx;
 				width: 656rpx;
 				background: #FFFFFF;
 				opacity: 1;
 				border-bottom: 1rpx solid #D0CED8;
-				// align-items: center;
+
 				box-sizing: border-box;
 
 				.textBox {
@@ -254,10 +309,12 @@
 					width: 200rpx;
 					font-size: 28rpx;
 					color: #303030;
+					display: flex;
+					align-items: center;
 				}
 
 				.newListContent {
-					width: 456rpx;
+					width: 350rpx;
 					margin-left: 30rpx;
 					word-wrap: break-word;
 					font-size: 28rpx;
@@ -265,7 +322,10 @@
 					.location {
 						width: 48rpx;
 						height: 48rpx;
-						float: right;
+						position: absolute;
+						right: 3rpx;
+						top: 50%;
+						transform: translateY(-50%);
 					}
 
 					.date {
@@ -317,8 +377,11 @@
 			.photo {
 				margin-top: 74rpx;
 				display: flex;
+				flex-wrap:wrap;
+				width: 100%;
 
 				.photograp {
+					margin-left: 20rpx;
 					width: 160rpx;
 					height: 160rpx;
 
@@ -330,13 +393,13 @@
 
 				.choseImg {
 					margin-left: 20rpx;
-					width: 160rpx;
-					height: 160rpx;
+					// width: 160rpx;
+					// height: 160rpx;
 					position: relative;
 
 					.imgs {
-						width: 100%;
-						height: 100%;
+						width: 160rpx;
+						height: 160rpx;
 					}
 
 					.deleteImg {

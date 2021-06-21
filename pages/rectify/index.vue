@@ -4,7 +4,7 @@
 		<view class="title">
 			整改单
 		</view>
-		<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo" style="margin-top: 100rpx;"></image>
+		<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo" style="margin-top: 200rpx;"></image>
 	</view>
 	<view class="rectifyContainer">
 		<view class="rectifyBar">
@@ -76,7 +76,7 @@
 						当前状态
 					</view>
 					<view class="rectifyListContent" style="color: #F1C345;">
-						待结案
+						{{currentState(item.state)}}
 					</view>
 				</view>
 			</view>
@@ -155,9 +155,7 @@ computed:{
 	},
 	currentState(){
 		return function(state){
-			if(state==0)
-			return "待下发";
-			else if(state==1)
+		 if(state==1)
 			return "待签收";
 			else if(state==2)
 			return "待执行";
@@ -192,8 +190,8 @@ methods:{
 	async getList(state){
 		console.log(1111);
 		let data=await this.api.getRecityList(state)
-		this.listBody=data.data.records;
-		console.log(data);
+		this.listBody=data.records;
+		console.log(data.records);
 	}
 },
 onLoad() {

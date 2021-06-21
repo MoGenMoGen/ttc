@@ -219,7 +219,7 @@
 				整改状态
 			</view>
 			<view class="content">
-				{{bodyList.state}}
+				{{currentState}}
 			</view>
 		</view>
 		<view class="lastBtnTwo" v-if="currentIndex==2&&loginType==2">
@@ -254,7 +254,7 @@
 				del,
 				loginType: 2,
 				popshow:false,
-				
+				currentIndex:1,
 				imgList: ["/static/takephoto.png"],
 				bodyList: {
 					
@@ -295,17 +295,41 @@
 				uni.navigateBack({
 					
 				})
+			},
+			async getList(){
+				console.log(1111);
+				let data=await this.api.getRecityDetail({id:this.id})
+				// this.=data.records;
+				console.log(data);
+				this.bodyList=data
+				this.currentIndex=data.state-1
 			}
 			 
 		},
 		async onLoad(e) {
 			this.id =e.id;
-			
-				let data=await this.api.getRecityDetail({id:this.id})
-				 this.bodyList=data.data;
-				console.log(data);
+				// console.log(data);
+				this.loginType=uni.getStorageSync("loginType")
 
 		},
+		onShow() {
+			this.getList()
+		},
+		computed:{
+			currentState(){
+				let state=this.bodyList.state;
+				
+				 if(state==1)
+					return "待签收";
+					else if(state==2)
+					return "待执行";
+					else if(state==3)
+					return "已完成"
+					else if(state==4)
+					return "已结案"
+			}
+		}
+		
 
 	}
 </script>
