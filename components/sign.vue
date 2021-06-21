@@ -29,7 +29,7 @@
         canvah:0,
         src:`你的背景图片`,
         flag:true,
-        status:false
+        // status:false
       }
     },
     props:{
@@ -53,7 +53,7 @@
           _this.canvah = 500;
           content = uni.createCanvasContext('firstCanvas',this);
           content.setStrokeStyle("#aaaa7f");
-		  content.setBackgroundColor("#ffffff")
+		  // content.setBackgroundColor("#ffffff")
           content.setLineWidth(5);
           content.setLineCap('round');
           content.setLineJoin('round')

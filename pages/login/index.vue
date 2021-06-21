@@ -49,8 +49,8 @@ export default {
       phoneimg,
       passimg,
       info: {
-        phone: "18825560203",
-        password: "000000",
+        phone: "",
+        password: "",
       }, //用户信息
     };
   },
@@ -78,8 +78,8 @@ export default {
           if (!res.error_code) {
             console.log("登陆成功", res);
             // 角色信息缓存
-            // uni.setStorageSync("loginType", Number(res.post_id));
-            uni.setStorageSync("loginType", Number(2));
+            uni.setStorageSync("loginType", Number(res.post_id));
+            // uni.setStorageSync("loginType", Number(2));
             // 后台需要的token缓存
             uni.setStorageSync(
               "Blade-Auth",

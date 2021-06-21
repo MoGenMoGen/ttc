@@ -6,7 +6,7 @@
 					整改单号
 				</view>
 				<view class="newListContent">
-					ZG20210330001
+					ZGD202106160003
 				</view>
 			</view>
 			<view class="newList">
@@ -14,7 +14,7 @@
 					整改名称
 				</view>
 				<view class="newListContent">
-					消防通道畅通整改
+					{{newList.title}}
 				</view>
 
 			</view>
@@ -23,7 +23,7 @@
 					整改单位
 				</view>
 				<view class="newListContent">
-					广知科技有限公司
+					{{}}
 				</view>
 			</view>
 			<view class="newList" style="display: flex; flex-direction: column;">
@@ -31,7 +31,7 @@
 					存在问题
 				</view>
 				<view class="textBox">
-					<text>消防通道有东西堵塞</text>
+					<text>{{newList.troubleReport}}</text>
 				</view>
 			</view>
 			<view class="newList" style="display: flex; flex-direction: column;">
@@ -39,7 +39,7 @@
 					整改要求
 				</view>
 				<view class="textBox">
-					<text>请按照要求进行整改</text>
+					<text>{{newList.requReport}}</text>
 				</view>
 			</view>
 
@@ -66,7 +66,7 @@
 					整改日期
 				</view>
 				<view class="newListContent">
-					2021-10-20
+					{{newList.rectifyDate}}
 				</view>
 			</view>
 			<view class="newList">
@@ -135,6 +135,9 @@
 			return {
 				del,
 				imgList: ["/static/takephoto.png"],
+				newList:{
+					
+				}
 			}
 		},
 		methods: {
@@ -168,6 +171,10 @@
 		},
 		components: {
 			sign
+		},
+		onShow() {
+		this.newList=uni.getStorageSync('rectifyList',this.info);
+		console.log(1111,this.newList);
 		}
 	}
 </script>
