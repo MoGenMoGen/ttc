@@ -13,13 +13,18 @@
 				<view class="newListTitle">
 					整改名称
 				</view>
-				消防通道畅通整改
+				<view class="newListContent">
+					消防通道畅通整改
+				</view>
+
 			</view>
 			<view class="newList">
 				<view class="newListTitle">
 					整改单位
 				</view>
-				广知科技有限公司
+				<view class="newListContent">
+					广知科技有限公司
+				</view>
 			</view>
 			<view class="newList" style="display: flex; flex-direction: column;">
 				<view class="newListTitle">
@@ -51,6 +56,10 @@
 				<view class="newListTitle">
 					责任整改人签字
 				</view>
+				<view>
+					<sign @success="getSign"></sign>
+				</view>
+
 			</view>
 			<view class="newList">
 				<view class="newListTitle">
@@ -87,6 +96,7 @@
 					审核人签字
 				</view>
 
+
 			</view>
 
 
@@ -119,6 +129,7 @@
 
 <script>
 	import del from "static/delete.png";
+	import sign from './../../components/sign'
 	export default {
 		data() {
 			return {
@@ -142,16 +153,21 @@
 				this.imgList.splice(index);
 				console.log("dele");
 			},
-			backTo(){
-				uni.navigateBack({
+			backTo() {
+				uni.navigateBack({})
+			},
+			nextTo() {
+				uni.navigateTo({
+					url: "./newDetail"
 				})
 			},
-			nextTo(){
-				uni.navigateTo({
-					url:"./newDetail"
-				})
-			}
-			
+			sign(value) {
+				console.log(value)
+			},
+
+		},
+		components: {
+			sign
 		}
 	}
 </script>
@@ -203,7 +219,6 @@
 
 			.newList {
 				display: flex;
-
 				padding: 20rpx 14rpx;
 				width: 656rpx;
 				background: #FFFFFF;
@@ -211,7 +226,8 @@
 				border-bottom: 1rpx solid #D0CED8;
 				// align-items: center;
 				box-sizing: border-box;
-				.textBox{
+
+				.textBox {
 					box-sizing: border-box;
 					padding: 18rpx 22rpx;
 					width: 624rpx;
@@ -220,12 +236,13 @@
 					opacity: 1;
 					border-radius: 6rpx;
 					margin: 20rpx 0;
-					text{
+
+					text {
 						font-size: 28rpx;
 						color: #303030;
 					}
 				}
-				
+
 				.newListTitle {
 					width: 200rpx;
 					font-size: 28rpx;

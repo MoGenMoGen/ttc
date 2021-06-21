@@ -4,7 +4,7 @@
 		<view class="title">
 			整改单
 		</view>
-		<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo"></image>
+		<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo" style="margin-top: 100rpx;"></image>
 	</view>
 	<view class="rectifyContainer">
 		<view class="rectifyBar">
@@ -198,6 +198,7 @@ methods:{
 },
 onLoad() {
 	this.loginType=uni.getStorageSync("loginType")
+	
 },
  onShow() {
 	uni.hideTabBar({
