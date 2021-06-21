@@ -21,7 +21,7 @@
 						整改单位
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.buildOrgId}}
+						{{bodyList.rectifyOrgName}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -29,7 +29,7 @@
 						整改负责人
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.responsibleId}}
+						{{bodyList.responsibleName}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -210,8 +210,8 @@
 			</view>
 		</view>
 		<view class="lastBtn" v-if="loginType==1">
-			<button type="default" class="cancel" v-if="currentIndex==0||currentIndex==1">取消</button>
-			<button type="default" class="confirm" v-if="currentIndex==0">确认</button>
+			<button type="default" class="cancel" v-if="currentIndex==0||currentIndex==1"@click="cancelTo">取消</button>
+			<button type="default" class="confirm" v-if="currentIndex==0" @click="confirmTO">确认</button>
 			<button type="default" class="confirm" v-if="currentIndex==1">上报确认</button>
 		</view>
 		<view class="status" v-if="(currentIndex==2&&loginType==1)||(loginType==3)||(loginType==2&&currentIndex==1)">
@@ -290,6 +290,14 @@
 					
 				})
 				
+			},
+			cancelTo(){
+				uni.navigateBack({
+					
+				})
+			},
+			async confirmTO(){
+				let data=await this.api.getUnitPerson({rectifyOrgId:this.bodyList.rectifyOrgId})
 			},
 			backTo(){
 				uni.navigateBack({
