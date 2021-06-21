@@ -75,7 +75,7 @@ export default {
       } else {
         this.api.login(this.info).then((res) => {
           // 后台不返回code代表成功
-          if (!res.error_code) {
+          if (res&&!res.error_code) {
             console.log("登陆成功", res);
             // 角色信息缓存
             uni.setStorageSync("loginType", Number(res.post_id));

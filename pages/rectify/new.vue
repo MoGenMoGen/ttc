@@ -10,7 +10,7 @@
 				</view>
 			</view> -->
 			<view class="newList">
-				<view class="newListTitle" >
+				<view class="newListTitle">
 					整改名称
 				</view>
 				<input type="text" v-model="info.title" value="" placeholder="请输入整改名称" placeholder-class="placeholderIn"
@@ -49,28 +49,31 @@
 				<view class="newListTitle">
 					隐患说明
 				</view>
-				<textarea value=""v-model="info.troubleReport" placeholder="请输入主要事项内容详情" placeholder-class="placeholderIn" class="text" />
+				<textarea value="" v-model="info.troubleReport" placeholder="请输入主要事项内容详情"
+					placeholder-class="placeholderIn" class="text" />
 			</view>
 			<view class="newList">
 				<view class="newListTitle">
 					责任整改人
 				</view>
 				<view class="newListContent">
-				{{info.responsibleId}}
+					{{info.responsibleId}}
 				</view>
 			</view>
 			<view class="newList" style="display: flex; flex-direction: column;">
 				<view class="newListTitle">
 					整改要求
 				</view>
-				<textarea value="" v-model="info.requReport" placeholder="请按照要求进行整改" placeholder-class="placeholderIn" class="text" />
+				<textarea value="" v-model="info.requReport" placeholder="请按照要求进行整改" placeholder-class="placeholderIn"
+					class="text" />
 			</view>
 			<view class="newList">
 				<view class="newListTitle">
 					整改期限
 				</view>
 				<view class="newListContent">
-					<picker mode="date" :value="info.rectifyDate" :start="startDate" :end="endDate" @change="bindDateChange">
+					<picker mode="date" :value="info.rectifyDate" :start="startDate" :end="endDate"
+						@change="bindDateChange">
 						<view class="uni-input">{{info.rectifyDate}}
 							<image src="../../static/choosedate.png" mode="" class="date"></image>
 						</view>
@@ -115,23 +118,24 @@
 				del,
 				index2: 0,
 				info: {
-					title:"",
-					rectifyOrgId:1,
-					examRegion:"",
-					
-					lat:"",
-					lng:"",
-					troubleReport:"",
-					requReport:"",
-					responsibleId:1,
-		
-					troublePic:"",
+					title: "",
+					rectifyOrgId: 1,
+					examRegion: "",
+
+					lat: "",
+					lng: "",
+					troubleReport: "",
+					requReport: "",
+					responsibleId: 1,
+
+					troublePic: "",
 					AttrSystems: ["政法委", "公安系统", "法院系统"],
 					address: "",
 					rectifyDate: currentDate,
-					
+					AttrSystem: "", //当前选择的整改单位
 					imgList: [],
-					rectifyOrgId:1,//整改单位id
+					serverimgList:[],//上传到服务器的图片地址
+					rectifyOrgId: 1, //整改单位id
 				}
 			}
 		},
@@ -146,52 +150,64 @@
 				// 		console.log(err);
 				// 	},
 				// });
-				this.info.imgList=[...this.info.imgList,...await this.api.chooseImages('',9)];
-				console.log(1111,this.info.imgList);
-				let path=this.info.imgList;//所有上传的图片的地址
-				// let path1=[];//上传到服务器的图片
-				this.info.troublePic='';
-				path.forEach((item,index,arr)=>{
-					if(index==arr.length-1)
-					this.info.troublePic+=this.api.upLoad(item)
-					else
-					this.info.troublePic+=this.api.upLoad(item)+","
-				});
-				
+				this.info.imgList = [...this.info.imgList, ...await this.api.chooseImages('', 9)];
+				console.log(1111, this.info.imgList);
+				let path = this.info.imgList; //所有上传的图片的地址
+				let path1=[];//上传到服务器的图片
+				this.info.troublePic = '';
+				console.log('path222222222',path);
+				for(let i=0;i<path.length;i++){
+					console.log(i,"dwsfsf54645646");
+					let res=await this.api.upLoad(path[i]); 	
+					path1.push(res)
+				}
+				this.info.serverimgList=path1;
+				this.info.troublePic = this.info.serverimgList.join(",");
+				console.log("图片上传到服务器",path1);
+				// path.forEach((item, index, arr) => {
+				// 	this.api.upLoad(item).then(res=>{
+				// 		 console.log('图片上传',res);
+				// 		 path1.push(res)
+				// 	})
 					
-				
+				// });
+
+
+
 			},
 			bindPickerChange(e) {
 				this.index2 = e.mp.detail.value;
+				console.log(e.mp.detail.value, typeof(e.mp.detail.value));
+				console.log(this.info.AttrSystems[this.index2]);
 				this.info.AttrSystem = this.info.AttrSystems[this.index2].fullName;
-				this.info.rectifyOrgId=this.info.AttrSystems[this.index2].id;
+				this.info.rectifyOrgId = this.info.AttrSystems[this.index2].id;
 			},
 			deleimg(index) {
-				this.info.imgList.splice(index,1);
-				
+				this.info.imgList.splice(index, 1);
+
 			},
 			changePageTo() {
 				uni.navigateTo({
 					url: "./newNext"
 				});
-				uni.setStorageSync('rectifyList',this.info);
+				uni.setStorageSync('rectifyList', this.info);
 				console.log(this.info);
-				
+
 			},
 			backTo() {
 				uni.navigateBack({})
 			},
 			getLoca() {
-				let that = this   
+				let that = this
 
 				uni.chooseLocation({
-			
+
 					success: function(res) {
 						// console.log(res);
 						that.info.address = res.name;
-						that.info.lat=res.latitude;
-						that.info.lng=res.longitude;
-						console.log(res.latitude,res.longitude);
+						that.info.lat = res.latitude;
+						that.info.lng = res.longitude;
+						console.log(res.latitude, res.longitude);
 					},
 					fail() {
 						console.log(111);
@@ -229,14 +245,19 @@
 		onLoad() {
 			this.loginType = uni.getStorageSync("loginType")
 		},
-			
-		async onShow(){
-			let unitList=await this.api.getUnitList();
-			this.info.AttrSystems=unitList
+
+		async onShow() {
+			// 生成整改单号
+			let res=this.api.generateRectifyid()
+			console.log("zzzzzzzzzz",res);
+			// 获取整改单位列表
+			let unitList = await this.api.getUnitList();
+			this.info.AttrSystems = unitList
 			console.log(unitList)
+			
 		}
-		
-		
+
+
 	}
 </script>
 
@@ -377,7 +398,7 @@
 			.photo {
 				margin-top: 74rpx;
 				display: flex;
-				flex-wrap:wrap;
+				flex-wrap: wrap;
 				width: 100%;
 
 				.photograp {

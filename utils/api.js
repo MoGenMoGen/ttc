@@ -264,6 +264,15 @@ class api {
 		})
 		
 	}
+	// 整改单号生成
+	generateRectifyid(){
+		return new Promise(resolve=>{
+			get("/blade-works/rectifybill/rectifyCd",{}, {
+				"Content-Type": "application/json","Blade-Auth":uni.getStorageSync("Blade-Auth")
+			})
+			.then(res=>resolve(res.data))
+		})
+	}
 	
 	postRecityNew(data){
 		
