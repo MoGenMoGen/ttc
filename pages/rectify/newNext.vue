@@ -6,7 +6,7 @@
 					整改单号
 				</view>
 				<view class="newListContent">
-					ZGD202106160003
+					{{newList.cd}}
 				</view>
 			</view>
 			<view class="newList">
@@ -23,7 +23,7 @@
 					整改单位
 				</view>
 				<view class="newListContent">
-					{{}}
+					{{newList.AttrSystem}}
 				</view>
 			</view>
 			<view class="newList" style="display: flex; flex-direction: column;">
@@ -49,17 +49,17 @@
 					责任整改人
 				</view>
 				<view class="newListContent">
-					张三
+					{{newList.person}}
 				</view>
 			</view>
-			<view class="newList">
+			<view class="newList" style="flex-direction: column;">
 				<view class="newListTitle">
 					责任整改人签字
 				</view>
-				<view>
+				<!-- <view class="signBox">
 					<sign @success="getSign"></sign>
 				</view>
-
+ -->
 			</view>
 			<view class="newList">
 				<view class="newListTitle">
@@ -74,7 +74,12 @@
 					复查日期
 				</view>
 				<view class="newListContent">
-					2021-10-21
+					<picker mode="date" :value="newList.reviewTime" :start="startDate" :end="endDate"
+						@change="bindDateChange">
+						<view class="uni-input" style="display: flex; align-items: center;">{{newList.reviewTime}}
+							<image src="../../static/choosedate.png" mode="" class="date"></image>
+						</view>
+					</picker>
 				</view>
 			</view>
 			<view class="newList" style="display: flex; flex-direction: column;">
@@ -82,7 +87,7 @@
 					复查情况
 				</view>
 				<view class="textBox">
-					<text>请按照要求进行整改</text>
+	
 				</view>
 			</view>
 			<view class="newList">
@@ -105,17 +110,10 @@
 				<view class="newListTitle">
 					隐患图片
 				</view>
-				<view class="hint">
-					上传完图片后，可以点击图片进行编辑
-				</view>
+				
 				<view class="photo">
-
-					<view class="photograp">
-						<image src="../../static/takephoto.png" mode="" @click="toPhoto()" />
-					</view>
-					<view class="choseImg" v-for="(item, index) in imgList" :key="index">
+					<view class="choseImg" v-for="(item, index) in newList.imgList" :key="index">
 						<image :src="item" mode="" class="imgs"></image>
-						<image :src="del" mode="" class="deleteImg" @click="deleimg(index)"></image>
 					</view>
 				</view>
 			</view>
@@ -129,12 +127,15 @@
 
 <script>
 	import del from "static/delete.png";
-	import sign from './../../components/sign'
+	import sign from './../../components/signature'
 	export default {
+		
 		data() {
+			const currentDate = this.getDate({
+				format: true
+			})
 			return {
 				del,
-				imgList: ["/static/takephoto.png"],
 				newList:{
 					
 				}
@@ -150,10 +151,10 @@
 					fail(err) {
 						console.log(err);
 					},
-				});
+				}); 
 			},
 			deleimg(index) {
-				this.imgList.splice(index);
+				this.newList.imgList.splice(index,1);
 				console.log("dele");
 			},
 			backTo() {
@@ -163,17 +164,40 @@
 				uni.navigateTo({
 					url: "./newDetail"
 				})
+				this.api.postNewList(this.newList).then(res=>{
+					console.log(res)
+				})
+				
 			},
-			sign(value) {
+			getSign(value) {
 				console.log(value)
 			},
+			bindDateChange(e){
+				console.log(e);
+				this.newList.reviewTime= e.target.value
+			},
+			getDate(type) {
+				const date = new Date();
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				let day = date.getDate();
+			
+				if (type === 'start') {
+					year = year - 60;
+				} else if (type === 'end') {
+					year = year + 2;
+				}
+				month = month > 9 ? month : '0' + month;;
+				day = day > 9 ? day : '0' + day;
+				return `${year}-${month}-${day}`;
+			}
 
 		},
 		components: {
 			sign
 		},
 		onShow() {
-		this.newList=uni.getStorageSync('rectifyList',this.info);
+		this.newList=uni.getStorageSync('rectifyList');
 		console.log(1111,this.newList);
 		}
 	}
@@ -181,7 +205,7 @@
 
 <style lang="scss" scoped>
 	.newContainer {
-		background-color: #fafafa;
+		background-color: #fafafa; 
 		display: flex;
 		padding: 20rpx;
 		flex-direction: column;
@@ -200,6 +224,7 @@
 				border-radius: 12rpx 0rpx 0rpx 12rpx;
 				font-size: 28rpx;
 				color: #303030;
+				line-height: 88rpx;
 			}
 
 			.next {
@@ -211,6 +236,7 @@
 				border-radius: 0rpx 12rpx 12rpx 0rpx;
 				color: #ffffff;
 				font-size: 28rpx;
+				line-height: 88rpx;
 			}
 		}
 
@@ -227,6 +253,7 @@
 			.newList {
 				display: flex;
 				padding: 20rpx 14rpx;
+				position: relative;
 				width: 656rpx;
 				background: #FFFFFF;
 				opacity: 1;
@@ -255,12 +282,17 @@
 					font-size: 28rpx;
 					color: #303030;
 				}
+				
+				.signBox {
+					width: 100%;
+				}
 
 				.newListContent {
 					width: 456rpx;
 					margin-left: 30rpx;
 					word-wrap: break-word;
 					font-size: 28rpx;
+					
 
 					.location {
 						width: 48rpx;
@@ -271,7 +303,10 @@
 					.date {
 						width: 48rpx;
 						height: 48rpx;
-						float: right;
+						position: absolute;
+						top: 50%;
+						transform: translateY(-50%);
+						right: 3rpx;
 					}
 				}
 
@@ -303,12 +338,6 @@
 		.photograpBox {
 			padding: 20rpx 14rpx;
 
-			.hint {
-				font-size: 28rpx;
-				color: #D0CED8;
-				margin: 20rpx 0;
-			}
-
 			.newListTitle {
 				font-size: 28rpx;
 				color: #303030;
@@ -317,11 +346,12 @@
 			.photo {
 				margin-top: 74rpx;
 				display: flex;
-
+				flex-wrap: wrap;
+				width: 100%;
 				.photograp {
+					margin-left: 20rpx;
 					width: 160rpx;
 					height: 160rpx;
-
 					image {
 						width: 100%;
 						height: 100%;
@@ -330,13 +360,13 @@
 
 				.choseImg {
 					margin-left: 20rpx;
-					width: 160rpx;
-					height: 160rpx;
+					// width: 160rpx;
+					// height: 160rpx;
 					position: relative;
 
 					.imgs {
-						width: 100%;
-						height: 100%;
+						width: 160rpx;
+						height: 160rpx;
 					}
 
 					.deleteImg {

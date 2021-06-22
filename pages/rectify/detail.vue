@@ -77,7 +77,7 @@
 						复查人
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.reviewer}}
+						{{bodyList.reviewName}}
 					</view>
 				</view>
 				<view class="bodyList">
@@ -250,7 +250,7 @@
 	export default {
 		data() {
 			return {
-				
+				personList:[],
 				del,
 				loginType: 2,
 				popshow:false,
@@ -296,9 +296,7 @@
 					
 				})
 			},
-			async confirmTO(){
-				let data=await this.api.getUnitPerson({rectifyOrgId:this.bodyList.rectifyOrgId})
-			},
+		
 			backTo(){
 				uni.navigateBack({
 					

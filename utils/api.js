@@ -275,7 +275,21 @@ class api {
 	}
 	
 	postRecityNew(data){
+	}
+	getUnitPerson(data) {
+		console.log(data)
+		return new Promise(resolve=>{
+			get("/blade-system/user/getUserListByDeptId",data, {
+				"Content-Type": "application/json","Blade-Auth":uni.getStorageSync("Blade-Auth")
+			})
+			.then(res=>resolve(res.data))
+		})
 		
+	}
+	postNewList(data){
+		return new Promise(resolve=>{
+			post("/blade-works/rectifybill/rectifySave",data).then(res=>resolve(res))
+		})
 	}
 
 

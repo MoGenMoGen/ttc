@@ -1,14 +1,14 @@
 <template>
 	<view class="newContainer">
 		<view class="newBody">
-			<!-- <view class="newList">
+			<view class="newList">
 				<view class="newListTitle">
 					整改单号
 				</view>
 				<view class="newListContent">
-					ZG20210330001
+					{{info.cd}}
 				</view>
-			</view> -->
+			</view>
 			<view class="newList">
 				<view class="newListTitle">
 					整改名称
@@ -57,7 +57,11 @@
 					责任整改人
 				</view>
 				<view class="newListContent">
-					{{info.responsibleId}}
+					<picker mode = selector :range="personList" :value="index1" @change="bindPickerPerson">
+						<span class="ct">{{
+				                  info.person ? info.person : "请选择整改负责人"
+				                }}</span>
+					</picker>
 				</view>
 			</view>
 			<view class="newList" style="display: flex; flex-direction: column;">
@@ -74,7 +78,7 @@
 				<view class="newListContent">
 					<picker mode="date" :value="info.rectifyDate" :start="startDate" :end="endDate"
 						@change="bindDateChange">
-						<view class="uni-input">{{info.rectifyDate}}
+						<view class="uni-input" style="display: flex; align-items: center;">{{info.rectifyDate}}
 							<image src="../../static/choosedate.png" mode="" class="date"></image>
 						</view>
 					</picker>
@@ -116,18 +120,22 @@
 			})
 			return {
 				del,
-				index2: 0,
+				index2:0,
+				index1:0,
+				personList:[],
 				info: {
+					cd:"",
 					title: "",
-					rectifyOrgId: 1,
+					issueUserId:1,
+					buildOrgId:1,
 					examRegion: "",
-
+					reviewTime:currentDate,
 					lat: "",
 					lng: "",
 					troubleReport: "",
 					requReport: "",
 					responsibleId: 1,
-
+					person:"",
 					troublePic: "",
 					AttrSystems: ["政法委", "公安系统", "法院系统"],
 					address: "",
@@ -135,7 +143,6 @@
 					AttrSystem: "", //当前选择的整改单位
 					imgList: [],
 					serverimgList:[],//上传到服务器的图片地址
-					rectifyOrgId: 1, //整改单位id
 				}
 			}
 		},
@@ -175,12 +182,28 @@
 
 
 			},
-			bindPickerChange(e) {
+			async bindPickerChange(e) {
 				this.index2 = e.mp.detail.value;
-				console.log(e.mp.detail.value, typeof(e.mp.detail.value));
-				console.log(this.info.AttrSystems[this.index2]);
+				// console.log(e.mp.detail.value, typeof(e.mp.detail.value));
+				// console.log(this.info.AttrSystems[this.index2]);
 				this.info.AttrSystem = this.info.AttrSystems[this.index2].fullName;
 				this.info.rectifyOrgId = this.info.AttrSystems[this.index2].id;
+				console.log(this.info.rectifyOrgId );
+				let Person=await this.api.getUnitPerson({rectifyOrgId:this.info.rectifyOrgId})
+				console.log("waibi",Person);
+					for(let i=0;i<Person.length;i++){
+						console.log(i,"dwsfsf54645646");
+						this.personList.push(Person[i])
+					}
+					console.log("qwqq",this.personList);
+			},
+			bindPickerPerson(e){
+				console.log(1123,e,this.personList);
+				
+				this.index1 = e.mp.detail.value;
+				this.info.person=this.personList[this.index1].realName;
+				this.info.responsibleId=this.personList[this.index1].id;
+				
 			},
 			deleimg(index) {
 				this.info.imgList.splice(index, 1);
@@ -243,19 +266,28 @@
 			}
 		},
 		onLoad() {
+			
 			this.loginType = uni.getStorageSync("loginType")
+			this.info.buildOrgId=uni.getStorageSync("userinfo").dept_id
+			this.info.issueUserId=uni.getStorageSync("userinfo").user_id
+			
+			
 		},
 
 		async onShow() {
+			// Object.assign(this.$data, this.$options.data())
 			// 生成整改单号
-			let res=this.api.generateRectifyid()
+			let res=await this.api.generateRectifyid()
+			this.info.cd=res;
 			console.log("zzzzzzzzzz",res);
 			// 获取整改单位列表
 			let unitList = await this.api.getUnitList();
 			this.info.AttrSystems = unitList
 			console.log(unitList)
 			
-		}
+			
+		},
+		
 
 
 	}
@@ -282,6 +314,7 @@
 				border-radius: 12rpx 0rpx 0rpx 12rpx;
 				font-size: 28rpx;
 				color: #303030;
+				line-height: 88rpx;
 			}
 
 			.next {
@@ -293,6 +326,7 @@
 				border-radius: 0rpx 12rpx 12rpx 0rpx;
 				color: #ffffff;
 				font-size: 28rpx;
+				line-height: 88rpx;
 			}
 		}
 
@@ -347,12 +381,16 @@
 						right: 3rpx;
 						top: 50%;
 						transform: translateY(-50%);
+						
 					}
 
 					.date {
 						width: 48rpx;
 						height: 48rpx;
-						float: right;
+						position: absolute;
+						top: 50%;
+						transform: translateY(-50%);
+						right: 3rpx;
 					}
 				}
 
@@ -435,3 +473,4 @@
 		}
 
 	}
+</style>

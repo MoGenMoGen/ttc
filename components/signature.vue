@@ -10,7 +10,7 @@
       disable-scroll="true"
       v-if="!signImage"
     ></canvas>
-    <image :src="signImage" v-if="signImage">
+    <img :src="signImage" v-if="signImage">
     <view class="button_clear" @click="clearClick()">重写</view>
     <view class="button_submit" @click="saveClick()">保存</view>
 
@@ -29,7 +29,7 @@
         canvah:0,
         src:`你的背景图片`,
         flag:true,
-        status:false
+        // status:false
       }
     },
     props:{
@@ -43,35 +43,49 @@
         default: ""
       }
     },
+	lifetimes: {
+	    attached: function(options) {
+	      // 在组件实例进入页面节点树时执行
+	      console.log(options);
+		  var _this = this;
+		  uni.getSystemInfo({
+		    success: function (res) {
+		  		console.log(1223,res);
+		      canvasw = res.windowWidth;
+		      canvash = res.windowHeight;
+		      _this.canvaw = res.windowWidth;
+		      _this.canvah = res.windowHeight;
+		      content = uni.createCanvasContext('firstCanvas',this);
+		  		  console.log(11,content)
+		      uni.getImageInfo({
+		        src: _this.src,//服务器返回的图片地址
+		        success: function (res) {
+		          let num = res.width/res.height;
+		          let Path = res.path;
+		          //计算宽高，按照返回图片的比例来;
+		          content.drawImage(Path, 20,100,(canvash-200)*num ,canvash-200)
+		          content.draw();
+		        },
+		        fail: function (res) {
+		          console.error(res)
+		        }
+		      });
+		      content.setStrokeStyle("#000000");
+		      content.setLineWidth(5);
+		      content.setLineCap('round');
+		      content.setLineJoin('round')
+		    },
+		  		fail:function(res) {
+		  			console.log('fail',res)
+		  		},
+		  		complete:function(res){
+		  			console.log('complete',res);
+		  		}
+		  });
+	    }
+	  },
     onLoad () {
-      var _this = this;
-      uni.getSystemInfo({
-        success: function (res) {
-
-          canvasw = res.windowWidth;
-          canvash = res.windowHeight;
-          _this.canvaw = res.windowWidth;
-          _this.canvah = res.windowHeight;
-          content = uni.createCanvasContext('firstCanvas',this);
-          // uni.getImageInfo({
-          //   src: _this.src,//服务器返回的图片地址
-          //   success: function (res) {
-          //     let num = res.width/res.height;
-          //     let Path = res.path;
-          //     //计算宽高，按照返回图片的比例来;
-          //     content.drawImage(Path, 20,100,(canvash-200)*num ,canvash-200)
-          //     content.draw();
-          //   },
-          //   fail: function (res) {
-          //     console.error(res)
-          //   }
-          // });
-          content.setStrokeStyle("#000000");
-          content.setLineWidth(5);
-          content.setLineCap('round');
-          content.setLineJoin('round')
-        },
-      });
+      
 
     },
     methods:{
@@ -83,6 +97,7 @@
       move(e) {
         // 开始清空背景图
         if(this.flag){
+			console.log(content)
           content.clearRect(0,0,canvasw,canvash);
           this.flag = false;
         }
@@ -122,9 +137,12 @@
         uni.canvasToTempFilePath({
           canvasId: 'firstCanvas',
           success:function(res) {
-            that.signImage = res.tempFilePath;
+			  that.$emit("success",res.tempFilePath);
+            // that.signImage = res.tempFilePath;
+            // that.api.upLoad(res.tempFilePath).then(res => {
+            // })
             // console.log(that.signImage);
-            that.$emit("success",that.signImage);
+
           }
         },this)
       },

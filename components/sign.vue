@@ -45,8 +45,8 @@
     },
     mounted () {
       var _this = this;
-      // uni.getSystemInfo({
-      //   success: function (res) {
+      uni.getSystemInfo({
+        success: function (res) {
           canvasw = 700,
           canvash = 500;
           _this.canvaw = 700;
@@ -57,8 +57,8 @@
           content.setLineWidth(5);
           content.setLineCap('round');
           content.setLineJoin('round')
-      //   },
-      // });
+        },
+      });
 
     },
     methods:{
@@ -87,22 +87,22 @@
       clearClick() {
         this.signImage = ''
         content.clearRect(0,0,canvasw,canvash);
-        // uni.getImageInfo({
-        //   src: this.src,//服务器返回的图片地址
-        //   success: function (res) {
-        //     let num = res.width/res.height;
-        //     let Path = res.path;
-        //     //计算宽高，按照返回图片的比例来;
-        //     content.drawImage(Path, 20,100,(canvash-200)*num ,canvash-200)
-        //     content.draw(true);
+        uni.getImageInfo({
+          src: this.src,//服务器返回的图片地址
+          success: function (res) {
+            let num = res.width/res.height;
+            let Path = res.path;
+            //计算宽高，按照返回图片的比例来;
+            content.drawImage(Path, 20,100,(canvash-200)*num ,canvash-200)
+            content.draw(true);
 
-        //   },
-        //   fail: function (res) {
-        //     console.error(res)
-        //   }
-        // });
+          },
+          fail: function (res) {
+            console.error(res)
+          }
+        });
         this.flag = true;
-        // content.draw(true)
+        content.draw(true)
       },
       saveClick() {
         let that = this;
