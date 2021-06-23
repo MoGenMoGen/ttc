@@ -158,7 +158,7 @@
 						确认时间
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.closeDate}}
+						{{confirmDate}}
 					</view>
 				</view>
 
@@ -214,7 +214,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="lastBtn" v-if="loginType==1">
+		<view class="lastBtn" v-if="loginType==1&&currentIndex!=2">
 			<button type="default" class="cancel" v-if="currentIndex==0||currentIndex==1" @click="cancelTo">取消</button>
 			<button type="default" class="confirm" v-if="currentIndex==0" @click="confirmTO">确认</button>
 			<button type="default" class="confirm" v-if="currentIndex==1" @click="reportSure ">上报确认</button>
@@ -258,6 +258,7 @@
 		data() {
 
 			return {
+				confirmDate:"",
 				showCanvas: false,
 				ctx: '', //绘图图像
 				points: [], //路径点集合 
@@ -269,6 +270,8 @@
 				popshow: false,
 				currentIndex: 1,
 				imgList: [],
+				report:"",
+				closingContent:"",
 				bodyList: {
 
 				},
@@ -378,7 +381,22 @@
 				uni.navigateBack({
 					
 				})
-			}
+			},
+			getDate(type) {
+				const date = new Date();
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				let day = date.getDate();
+			
+				if (type === "start") {
+					year = year - 60;
+				} else if (type === "end") {
+					year = year + 2;
+				}
+				month = month > 9 ? month : "0" + month;
+				day = day > 9 ? day : "0" + day;
+				return `${year}-${month}-${day}`;
+			},
 		},
 
 		async onLoad(e) {
@@ -389,8 +407,14 @@
 
 		},
 		onShow() {
+			var str= new Date();
+			var str2= str.getFullYear() + "-"
+			 + (str.getMonth() + 1) + "-" + str.getDate();
+			this.confirmDate=str2;
 			this.getList()
+			
 		},
+		
 		computed: {
 			currentState() {
 				let state = this.bodyList.state;

@@ -89,7 +89,7 @@
 					隐患图片
 				</view>
 				<view class="newListContent">
-					<image :src="troublePic" mode=""></image>
+					<image :src="detaliList.troublePic" mode=""></image>
 				</view>
 			</view>
 

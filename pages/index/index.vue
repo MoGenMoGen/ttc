@@ -407,16 +407,7 @@
 				animation: false,  
 
 			})
-<<<<<<< .mine
-<<<<<<< .mine
-			// document.body.scrollTop=0;
-=======
 
-
->>>>>>> .theirs
-=======
-
->>>>>>> .theirs
 			// 没有token,重新登录
 			// if (!uni.getStorageSync("Blade-Auth")) {
 			// 	uni.showToast({
@@ -603,7 +594,7 @@
 								color: #303030;
 							}
 
-							.yellow {
+							.yellow {  
 								color: #f1c345;
 							}
 
