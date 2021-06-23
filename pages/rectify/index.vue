@@ -4,7 +4,7 @@
 		<view class="title">
 			整改单
 		</view>
-		<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo" style="margin-top: 200rpx;"></image>
+		<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo"></image>
 	</view>
 	<view class="rectifyContainer">
 		<view class="rectifyBar">
@@ -58,7 +58,7 @@
 						签收日期
 					</view>
 					<view class="rectifyListContent">
-						{{item.reportDate}}
+						{{item.receiptDate}}
 					</view>
 				</view>
 				<view class="rectifyListIn" v-if="currentIndex==3">
@@ -76,7 +76,7 @@
 						当前状态
 					</view>
 					<view class="rectifyListContent" style="color: #F1C345;">
-						{{currentState(item.state)}}
+						待结案
 					</view>
 				</view>
 			</view>

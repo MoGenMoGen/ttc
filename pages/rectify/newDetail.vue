@@ -9,7 +9,7 @@
 					整改单号
 				</view>
 				<view class="newListContent">
-					ZG20210330001
+					{{cd}}
 				</view>
 			</view>
 			<view class="newList">
@@ -17,7 +17,7 @@
 					整改单位
 				</view>
 				<view class="newListContent">
-					广知科技有限公司
+					{{detaliList.rectifyOrgName}}
 				</view>
 			</view>
 			<view class="newList">
@@ -25,7 +25,7 @@
 					整改负责人
 				</view>
 				<view class="newListContent">
-					张宁
+					{{detaliList.responsibleName}}
 				</view>
 			</view>
 			<view class="newList">
@@ -33,7 +33,7 @@
 					整改日期
 				</view>
 				<view class="newListContent">
-					2021-05-20
+					{{detaliList.rectifyDate}}
 				</view>
 			</view>
 			<view class="newList">
@@ -41,7 +41,7 @@
 					下发日期
 				</view>
 				<view class="newListContent">
-					2021-05-19
+					{{detaliList.issueDate}}
 				</view>
 			</view>
 			<view class="newList">
@@ -49,7 +49,7 @@
 					检查区域
 				</view>
 				<view class="newListContent">
-					消防通道
+					{{detaliList.examRegion}}
 				</view>
 			</view>
 			<view class="newList">
@@ -57,7 +57,7 @@
 					隐患说明
 				</view>
 				<view class="newListContent">
-					消防通道堵塞
+					{{detaliList.troubleReport}}
 				</view>
 			</view>
 			<view class="newList">
@@ -65,7 +65,7 @@
 					整改要求
 				</view>
 				<view class="newListContent">
-					请按照要求进行整改
+					{{detaliList.requReport}}
 				</view>
 			</view>
 			<view class="newList">
@@ -73,7 +73,7 @@
 					复查人
 				</view>
 				<view class="newListContent">
-					章老师
+				{{detaliList.reviewName}}
 				</view>
 			</view>
 			<view class="newList">
@@ -81,7 +81,7 @@
 					复查时间
 				</view>
 				<view class="newListContent">
-					2021-05-19
+					{{detaliList.reviewTime}}
 				</view>
 			</view>
 			<view class="newList" style="border-bottom: 0;">
@@ -89,7 +89,7 @@
 					隐患图片
 				</view>
 				<view class="newListContent">
-					<image src="../../static/takephoto.png" mode=""></image>
+					<image :src="troublePic" mode=""></image>
 				</view>
 			</view>
 
@@ -104,7 +104,8 @@
 export default{
 	data(){
 		return{
-			
+			cd:"",
+			detaliList:{}
 		}
 	},
 	methods:{
@@ -114,7 +115,12 @@ export default{
 				url:"/pages/rectify/index"
 			})
 		}
-	}
+	},
+	onLoad(e) {
+		this.cd=e.cd
+		this.detaliList=this.api.getAddDetail(this.cd)
+		
+	},
 	
 }
 </script>

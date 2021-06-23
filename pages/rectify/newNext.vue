@@ -162,7 +162,7 @@
 			},
 			nextTo() {
 				uni.navigateTo({
-					url: "./newDetail"
+					url: "./newDetail?cd="+this.newList.cd
 				})
 				this.api.postNewList(this.newList).then(res=>{
 					console.log(res)

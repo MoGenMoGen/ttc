@@ -133,7 +133,7 @@
 						上报人
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.reportUserId}}
+						{{bodyList.reportUserName}}
 					</view>
 				</view>
 				<view class="bodyList" v-if="currentIndex==3">
@@ -141,7 +141,7 @@
 						结案人
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.closeUserId}}
+						{{bodyList.closeUserName}}
 					</view>
 				</view>
 				<view class="bodyList" v-if="loginType==2&&currentIndex==2">
@@ -149,7 +149,7 @@
 						确认人
 					</view>
 					<view class="bodyListContent">
-						{{bodyList.reviewer}}
+						{{bodyList.reviewName}}
 					</view>
 				</view>
 				<view class="bodyList" v-if="currentIndex==3||(loginType==2&&currentIndex==2)"
@@ -180,39 +180,44 @@
 			<view class="TextTitle">
 				确认签收
 			</view>
-			<textarea value="" placeholder="在此签名" class="textareaIn" placeholder-class="placeholderIn" />
+
+			<textarea v-model="signs" placeholder="在此签名" class="textareaIn" placeholder-class="placeholderIn" />
 			<view class="textBtn">
-				<button class="btn1" type="default">重签</button>
-				<button class="btn2" type="default">保存</button>
+				<button class="btn1" type="default" @click="Resign">重签</button>
+				<button class="btn2" type="default" @click="preservation">保存</button>
 			</view>
 		</view>
 		<view class="contentText" v-if="currentIndex==1&&loginType==1">
 			<view class="TextTitle">
 				整改上报
 			</view>
-			<textarea value="" placeholder="多行输入" class="textareaInTwo" placeholder-class="placeholderIn" />
+			<textarea v-model="report" placeholder="多行输入" class="textareaInTwo" placeholder-class="placeholderIn" />
 		</view>
 		<view class="contentText" v-if="currentIndex==2&&loginType==2">
 			<view class="TextTitle">
 				结案内容
 			</view>
-			<textarea value="" placeholder="多行输入" class="textareaInTwo" placeholder-class="placeholderIn" />
+			<textarea v-model="closingContent" placeholder="多行输入" class="textareaInTwo" placeholder-class="placeholderIn" />
 		</view>
 		<view class="photograpBox" v-if="currentIndex==1&&loginType==1">
 			<view class="title">拍照上传 </view>
-			<view class="photograp" v-if="loginType == 1">
-				<image src="../../static/takephoto.png" mode="" @click="toPhoto()" />
-			</view>
+			<view class="photo">
 
-			<view class="choseImg" v-for="(item, index) in imgList" :key="index">
-				<image :src="item" mode="" class="imgs" v-if="loginType == 1" />
-				<image v-if="loginType == 1" class="deleteImg" :src="del" mode="" @click="deleimg(index)" />
+
+				<view class="photograp" v-if="loginType == 1">
+					<image src="../../static/takephoto.png" mode="" @click="toPhoto()" />
+				</view>
+
+				<view class="choseImg" v-for="(item, index) in imgList" :key="index">
+					<image :src="item" mode="" class="imgs" v-if="loginType == 1" />
+					<image v-if="loginType == 1" class="deleteImg" :src="del" mode="" @click="deleimg(index)" />
+				</view>
 			</view>
 		</view>
 		<view class="lastBtn" v-if="loginType==1">
-			<button type="default" class="cancel" v-if="currentIndex==0||currentIndex==1"@click="cancelTo">取消</button>
+			<button type="default" class="cancel" v-if="currentIndex==0||currentIndex==1" @click="cancelTo">取消</button>
 			<button type="default" class="confirm" v-if="currentIndex==0" @click="confirmTO">确认</button>
-			<button type="default" class="confirm" v-if="currentIndex==1">上报确认</button>
+			<button type="default" class="confirm" v-if="currentIndex==1" @click="reportSure ">上报确认</button>
 		</view>
 		<view class="status" v-if="(currentIndex==2&&loginType==1)||(loginType==3)||(loginType==2&&currentIndex==1)">
 			<view class="title">
@@ -223,23 +228,24 @@
 			</view>
 		</view>
 		<view class="lastBtnTwo" v-if="currentIndex==2&&loginType==2">
-			<button type="default" class="cancel"  @click="backTo">取消</button>
-			<button type="default" class="confirm" @click="backTo">确认结案</button>
+			<button type="default" class="cancel" @click="backTo">取消</button>
+			<button type="default" class="confirm" @click="sureTo">确认结案</button>
 			<button type="default" class="again" @click="pop">再次下发</button>
 		</view>
 		<view class="mask" v-if="popshow" catchtouchmove="true">
-			
+
 		</view>
 		<view class="popBox" v-if="popshow" catchtouchmove="true">
 			<view class="title">
 				再次下发说明
 			</view>
 			<view class="text">
-				<textarea  class="textIn" value="" placeholder="请输入二次下发说明" placeholder-style="font-size: 28rpx;color: #D0CED8" />
+				<textarea class="textIn"v-model="twice" placeholder="请输入二次下发说明"
+					placeholder-style="font-size: 28rpx;color: #D0CED8" />
 			</view>
 			<view class="btn">
 				<view class="btn1" type="default" @click="unshowpop">取消</view>
-				<view class="btn2" type="default"@click="finishshowpop">确定</view>
+				<view class="btn2" type="default" @click="finishshowpop">确定</view>
 			</view>
 		</view>
 	</view>
@@ -247,96 +253,158 @@
 
 <script>
 	import del from "static/delete.png";
+	import sign from "../../components/sign.vue"
 	export default {
 		data() {
+
 			return {
-				personList:[],
+				showCanvas: false,
+				ctx: '', //绘图图像
+				points: [], //路径点集合 
+				signature: '',
+				signs: "",
+				personList: [],
 				del,
 				loginType: 2,
-				popshow:false,
-				currentIndex:1,
-				imgList: ["/static/takephoto.png"],
+				popshow: false,
+				currentIndex: 1,
+				imgList: [],
 				bodyList: {
-					
+
 				},
-				
+
 			}
+		},
+		components: {
+			sign
 		},
 		methods: {
-			toPhoto() {
-				uni.chooseImage({
-					sourceType: ["camera", "album "],
-					success: function(res) {
-						console.log(JSON.stringify(res.tempFilePaths));
-					},
-					fail(err) {
-						console.log(err);
-					},
-				});
+			async toPhoto() {
+				// uni.chooseImage({
+				// 	sourceType: ["camera", "album "],
+				// 	success: function(res) {
+				// 		console.log(JSON.stringify(res.tempFilePaths));
+				// 	},
+				// 	fail(err) {
+				// 		console.log(err);
+				// 	},
+				// });
+				this.imgList = [...this.imgList, ...await this.api.chooseImages('', 9)];
+				// console.log(1111, this.bodylist.imgList);
+				let path = this.imgList; //所有上传的图片的地址
+				let path1 = []; //上传到服务器的图片
+				this.bodyList.rectifyPic = '';
+				console.log('path222222222', path);
+				for (let i = 0; i < path.length; i++) {
+					console.log(i, "dwsfsf54645646");
+					let res = await this.api.upLoad(path[i]);
+					path1.push(res)
+				}
+				this.bodyList.serverimgList = path1;
+				this.bodyList.rectifyPic = this.bodyList.serverimgList.join(",");
+				console.log("图片上传到服务器", path1);
 			},
 			deleimg(index) {
-				this.imgList.splice(index);
+				this.imgList.splice(index, 1);
 				console.log("dele");
 			},
-			pop(){
-				this.popshow=true
-			},
-			unshowpop(){
-			this.popshow=false	
-			},
-			finishshowpop(){
-				this.popshow=false;
-				uni.navigateBack({
-					
-				})
+			pop() {
+				this.popshow = true
 				
 			},
-			cancelTo(){
+			unshowpop() {
+				this.popshow = false
+			},
+			finishshowpop() {
+				this.bodyList.reissueReport=this.twice;
+				this.api.postRectifyClose(this.bodyList)
+				this.popshow = false;
+				uni.navigateBack({
+				
+				})
+
+			},
+			cancelTo() {
+				uni.navigateBack({
+
+				})
+			},
+
+			backTo() {
+				uni.navigateBack({
+
+				})
+			},
+			sureTo(){
+				this.bodyList.closeReport=this.closingContent
+				this.bodyList.closeUserId=this.userinfo.user_id
+				this.api.postRectifyClose(this.bodyList)
+				
 				uni.navigateBack({
 					
 				})
 			},
-		
-			backTo(){
-				uni.navigateBack({
-					
-				})
-			},
-			async getList(){
+			async getList() {
 				console.log(1111);
-				let data=await this.api.getRecityDetail({id:this.id})
+				let data = await this.api.getRecityDetail({
+					id: this.id
+				})
 				// this.=data.records;
 				console.log(data);
-				this.bodyList=data
-				this.currentIndex=data.state-1
+				this.bodyList = data
+				this.currentIndex = data.state - 1
+			},
+			close: function() {
+				this.showCanvas = false;
+				this.clear();
+			},
+			confirmTO() {
+				console.log(111111);
+				this.api.postRectifyAccept(this.bodyList)
+
+				uni.navigateBack({})
+			},
+			preservation() {
+				this.bodyList.receiptSign = this.signs
+			},
+			Resign() {
+				this.signs = ""
+			},
+			reportSure() {
+				this.bodyList.rectifyReport = this.report
+				this.bodyList.reportUserId=this.userinfo.user_id
+				this.api.postRectifyReport(this.bodyList)
+				
+				uni.navigateBack({
+					
+				})
 			}
-			 
 		},
+
 		async onLoad(e) {
-			this.id =e.id;
-				// console.log(data);
-				this.loginType=uni.getStorageSync("loginType")
+			this.id = e.id;
+			// console.log(data);
+			this.loginType = uni.getStorageSync("loginType")
+			this.userinfo=uni.getStorageSync("userinfo")
 
 		},
 		onShow() {
 			this.getList()
 		},
-		computed:{
-			currentState(){
-				let state=this.bodyList.state;
-				
-				 if(state==1)
+		computed: {
+			currentState() {
+				let state = this.bodyList.state;
+
+				if (state == 1)
 					return "待签收";
-					else if(state==2)
+				else if (state == 2)
 					return "待执行";
-					else if(state==3)
+				else if (state == 3)
 					return "已完成"
-					else if(state==4)
+				else if (state == 4)
 					return "已结案"
 			}
 		}
-		
-
 	}
 </script>
 
@@ -459,6 +527,7 @@
 				margin-left: 30rpx;
 			}
 
+
 			.textareaIn {
 				width: 580rpx;
 				height: 280rpx;
@@ -484,7 +553,7 @@
 				font-size: 24rpx;
 				color: #303030;
 				padding: 14rpx 20rpx;
-				
+
 
 			}
 
@@ -570,38 +639,72 @@
 
 			}
 
-			.photograp {
-				width: 160rpx;
-				height: 160rpx;
-				position: absolute;
-				top: 148rpx;
-				left: 30rpx;
+			// .photograp {
+			// 	margin-left: 20rpx;
+			// 	width: 160rpx;
+			// 	height: 160rpx
 
-				image {
-					width: 100%;
-					height: 100%;
+			// 	image {
+			// 		width: 100%;
+			// 		height: 100%;
+			// 	}
+			// }
+
+			// .choseImg {
+			// 	margin-left: 20rpx;
+			// 	// width: 160rpx;
+			// 	// height: 160rpx;
+			// 	position: relative;
+
+			// 	.imgs {
+
+			// 		width: 100%;
+			// 		height: 100%;
+			// 	}
+
+			// 	.deleteImg {
+			// 		position: absolute;
+			// 		width: 32rpx;
+			// 		height: 32rpx;
+			// 		top: -16rpx;
+			// 		right: -16rpx;
+			// 	}
+			// }
+			.photo {
+				margin-top: 74rpx;
+				display: flex;
+				flex-wrap: wrap;
+				width: 100%;
+
+				.photograp {
+					margin-left: 20rpx;
+					width: 160rpx;
+					height: 160rpx;
+
+					image {
+						width: 100%;
+						height: 100%;
+					}
 				}
-			}
 
-			.choseImg {
-				position: absolute;
-				width: 160rpx;
-				height: 160rpx;
-				top: 148rpx;
-				left: 210rpx;
+				.choseImg {
+					margin-left: 20rpx;
+					// width: 160rpx;
+					// height: 160rpx;
+					position: relative;
 
-				.imgs {
-					position: absolute;
-					width: 100%;
-					height: 100%;
-				}
+					.imgs {
+						width: 160rpx;
+						height: 160rpx;
+					}
 
-				.deleteImg {
-					position: absolute;
-					width: 32rpx;
-					height: 32rpx;
-					top: -16rpx;
-					right: -16rpx;
+					.deleteImg {
+						width: 32rpx;
+						height: 32rpx;
+						position: absolute;
+						top: -16rpx;
+						right: -16rpx;
+					}
 				}
 			}
 		}
@@ -645,9 +748,10 @@
 				color: #FFFFFF
 			}
 		}
-		.popBox{
+
+		.popBox {
 			width: 640rpx;
-		
+
 			background: #FFFFFF;
 			opacity: 1;
 			position: fixed;
@@ -655,17 +759,20 @@
 			left: 56rpx;
 			z-index: 1000;
 			border-radius: 12rpx;
-			.title{
+
+			.title {
 				margin-top: 66rpx;
 				text-align: center;
 				font-size: 32rpx;
 				font-weight: 500;
 			}
-			.text{
+
+			.text {
 				margin-top: 34rpx;
 				display: flex;
 				justify-content: center;
-				.textIn{
+
+				.textIn {
 					padding: 22rpx;
 					width: 544rpx;
 					height: 306rpx;
@@ -673,10 +780,12 @@
 					border-radius: 4rpx;
 				}
 			}
-			.btn{
+
+			.btn {
 				margin-top: 40rpx;
 				display: flex;
-				.btn1{
+
+				.btn1 {
 					width: 320rpx;
 					height: 112rpx;
 					background: #FFFFFF;
@@ -689,7 +798,8 @@
 					border-right: 1rpx solid #E5E5E5;
 					// letter-spacing: 59rpx;
 				}
-				.btn2{
+
+				.btn2 {
 					width: 320rpx;
 					height: 112rpx;
 					background: #FFFFFF;
@@ -702,15 +812,16 @@
 				}
 			}
 		}
-		.mask{
-			background-color:#8B8B8B;
-			 position: fixed;
-			 left: 0;
-			 top: 0;
-			    z-index: 1;
-				opacity: 0.5;
-				width: 100%;
-				height: 100%;
+
+		.mask {
+			background-color: #8B8B8B;
+			position: fixed;
+			left: 0;
+			top: 0;
+			z-index: 1;
+			opacity: 0.5;
+			width: 100%;
+			height: 100%;
 		}
 	}
 </style>

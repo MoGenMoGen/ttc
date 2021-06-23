@@ -276,6 +276,7 @@ class api {
 	
 	postRecityNew(data){
 	}
+	//责任人列表生成
 	getUnitPerson(data) {
 		console.log(data)
 		return new Promise(resolve=>{
@@ -286,13 +287,37 @@ class api {
 		})
 		
 	}
+	//新增整改单
 	postNewList(data){
 		return new Promise(resolve=>{
 			post("/blade-works/rectifybill/rectifySave",data).then(res=>resolve(res))
 		})
 	}
-
-
+   //签收确认
+   postRectifyAccept(data){
+	   return new Promise(resolve=>{
+		   post("/blade-works/rectifybill/rectifyAccept",data).then(res=>resolve(res))
+	   })
+   }
+   //整改上报
+   postRectifyReport(data){
+	   return new Promise(resolve=>{
+		   post("/blade-works/rectifybill/rectifyReport",data).then(res=>relsolve(res))
+	   })
+   }
+  //确认结案
+	postRectifyClose(data){
+		return new Promise(resolve=>{
+			post("/blade-works/rectifybill/rectifyClose",data).then(res=>resolve(res))
+		})
+	}
+	//新增整改单详情
+	getAddDetail(data){
+		return new Promise(resolve=>{
+			get("/blade-works/rectifybill/addDetail",data,{"Content-Type": "application/json","Blade-Auth":uni.getStorageSync("Blade-Auth")})
+			.then(res=>resolve(res.data))
+		})
+	}
 
 }
 export {

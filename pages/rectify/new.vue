@@ -210,11 +210,12 @@
 
 			},
 			changePageTo() {
+				uni.setStorageSync('rectifyList', this.info);
 				uni.navigateTo({
 					url: "./newNext"
 				});
-				uni.setStorageSync('rectifyList', this.info);
-				console.log(this.info);
+				
+				
 
 			},
 			backTo() {
