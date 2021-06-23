@@ -3,10 +3,10 @@
 		<view class="navHeader">
 			<view class="title">
 				整改单
-
-				<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo">
-				</image>
 			</view>
+			<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo">
+			</image>
+
 		</view>
 		<view class="rectifyContainer">
 			<view class="rectifyBar">
@@ -14,8 +14,7 @@
 					:key="index" :class="{ active: currentIndex == index } " @click="changeNav(index)">
 					{{item}}
 				</view>
-				<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo">
-				</image>
+				
 			</view>
 
 
@@ -359,52 +358,53 @@
 				}
 
 			}
-		}
 
-	}
 
-	.rectifyBody {
-		padding: 20rpx;
 
-		.rectifyList {
-			background: #FFFFFF;
-			box-shadow: 0rpx 4rpx 10rpx rgba(0, 0, 0, 0.04);
-			opacity: 1;
-			border-radius: 12rpx;
-			padding: 36rpx 0 36rpx 36rpx;
-			margin-bottom: 20rpx;
+			.rectifyBody {
+				padding: 20rpx;
 
-			.rectifyListIn {
-				display: flex;
-				align-items: top;
-				margin-bottom: 20rpx;
-				color: #303030;
-				opacity: 1;
-
-				image {
-					width: 38rpx;
-					height: 38rpx;
-				}
-
-				.rectifyListTitle {
-					width: 150rpx;
-					font-size: 28rpx;
-					font-family: PingFang SC;
-					font-weight: 400;
-					margin-left: 2rpx;
-					color: #303030;
+				.rectifyList {
+					background: #FFFFFF;
+					box-shadow: 0rpx 4rpx 10rpx rgba(0, 0, 0, 0.04);
 					opacity: 1;
-				}
+					border-radius: 12rpx;
+					padding: 36rpx 0 36rpx 36rpx;
+					margin-bottom: 20rpx;
 
-				.rectifyListContent {
-					width: 600rpx;
-					margin-left: 20rpx;
-					font-size: 28rpx;
-					font-family: PingFang SC;
-					font-weight: 400;
+					.rectifyListIn {
+						display: flex;
+						align-items: top;
+						margin-bottom: 20rpx;
+						color: #303030;
+						opacity: 1;
 
-					color: #303030;
-					opacity: 1;
+						image {
+							width: 38rpx;
+							height: 38rpx;
+						}
+
+						.rectifyListTitle {
+							width: 150rpx;
+							font-size: 28rpx;
+							font-family: PingFang SC;
+							font-weight: 400;
+							margin-left: 2rpx;
+							color: #303030;
+							opacity: 1;
+						}
+
+						.rectifyListContent {
+							width: 600rpx;
+							margin-left: 20rpx;
+							font-size: 28rpx;
+							font-family: PingFang SC;
+							font-weight: 400;
+
+							color: #303030;
+							opacity: 1;
+						}
+					}
 				}
 			}
 		}

@@ -407,7 +407,6 @@
 				animation: false,  
 
 			})
-			document.body.scrollTop=0
 			// document.body.scrollTop=0;
 			// 没有token,重新登录
 			// if (!uni.getStorageSync("Blade-Auth")) {
