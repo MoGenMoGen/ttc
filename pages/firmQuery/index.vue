@@ -150,7 +150,7 @@
 
 			})
 			this.getList(this.page)
-			document.body.scrollTop=0;
+			// document.body.scrollTop=0;
 
 
 		},

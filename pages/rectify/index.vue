@@ -173,8 +173,11 @@
 		methods: {
 			changeNav(index) {
 				this.currentIndex = index;
+				this.listBody=[]
 				this.getList({
-					state: this.currentIndex + 1
+					state: this.currentIndex + 1,
+					current:1,
+					size:5
 				})
 			},
 			change(path) {
