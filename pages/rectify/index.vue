@@ -3,9 +3,10 @@
 		<view class="navHeader">
 			<view class="title">
 				整改单
+
+				<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo">
+				</image>
 			</view>
-			<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo">
-			</image>
 		</view>
 		<view class="rectifyContainer">
 			<view class="rectifyBar">
@@ -13,8 +14,11 @@
 					:key="index" :class="{ active: currentIndex == index } " @click="changeNav(index)">
 					{{item}}
 				</view>
-
+				<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo">
+				</image>
 			</view>
+
+
 			<searchBox :placeholderIn="placeholderIn"></searchBox>
 			<view class="rectifyBody">
 				<view class="rectifyList" v-for="(item,index) in listBody" :key="index" @click="changePage(item.id)">
@@ -90,7 +94,6 @@
 
 		<tabbar :loginType="loginType" :tabIndex="tabIndex"></tabbar>
 	</view>
-
 </template>
 
 <script>
@@ -218,22 +221,28 @@
 				curretn: 1,
 				size: 5
 			}
-			this.getList({...{state: this.currentIndex + 1},...this.page})
-
-	},
-	// 触底加载更多数据
-	onReachBottom() {
-		console.log('触底');
-		if (this.total <= this.listBody.length) {
-			console.log(this.total, this.listBody.length, "fffff");
-		} else {
-			console.log(this.total, this.listBody.length);
-			this.page.current += 1;
 			this.getList({
+				...{
+					state: this.currentIndex + 1
+				},
+				...this.page
+			})
+
+		},
+		// 触底加载更多数据
+		onReachBottom() {
+			console.log('触底');
+			if (this.total <= this.listBody.length) {
+				console.log(this.total, this.listBody.length, "fffff");
+			} else {
+				console.log(this.total, this.listBody.length);
+				this.page.current += 1;
+				this.getList({
 					...this.page,
 					...{
 						state: this.currentIndex + 1
-					}});
+					}
+				});
 			}
 		}
 

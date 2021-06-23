@@ -57,7 +57,7 @@
 					责任整改人
 				</view>
 				<view class="newListContent">
-					<picker mode = selector :range="personList" :value="index1" @change="bindPickerPerson">
+					<picker mode = selector :range="info.personList" range-key="realName" value="index1" @change="bindPickerPerson">
 						<span class="ct">{{
 				                  info.person ? info.person : "请选择整改负责人"
 				                }}</span>
@@ -122,9 +122,10 @@
 				del,
 				index2:0,
 				index1:0,
-				personList:[],
+				
 				info: {
 					cd:"",
+					personList:[],
 					title: "",
 					issueUserId:1,
 					buildOrgId:1,
@@ -193,16 +194,16 @@
 				console.log("waibi",Person);
 					for(let i=0;i<Person.length;i++){
 						console.log(i,"dwsfsf54645646");
-						this.personList.push(Person[i])
+						this.info.personList.push(Person[i])
 					}
-					console.log("qwqq",this.personList);
+					// console.log("qwqq",this.personList);
 			},
 			bindPickerPerson(e){
-				console.log(1123,e,this.personList);
+				console.log(1123,e,this.info.personList);
 				
 				this.index1 = e.mp.detail.value;
-				this.info.person=this.personList[this.index1].realName;
-				this.info.responsibleId=this.personList[this.index1].id;
+				this.info.person=this.info.personList[this.index1].realName;
+				this.info.responsibleId=this.info.personList[this.index1].id;
 				
 			},
 			deleimg(index) {
@@ -281,8 +282,8 @@
 			let res=await this.api.generateRectifyid()
 			this.info.cd=res;
 			console.log("zzzzzzzzzz",res);
-			// 获取整改单位列表
-			let unitList = await this.api.getUnitList();
+			// 获取整改单位列
+			let unitList = await this.api.getUnitList({deptld:this.info.buildOrgId});
 			this.info.AttrSystems = unitList
 			console.log(unitList)
 			

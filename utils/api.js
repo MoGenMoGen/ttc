@@ -343,14 +343,12 @@ class api {
 		})
 
 	}
-	//获取整改单位列表
-	getUnitList() {
-		return new Promise(resolve => {
-			get("/blade-system/dept/getRectifyOrgList", {}, {
-					"Content-Type": "application/json",
-					"Blade-Auth": uni.getStorageSync("Blade-Auth")
-				})
-				.then(res => resolve(res.data))
+	getUnitList(data) {
+		return new Promise(resolve=>{
+			get("/blade-system/dept/getRectifyOrgList",data, {
+				"Content-Type": "application/json","Blade-Auth":uni.getStorageSync("Blade-Auth")
+			})
+			.then(res=>resolve(res.data))
 		})
 
 	}
