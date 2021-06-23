@@ -148,6 +148,8 @@
 
 <style lang="scss" scoped>
 	.componet_tabbar {
+		position: fixed;
+		bottom:0;
 		width: 100%;
 		border-top: 3upx solid #D8D8D8;
 			height: 170upx;

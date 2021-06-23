@@ -26,18 +26,27 @@ function get(url, data, header) {
 			header: myheader,
 			url: config.serverURL + url,
 			success: function(res) {
+				console.log('get success')
 				// 登录失效重新登录
 				if (res.data.code == '401') {
 					uni.showToast({
 						title: '登录失效了，重新登录',
-						duration: 2000
+						duration: 2000,
+						icon: none
 					})
 					uni.reLaunch({
 						url: '/pages/login/index'
 					})
+				} else if (res.data.code == '200')
+					resolve(res.data);
+				else {
+					uni.showToast({
+						title: '服务器错误',
+						duration: 2000,
+						icon: 'loading'
+
+					})
 				}
-				console.log('get success')
-				resolve(res.data);
 			},
 			fail: function(err) {
 				console.log("get error");
@@ -83,13 +92,94 @@ function post(url, data, header) {
 				if (res.data.code == '401') {
 					uni.showToast({
 						title: '登录失效了，重新登录',
-						duration: 2000
+						duration: 2000,
+						icon: 'none'
 					})
 					uni.reLaunch({
 						url: '/pages/login/index'
 					})
-				} else
+				} else if (res.data.code == '200')
 					resolve(res.data);
+				else {
+					uni.showToast({
+						title: '服务器错误',
+						duration: 2000,
+						icon: 'loading'
+					})
+				}
+
+			},
+			fail: function(err) {
+				console.log('post fail')
+				uni.showToast({
+					icon: "none",
+					title: JSON.stringify(err),
+					duration: 2000
+				});
+				reject(err)
+			},
+			complete: function() {
+				uni.hideLoading()
+			}
+		});
+	});
+	return promise;
+}
+// 专门针对登录的post提交,error_code=='400'账号或密码错误,error_code=='402'账号未注册，没有error_code成功
+// 其他接口用的get/post,code==401未授权，code=200成功，其他code就是服务器问题
+
+
+function loginpost(url, data, header) {
+	// console.log(url)
+	uni.showLoading({
+		title: "加载中"
+	});
+
+	let BladeAuth = uni.getStorageSync("Blade-Auth")
+	let myheader = {
+		"Blade-Auth": BladeAuth
+	}
+	header = header ? header : {}
+	myheader = {
+		...myheader,
+		...header
+	}
+	let promise = new Promise((resolve, reject) => {
+		uni.request({
+			data: data,
+			header: myheader,
+			method: "post",
+			url: config.serverURL + url,
+			success: function(res) {
+				console.log('post success')
+				// 400账号或密码错误
+				if (res.data.error_code == '400') {
+					uni.showToast({
+						title: res.data.error_description,
+						// title: "111",
+						icon: 'loading',
+						duration: 2000
+					})
+
+				}
+				// 402账号未注册
+				else if (res.data.error_code == "402") {
+					uni.showToast({
+						title: res.data.error_description,
+						// title:"222",
+						duration: 2000,
+						icon: 'loading'
+					})
+				} else if (!res.data.error_code) {} else {
+					uni.showToast({
+						title: '服务器错误',
+						duration: 2000,
+						icon: 'loading'
+					})
+				}
+				// 不管账号是否存在或错误都返回res
+				resolve(res.data);
+
 
 			},
 			fail: function(err) {
@@ -113,11 +203,10 @@ class api {
 	//登录
 	login(data) {
 		return new Promise((resolve, reject) => {
-			post("/blade-auth/login", data, {
+			loginpost("/blade-auth/login", data, {
 				"Tenant-Id": "000000",
 				"Authorization": "Basic c3dvcmQ6c3dvcmRfc2VjcmV0",
 				"Content-Type": "application/x-www-form-urlencoded",
-				"user_id": uni.getStorageSync("user_id")
 			}).then(res => {
 				uni.setStorageSync("user_id", res.user_id)
 				resolve(res);
@@ -209,7 +298,7 @@ class api {
 				name: 'file',
 				header: {
 					"Content-Type": "multipart/form-data",
-					"Blade-Auth":uni.getStorageSync("Blade-Auth")
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
 				},
 				success: function(res) {
 					console.log('================')
@@ -246,78 +335,99 @@ class api {
 	}
 	//整改单详情列表
 	getRecityDetail(data) {
-		return new Promise(resolve=>{
+		return new Promise(resolve => {
 			get("/blade-works/rectifybill/rectifyDetail", data, {
-				"Content-Type": "application/json"
-			})
-			.then(res=>resolve(res.data))
+					"Content-Type": "application/json"
+				})
+				.then(res => resolve(res.data))
 		})
-		
+
 	}
 	//获取整改单位列表
 	getUnitList() {
-		return new Promise(resolve=>{
-			get("/blade-system/dept/getRectifyOrgList",{}, {
-				"Content-Type": "application/json","Blade-Auth":uni.getStorageSync("Blade-Auth")
-			})
-			.then(res=>resolve(res.data))
+		return new Promise(resolve => {
+			get("/blade-system/dept/getRectifyOrgList", {}, {
+					"Content-Type": "application/json",
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
+				})
+				.then(res => resolve(res.data))
 		})
-		
+
 	}
 	// 整改单号生成
-	generateRectifyid(){
-		return new Promise(resolve=>{
-			get("/blade-works/rectifybill/rectifyCd",{}, {
-				"Content-Type": "application/json","Blade-Auth":uni.getStorageSync("Blade-Auth")
-			})
-			.then(res=>resolve(res.data))
+	generateRectifyid() {
+		return new Promise(resolve => {
+			get("/blade-works/rectifybill/rectifyCd", {}, {
+					"Content-Type": "application/json",
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
+				})
+				.then(res => resolve(res.data))
 		})
 	}
-	
-	postRecityNew(data){
-	}
+
+	postRecityNew(data) {}
 	//责任人列表生成
+
 	getUnitPerson(data) {
 		console.log(data)
-		return new Promise(resolve=>{
-			get("/blade-system/user/getUserListByDeptId",data, {
-				"Content-Type": "application/json","Blade-Auth":uni.getStorageSync("Blade-Auth")
-			})
-			.then(res=>resolve(res.data))
+		return new Promise(resolve => {
+			get("/blade-system/user/getUserListByDeptId", data, {
+					"Content-Type": "application/json",
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
+				})
+				.then(res => resolve(res.data))
 		})
-		
+
 	}
-	//新增整改单
-	postNewList(data){
-		return new Promise(resolve=>{
-			post("/blade-works/rectifybill/rectifySave",data).then(res=>resolve(res))
+	postNewList(data) {
+		return new Promise(resolve => {
+			post("/blade-works/rectifybill/rectifySave", data).then(res => resolve(res))
 		})
 	}
-   //签收确认
-   postRectifyAccept(data){
-	   return new Promise(resolve=>{
-		   post("/blade-works/rectifybill/rectifyAccept",data).then(res=>resolve(res))
-	   })
-   }
-   //整改上报
-   postRectifyReport(data){
-	   return new Promise(resolve=>{
-		   post("/blade-works/rectifybill/rectifyReport",data).then(res=>relsolve(res))
-	   })
-   }
-  //确认结案
-	postRectifyClose(data){
-		return new Promise(resolve=>{
-			post("/blade-works/rectifybill/rectifyClose",data).then(res=>resolve(res))
+	//签收确认
+	postRectifyAccept(data) {
+		return new Promise(resolve => {
+			post("/blade-works/rectifybill/rectifyAccept", data).then(res => resolve(res))
+		})
+	}
+	//整改上报
+	postRectifyReport(data) {
+		return new Promise(resolve => {
+			post("/blade-works/rectifybill/rectifyReport", data).then(res => relsolve(res))
+		})
+	}
+	//确认结案
+	postRectifyClose(data) {
+		return new Promise(resolve => {
+			post("/blade-works/rectifybill/rectifyClose", data).then(res => resolve(res))
 		})
 	}
 	//新增整改单详情
-	getAddDetail(data){
-		return new Promise(resolve=>{
-			get("/blade-works/rectifybill/addDetail",data,{"Content-Type": "application/json","Blade-Auth":uni.getStorageSync("Blade-Auth")})
-			.then(res=>resolve(res.data))
+	getAddDetail(data) {
+		return new Promise(resolve => {
+			get("/blade-works/rectifybill/addDetail", data, {
+					"Content-Type": "application/json",
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
+				})
+				.then(res => resolve(res.data))
 		})
 	}
+	postNewList(data) {
+		return new Promise(resolve => {
+			post("/blade-works/rectifybill/rectifySave", data).then(res => resolve(res))
+		})
+	}
+	// 获取企业查列表
+	getFirmQueryList(data) {
+		return new Promise(resolve => {
+			get("/blade-system/dept/deptList", data, {
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
+				})
+				.then(res => resolve(res.data))
+		})
+
+	}
+
 
 }
 export {

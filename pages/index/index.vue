@@ -407,6 +407,7 @@
 				animation: false,  
 
 			})
+			document.body.scrollTop=0;
 			// 没有token,重新登录
 			// if (!uni.getStorageSync("Blade-Auth")) {
 			// 	uni.showToast({
@@ -433,30 +434,35 @@
 	.pages_home_tab {
 		width: 100%;
 		height: 100vh;
-		display: flex;
-		flex-direction: column;
+		// display: flex;
+		// flex-direction: column;
 		background-color: #fafafa;
 
 		.navbar {
+			background-color: #fafafa;
+			position: fixed;
+			top: 0;
 			text-align: center;
 			height: 88upx;
 			line-height: 88upx;
 			width: 100%;
-			margin-top: var(--status-bar-height);
 			font-size: 34rpx;
 			color: #000000;
+			padding-top:var(--status-bar-height);
+			z-index: 1000;
 		}
 
 		.pages_home_container {
 			background-color: #fff;
 			width: 100%;
-			flex: 1;
-			overflow: auto;
-			-webkit-overflow-scrolling: touch;
+			// flex: 1;
+			// overflow: auto;
+			// -webkit-overflow-scrolling: touch;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			padding: 20upx;
+			// 上边距加88，下边据加173
+			padding: 168upx 20upx 193upx;
 			box-sizing: border-box;
 
 			.swiper {

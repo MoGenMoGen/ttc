@@ -71,12 +71,12 @@ export default {
           icon: "loading",
           title: "请输入密码",
           duration: 1000,
-        });
+        }); 	
       } else {
         this.api.login(this.info).then((res) => {
           // 后台不返回code代表成功
-          if (res&&!res.error_code) {
-            console.log("登陆成功", res);
+          if (!res.error_code) {
+            console.log("登陆成功", res,res.error_code);
             // 角色信息缓存
             uni.setStorageSync("loginType", Number(res.post_id));
             // uni.setStorageSync("loginType", Number(2));
@@ -97,7 +97,7 @@ export default {
             //   title: "账号或密码错误",
             //   duration: 2000,
             // });
-            console.log("登录失败", res);
+            console.log("登录失败", res,res.error_code);
           }
         });
       }

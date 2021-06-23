@@ -130,6 +130,7 @@
 				modifyPass,
 				arrow2,
 				loginType: 1,
+				userinfo:{},
 				info: {
 					name: "雨新斯",
 					tel: "13590001234",
@@ -430,6 +431,7 @@
 		 this.info.redifyrate = this.turn(this.info.redifyrate);
 		 this.info.inspection = this.turn(this.info.inspection);
 		 console.log(this.info.redifyrate,typeof(this.info.redifyrate));
+		 this.userinfo=uni.getStorageSync("userinfo")
 		 },
 		onShow() {
 			//隐藏默认tabbar显示自定义tabbar
@@ -479,12 +481,12 @@
 <style lang="scss" scoped>
 	.pages_profile_tab {
 		width: 100%;
-		height: 100vh;
+		height: calc(100vh - 173upx);
 		display: flex;
 		flex-direction: column;
 
 		.profile_container {
-			padding-bottom: 80upx;
+			padding-bottom: 120upx;
 
 			background: #fafafa;
 			width: 100%;

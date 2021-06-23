@@ -150,26 +150,33 @@
 <style lang="scss" scoped>
 	.pages_selfCheck {
 		background-color: #fafafa;
-		display: flex;
-		flex-direction: column;
+		// display: flex;
+		// flex-direction: column;
 		height: 100vh;
 
 	}
 
 	.navbar {
+		background-color: #fafafa;
+		position: fixed;
+		top: 0;
+		padding-top:var(--status-bar-height);
+		z-index: 1000;
 		text-align: center;
 		height: 88upx;
 		line-height: 88upx;
 		width: 100%;
-		margin-top: var(--status-bar-height);
 		font-size: 34rpx;
 		color: #000000;
 	}
 
 	.selfCheckContainer {
-		flex: 1;
-		overflow: auto;
+		// flex: 1;
+		// overflow: auto;
 		background-color: #fff;
+		// 上边距加88，下边据加173
+		padding: 88upx 0upx 173upx;
+		margin-top: var(--status-bar-height);
 	}
 
 	.nav-top {

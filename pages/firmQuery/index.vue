@@ -6,6 +6,7 @@
 			企业查
 		</view>
 		<view class="container">
+
 			<view class="search_bar">
 				<view class="inputbox">
 					<image :src="search" mode="widthFix"></image>
@@ -20,24 +21,27 @@
 				<view class="firm_query_item" v-for="item in queryList" :key="item.id" @click="GoToDetail(item.id)">
 					<view class="item_container">
 						<view class="item_title">公司名称:</view>
-						<view class="item_content">{{item.name}}</view>
+						<view class="item_content">{{item.fullName}}</view>
 					</view>
 					<view class="item_container">
 						<view class="item_title">联系人:</view>
-						<view class="item_content">{{item.contact}}</view>
+						<view class="item_content" v-if="item.user.length>0">{{item.user[0].name}}</view>
+						<!-- <view class="item_content" ></view> -->
 					</view>
 					<view class="item_container">
 						<view class="item_title">联系电话:</view>
-						<view class="item_content">{{item.tel}}</view>
+						<view class="item_content" v-if="item.user.length>0">{{item.user[0].phone}}</view>
+						<!-- <view class="item_content" ></view> -->
 					</view>
 					<view class="item_container">
 						<view class="item_title">企业码:</view>
 						<view class="item_content">
-							<image :src="item.corcode" mode="widthFix" />
+							<image :src="corcode" mode="widthFix" />
 						</view>
 					</view>
 				</view>
 			</view>
+			
 			<nomore />
 		</view>
 		<tabbar :loginType="loginType" :tabIndex='2'> </tabbar>
@@ -53,38 +57,45 @@
 	export default {
 		data() {
 			return {
-				info: "",
+				info: "", //输入的搜索信息
 				loginType: 2,
 				search,
+				page: {
+					current: 1,
+					size: 2
+				}, //分页传参
+				total: 0, //数据库中数据长度
 				// 企业查询列表
-				queryList: [{
-						//公司名称
-						name: "广知科技有限公司",
-						//联系人
-						contact: "张章",
-						tel: "13900110000", //联系电话
-						corcode: corcode, //企业码
-						id: 0
-					},
-					{
-						//公司名称
-						name: "广知科技有限公司",
-						//联系人
-						contact: "张章",
-						tel: "13900110000", //联系电话
-						corcode: corcode, //企业码
-						id: 1
-					},
-					{
-						//公司名称
-						name: "广知科技有限公司",
-						//联系人
-						contact: "张章",
-						tel: "13900110000", //联系电话
-						corcode: corcode, //企业码
-						id: 2
-					},
+				queryList: [
+					// {
+					// 	//公司名称
+					// 	name: "广知科技有限公司",
+					// 	//联系人
+					// 	contact: "张章",
+					// 	tel: "13900110000", //联系电话
+					// 	corcode: corcode, //企业码
+					// 	id: 0
+					// },
+					// {
+					// 	//公司名称
+					// 	name: "广知科技有限公司",
+					// 	//联系人
+					// 	contact: "张章",
+					// 	tel: "13900110000", //联系电话
+					// 	corcode: corcode, //企业码
+					// 	id: 1
+					// },
+					// {
+					// 	//公司名称
+					// 	name: "广知科技有限公司",
+					// 	//联系人
+					// 	contact: "张章",
+					// 	tel: "13900110000", //联系电话
+					// 	corcode: corcode, //企业码
+					// 	id: 2
+					// },
 				],
+				corcode: corcode, //企业码
 			}
 		},
 		components: {
@@ -115,19 +126,45 @@
 				uni.navigateTo({
 					url: `/pages/firmQuery/detail?id=${id}`
 				})
+			},
+			// 获取企业查询列表
+			async getList(parms) {
+				let data = await this.api.getFirmQueryList(parms)
+				this.queryList = [...this.queryList, ...data.records]
+				this.total = data.total;
 			}
 		},
 		onLoad() {
 			// 从缓存中获取loginType,角色信息
 			this.loginType = uni.getStorageSync("loginType")
 		},
-		onShow() {  
+		async onShow() {
+			this.page = {
+				current: 1,
+				size: 2
+			}
+			this.queryList = [];
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
 				animation: false,
 
 			})
+			this.getList(this.page)
+			document.body.scrollTop=0;
+
+
 		},
+		// 触底加载更多数据
+		onReachBottom() {
+			console.log('触底');
+			if (this.total <= this.queryList.length) {
+				console.log(this.total, this.queryList.length, "fffff");
+			} else {
+				console.log(this.total, this.queryList.length);
+				this.page.current += 1;
+				this.getList(this.page);
+			}
+		}
 	}
 </script>
 
@@ -135,31 +172,39 @@
 	.pages_firmquery_tab {
 		width: 100%;
 		height: 100vh;
-		display: flex;
-		flex-direction: column;
+		// display: flex;
+		// flex-direction: column;
 		background-color: #fafafa;
 
 		.navbar {
+			background-color: #fafafa;
+			position: fixed;
 			text-align: center;
 			height: 88upx;
 			line-height: 88upx;
 			width: 100%;
-			margin-top: var(--status-bar-height);
+			top: 0;
 			font-size: 34rpx;
 			color: #000000;
+			padding-top:var(--status-bar-height);
+			z-index: 1000;
 		}
 
 		.container {
+
 			width: 100%;
 			box-sizing: border-box;
 			background-color: #fff;
-			flex: 1;
-			overflow: auto;
-			-webkit-overflow-scrolling: touch;
+			// flex: 1;
+			// overflow-y: auto;
+			// -webkit-overflow-scrolling: touch;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			padding: 40upx 20upx;
+			padding: 128upx 20upx 213upx;
+			margin-top: var(--status-bar-height);
+
+
 
 			.search_bar {
 				width: 100%;
