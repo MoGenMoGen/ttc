@@ -141,7 +141,7 @@
 		async onShow() {
 			this.page = {
 				current: 1,
-				size: 2
+				size: 5
 			}
 			this.queryList = [];
 			//隐藏默认tabbar显示自定义tabbar
