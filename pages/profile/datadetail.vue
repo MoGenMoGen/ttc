@@ -1,5 +1,5 @@
 <template>
-<!-- 帮助中心页面 -->
+<!-- 资料库详情页面 -->
  <view class="pages_help">
    <view class="wrapper">
      <view class="content">帮助中心文档内容帮助中心文档内容帮助中心文档内
@@ -30,9 +30,9 @@ export default {
 .pages_help{
   width: 100%;
   padding:20upx;
+  box-sizing: border-box;
   background: #fafafa;
   height: calc(100vh - 128upx);
-  box-sizing: border-box;
   .wrapper{
     width: 100%;
     height: calc(100vh - 128upx);

@@ -34,7 +34,8 @@
 		{
 			"path": "pages/firmQuery/index",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
 				// "navigationBarTitleText": "企业查"
 			}
 		},
@@ -54,7 +55,8 @@
 
 			"path": "pages/warning/index",
 			"style": {
-				"navigationBarTitleText": "预警提醒"
+				"navigationBarTitleText": "预警提醒",
+				"enablePullDownRefresh": true
 			}
 		},
 		{
@@ -104,6 +106,13 @@
 			}
 		},
 		{
+			"path": "pages/profile/datadetail",
+			"style": {
+				"navigationBarTitleText": "资料库"
+		
+			}
+		},
+		{
 			"path": "pages/profile/modifyPass",
 			"style": {
 				"navigationBarTitleText": "修改密码"
@@ -144,7 +153,8 @@
 
 
 
-	],
+	    
+    ],
 	"tabBar": {
 		"custom": true,
 		"selectedColor": "#79D5AD",

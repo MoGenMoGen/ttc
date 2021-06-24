@@ -56,10 +56,10 @@
 				<view class="newListTitle">
 					责任整改人签字
 				</view>
-				<!-- <view class="signBox">
+				<view class="signBox">
 					<sign @success="getSign"></sign>
 				</view>
- -->
+
 			</view>
 			<view class="newList">
 				<view class="newListTitle">
@@ -127,7 +127,7 @@
 
 <script>
 	import del from "static/delete.png";
-	import sign from './../../components/signature'
+	import sign from './../../components/sign'
 	export default {
 		
 		data() {

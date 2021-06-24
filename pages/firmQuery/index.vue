@@ -141,7 +141,7 @@
 		async onShow() {
 			this.page = {
 				current: 1,
-				size: 5
+				size: 3
 			}
 			this.queryList = [];
 			//隐藏默认tabbar显示自定义tabbar
@@ -160,10 +160,19 @@
 			if (this.total <= this.queryList.length) {
 				console.log(this.total, this.queryList.length, "fffff");
 			} else {
-				console.log(this.total, this.queryList.length);
+				console.log(this.total, this.queryList.length,"dddddd");
 				this.page.current += 1;
 				this.getList(this.page);
 			}
+		},
+		// 下拉重新加载
+		onPullDownRefresh(){
+			this.page = {
+				current: 1,
+				size: 1
+			}
+			this.queryList = [];
+			this.getList(this.page)
 		}
 	}
 </script>

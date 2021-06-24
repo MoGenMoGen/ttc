@@ -3,7 +3,7 @@
   <view class="pages_database">
     <view class="container">
       <view class="list">
-        <view class="item" v-for="(item, index) in resource" :key="index">
+        <view class="item" v-for="(item, index) in resource" :key="index" @click="toDetail">
           <text>{{ item }}</text>
           <image :src="arrow2" mode="widthFix" />
         </view>
@@ -28,6 +28,13 @@ export default {
       arrow2,
 	  loginType:1
     };
+  },
+  methods:{
+	  toDetail(){
+	uni.navigateTo({
+		url:'/pages/profile/datadetail'
+	})	  
+	  }
   },
   onLoad() {
   	this.loginType = uni.getStorageSync("loginType")

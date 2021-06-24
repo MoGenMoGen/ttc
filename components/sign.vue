@@ -138,7 +138,7 @@
         /**
          * 生命周期函数--监听页面加载
          */
-        onLoad: function(options) {
+        mounted() {
             _that = this
             //获得Canvas的上下文
             this.content = uni.createCanvasContext('firstCanvas',this)

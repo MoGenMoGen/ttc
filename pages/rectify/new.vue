@@ -138,7 +138,7 @@
 					responsibleId: 1,
 					person:"",
 					troublePic: "",
-					AttrSystems: ["政法委", "公安系统", "法院系统"],
+					AttrSystems: [],
 					address: "",
 					rectifyDate: currentDate,
 					AttrSystem: "", //当前选择的整改单位
@@ -191,12 +191,12 @@
 				this.info.rectifyOrgId = this.info.AttrSystems[this.index2].id;
 				console.log(this.info.rectifyOrgId );
 				let Person=await this.api.getUnitPerson({rectifyOrgId:this.info.rectifyOrgId})
-				console.log("waibi",Person);
-					for(let i=0;i<Person.length;i++){
-						console.log(i,"dwsfsf54645646");
-						this.info.personList.push(Person[i])
-					}
-					// console.log("qwqq",this.personList);
+				this.info.personList=Person;
+				// console.log("waibi",Person);
+				// 	for(let i=0;i<Person.length;i++){
+				// 		console.log(i,"dwsfsf54645646");
+				// 		this.info.personList.push(Person[i])
+				// 	}
 			},
 			bindPickerPerson(e){
 				console.log(1123,e,this.info.personList);

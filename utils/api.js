@@ -1,6 +1,6 @@
 const config = require("./config");
 import Vue from 'vue'
-const app = getApp()
+// const app = getApp()
 
 const hostUrl = config.serverURL;
 
@@ -26,7 +26,7 @@ function get(url, data, header) {
 			header: myheader,
 			url: config.serverURL + url,
 			success: function(res) {
-				console.log('get success')
+				console.log('get success',res)
 				// 登录失效重新登录
 				if (res.data.code == '401') {
 					uni.showToast({
@@ -87,7 +87,7 @@ function post(url, data, header) {
 			method: "post",
 			url: config.serverURL + url,
 			success: function(res) {
-				console.log('post success')
+				console.log('post success',res)
 				// 登录失效重新登录
 				if (res.data.code == '401') {
 					uni.showToast({
@@ -151,7 +151,7 @@ function loginpost(url, data, header) {
 			method: "post",
 			url: config.serverURL + url,
 			success: function(res) {
-				console.log('post success')
+				console.log('post success',res)
 				// 400账号或密码错误
 				if (res.data.error_code == '400') {
 					uni.showToast({
@@ -419,6 +419,16 @@ class api {
 	getFirmQueryList(data) {
 		return new Promise(resolve => {
 			get("/blade-system/dept/deptList", data, {
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
+				})
+				.then(res => resolve(res.data))
+		})
+
+	}
+	// 企业查详情
+	getFirmQueryDetail(data) {
+		return new Promise(resolve => {
+			get("/blade-system/dept/deptDetail", data, {
 					"Blade-Auth": uni.getStorageSync("Blade-Auth")
 				})
 				.then(res => resolve(res.data))

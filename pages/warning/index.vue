@@ -130,6 +130,7 @@
 		 	this.loginType = uni.getStorageSync("loginType")
 		 
 		 },
+		 
 		onShow() {
 			// loginType==3标题改为逾期预警提醒
 			if (this.loginType == 3) {
@@ -138,6 +139,15 @@
 				});
 			}
 
+		},
+		// 下拉重新加载
+		onPullDownRefresh(){
+			this.page = {
+				current: 1,
+				size: 1
+			}
+			// this.queryList = [];
+			// this.getList(this.page)
 		}
 	}
 </script>

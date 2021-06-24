@@ -6,20 +6,20 @@
 			<view class="list">
 				<view class="item">
 					<text class="title">公司名称</text>
-					<text class="content">{{ info.filmname }}</text>
+					<text class="content">{{ info.fullName }}</text>
 				</view>
 
 				<view class="item">
 					<text class="title">公司地址</text>
-					<text class="content">{{ info.address }}</text>
+					<text class="content">{{ info.addr }}</text>
 				</view>
 				<view class="item">
 					<text class="title">联系人 </text>
-					<text class="content">{{ info.tel }}</text>
+					<text class="content">{{ info.user[0].name }}</text>
 				</view>
 				<view class="item">
 					<text class="title">联系电话</text>
-					<text class="content">{{ info.tel }}</text>
+					<text class="content">{{ info.user[0].phone }}</text>
 				</view>
 
 				<view class="item">
@@ -55,13 +55,14 @@
 			return {
 				info: {
 					// 公司名称
-					filmname: "摩根电器有限公司",
+					fullName: "摩根电器有限公司",
 					//公司地址
-					address: "宁波镇海 329创业社区二楼",
-					// 联系人 
-					contactor: "摩根",
-					// 联系电话
-					tel: "15185161111",
+					addr: "宁波镇海 329创业社区二楼",
+					user:[{phone:"",name:""}],
+					// // 联系人 
+					// contactor: "摩根",
+					// // 联系电话
+					// tel: "15185161111",
 					// 自检任务
 					selfCheck: 58,
 					// 整改单数
@@ -69,7 +70,8 @@
 					// 预警提醒
 					warning: 55,
 					// 企业码
-					code: corcode
+					code: corcode,
+					id:""
 				},
 				// loginType只能为2/3
 				loginType: 2
@@ -90,9 +92,14 @@
 				})
 			}
 		},
-		onLoad() {
+		async onLoad(e) {
+			this.id=e.id;
 			// 从缓存中获取loginType,角色信息
 			this.loginType = uni.getStorageSync("loginType")
+			
+			let data=await this.api.getFirmQueryDetail({id:this.id})
+			this.info=data;
+			console.log("企业查详情",data);
 		}
 	}
 </script>

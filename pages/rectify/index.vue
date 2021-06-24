@@ -167,7 +167,7 @@
 						return "已完成"
 					else if (state == 4)
 						return "已结案"
-				}
+				}  
 			}
 		},
 		methods: {
