@@ -164,7 +164,7 @@
 
 			</view>
 		</view>
-		<!-- 	<view class="detailContent" style="margin-top: 20rpx; padding: 20rpx 40rpx;" v-if="currentIndex==2">
+			<view class="detailContent" style="margin-top: 20rpx; padding: 20rpx 40rpx;" v-if="currentIndex==2">
 			<view class="contentBody" style="margin-top: 0rpx;">
 				<view class="bodyList" style="border-bottom: 0;">
 					<view class="bodyListTitle">
@@ -175,17 +175,19 @@
 					</view>
 				</view>
 			</view>
-		</view> -->
+		</view>
 		<view class="contentText" v-if="currentIndex==0">
 			<view class="TextTitle">
 				确认签收
 			</view>
-
-			<textarea v-model="signs" placeholder="在此签名" class="textareaIn" placeholder-class="placeholderIn" />
+			 <view class="signBox" style="width: 100%;">
+				<sign @success="getSign" @signImage="signImage"></sign>
+			</view>
+			<!-- <textarea v-model="signs" placeholder="在此签名" class="textareaIn" placeholder-class="placeholderIn" />
 			<view class="textBtn">
 				<button class="btn1" type="default" @click="Resign">重签</button>
 				<button class="btn2" type="default" @click="preservation">保存</button>
-			</view>
+			</view> -->
 		</view>
 		<view class="contentText" v-if="currentIndex==1&&loginType==1">
 			<view class="TextTitle">
@@ -318,6 +320,11 @@
 			unshowpop() {
 				this.popshow = false
 			},
+			async signImage(signImage){
+				this.bodyList.receiptSign=await this.api.upLoad(signImage);
+				console.log("guagua",this.bodyList.receiptSign);
+			},
+			
 			finishshowpop() {
 				this.bodyList.reissueReport=this.twice;
 				this.api.postRectifyClose(this.bodyList)

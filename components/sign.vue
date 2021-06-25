@@ -39,6 +39,7 @@
 
         methods: {
             overSign: function() {
+					_that=this
                 if (this.isEnd) {
                     uni.canvasToTempFilePath({
                         canvasId: 'firstCanvas',
@@ -49,8 +50,10 @@
                             console.log('完成签名')
                             //设置图片
                             _that.signImage = res.tempFilePath
+							console.log(_that.signImage)
+							_that.$emit("signImage", _that.signImage)
                         }
-                    })
+                    },this)
                 } else {
                     uni.showToast({
                         title: '请先完成签名',
@@ -166,9 +169,9 @@
 
     canvas {
         background-color: #DDDDDD;
-        width: 700upx;
-        margin: 0 25upx;
-        height: calc(100vh - 140upx);
+        width: 100%;
+        margin: 0 30rpx 0 0;
+        height: 400rpx;
     }
 
     .contents {
@@ -183,20 +186,23 @@
 
     .caozuo {
         display: flex;
-        height: 100upx;
-        width: 750upx;
-        position: fixed;
+		justify-content: space-around;
+
+        /* position: fixed; */
         left: 0;
         bottom: 0;
     }
-
-    .caozuo view {
-        width: 375upx;
-        text-align: center;
-        height: 100upx;
-        line-height: 100upx;
-        color: #FFFFFF;
-    }
+	.caozuo view{
+		width: 240rpx;
+		height: 75rpx;
+		margin-top: 20rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 28rpx;
+		
+	}
+  
 
     .caozuo view:active {
         background-color: #CCCCCC;
@@ -204,10 +210,17 @@
     }
 
     .chongqian {
-        background-color: #FF8F58;
+		
+		background: #FFFFFF;
+		border: 2rpx solid #50A1FF;
+		opacity: 1;
+		border-radius: 12rpx;
     }
 
     .over {
-        background-color: #0599D7;
+        color:#ffffff ;
+        background: #50A1FF;
+        opacity: 1;
+        border-radius: 12rpx;
     }
 </style>

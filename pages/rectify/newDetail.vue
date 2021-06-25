@@ -119,7 +119,6 @@ export default{
 	onLoad(e) {
 		this.cd=e.cd
 		console.log(1231231,this.cd);
-		console.log(this.detaliList);
 		this.api.getAddDetail({cd:this.cd}).then(res=>{
 			console.log(res);
 			this.detaliList=res 

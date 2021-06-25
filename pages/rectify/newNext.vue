@@ -56,9 +56,9 @@
 				<view class="newListTitle">
 					责任整改人签字
 				</view>
-				<view class="signBox">
-					<sign @success="getSign"></sign>
-				</view>
+				<!-- <view class="signBox">
+					<sign @success="getSign" @signImage="signImage"></sign>
+				</view> -->
 
 			</view>
 			<view class="newList">
@@ -74,9 +74,9 @@
 					复查日期
 				</view>
 				<view class="newListContent">
-					<picker mode="date" :value="newList.reviewTime" :start="startDate" :end="endDate"
+					<picker mode="date" :value="nowDate" :start="startDate" :end="endDate"
 						@change="bindDateChange">
-						<view class="uni-input" style="display: flex; align-items: center;">{{newList.reviewTime}}
+						<view class="uni-input" style="display: flex; align-items: center;">{{nowDate}}
 							<image src="../../static/choosedate.png" mode="" class="date"></image>
 						</view>
 					</picker>
@@ -132,10 +132,12 @@
 		
 		data() {
 			const currentDate = this.getDate({
-				format: true
+				format: true,
 			})
 			return {
 				del,
+				nowDate:currentDate,
+				
 				newList:{
 					
 				}
@@ -161,7 +163,7 @@
 				uni.navigateBack({})
 			},
 			nextTo() {
-				
+				this.newList.reviewTime=this.nowDate
 				this.api.postNewList(this.newList).then(res=>{
 					console.log(res)
 				})
@@ -175,13 +177,14 @@
 			},
 			bindDateChange(e){
 				console.log(e);
-				this.newList.reviewTime= e.target.value
+				this.nowDate= e.target.value
 			},
 			getDate(type) {
-				const date = new Date();
-				let year = date.getFullYear();
-				let month = date.getMonth() + 1;
-				let day = date.getDate();
+				const date = new Date().getTime()+48 * 60 * 60 * 1000;
+				let date1 = new Date(date)
+				let year = date1.getFullYear();
+				let month = date1.getMonth() + 1;
+				let day = date1.getDate();
 			
 				if (type === 'start') {
 					year = year - 60;
@@ -191,8 +194,8 @@
 				month = month > 9 ? month : '0' + month;;
 				day = day > 9 ? day : '0' + day;
 				return `${year}-${month}-${day}`;
-			}
-
+			},
+			
 		},
 		components: {
 			sign

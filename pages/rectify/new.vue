@@ -211,6 +211,62 @@
 
 			},
 			changePageTo() {
+				if(this.info.title==""){
+					uni.showToast({
+						title:"请填写整改名称",
+						icon:"none"
+					})
+					return false
+				}
+				else if(this.info.AttrSystem==""){
+					uni.showToast({
+						title:"请选择整改单位",
+						icon:"none"						
+					})
+					return false
+				}
+				else if(this.info.examRegion==""){
+					uni.showToast({
+						title:"请选择检查区域",
+						icon:"none"						
+					})
+					return false
+				}
+				else if (this.info.address==""){
+					uni.showToast({
+						title:"请选择位置",
+						icon:"none"
+					})
+					return false
+				}
+				else if(this.info.troubleReport==""){
+					uni.showToast({
+						title:"请填写隐患说明",
+						icon:"none"
+					})
+					return false
+				}
+				else if(this.info.person==""){
+					uni.showToast({
+						title:"请选择责任整改人",
+						icon:"none"
+					})
+					return false
+				}
+				else if(this.info.requReport==""){
+					uni.showToast({
+					title:"请填写整改要求",
+					icon:"none"
+					})
+					return false
+				}
+				else if(this.info.troublePic==""){
+					uni.showToast({
+					title:"请选择隐患图片",
+					icon:"none"
+					})
+					return false
+				}
 				uni.setStorageSync('rectifyList', this.info);
 				uni.navigateTo({
 					url: "./newNext"
@@ -285,7 +341,7 @@
 			// 获取整改单位列
 			let unitList = await this.api.getUnitList({deptld:this.info.buildOrgId});
 			this.info.AttrSystems = unitList
-			console.log(unitList)
+			console.log("显示",unitList)
 			
 			
 		},
