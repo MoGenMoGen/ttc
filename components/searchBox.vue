@@ -3,15 +3,16 @@
 		<view class="dateBox">
 			<view class="uni-list-cell-db">
 				<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
-					<view class="uni-input">{{ date }}</view>
+					<view class="uni-input" v-if="date==''">请选择日期</view>
+					<view class="uni-input" v-else>{{ date }}</view>
 				</picker>
 			</view>
 			<image class="iconimg" src="../static/dateicon.png" mode="widthFix" />
 		</view>
 		<view class="taskBox">
-			<input type="text" class="task" :placeholder="placeholderIn" placeholder-class="placeholderStyle"></input>
+			<input type="text" class="task" :placeholder="placeholderIn" placeholder-class="placeholderStyle" v-model="content"></input>
 		</view>
-		<view class="taskBtn">
+		<view class="taskBtn" @click="search">
 			搜索
 		</view>
 	</view>
@@ -27,7 +28,9 @@
 				format: true,
 			});
 			return {
-				date: currentDate,
+				// date: currentDate,
+				date: "",
+				content:""
 			};
 		},
 		methods: {
@@ -49,6 +52,9 @@
 				day = day > 9 ? day : "0" + day;
 				return `${year}-${month}-${day}`;
 			},
+			search(){
+				 this.$emit('search', {date:this.date,content:this.content})
+			}
 		},
 		computed: {
 			startDate() {

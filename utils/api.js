@@ -29,10 +29,11 @@ function get(url, data, header) {
 				console.log('get success',res)
 				// 登录失效重新登录
 				if (res.data.code == '401') {
+					console.log("401");
 					uni.showToast({
 						title: '登录失效了，重新登录',
 						duration: 2000,
-						icon: none
+						icon: "none"
 					})
 					uni.reLaunch({
 						url: '/pages/login/index'

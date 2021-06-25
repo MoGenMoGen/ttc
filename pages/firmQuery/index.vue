@@ -226,7 +226,7 @@
 				.inputbox {
 					box-sizing: border-box;
 					border-radius: 12upx;
-					background-color: #FFF;
+					background-color: #fafafa;
 					padding: 0 24upx;
 					display: flex;
 					align-items: center;
