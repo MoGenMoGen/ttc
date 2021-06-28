@@ -23,6 +23,9 @@
 						@click="toPage(item.path,item.flag,item.tabIndex)">
 						<image :src="item.img" mode="widthFix" />
 						<text>{{ item.title }}</text>
+						<view class="badge" v-if="item.count!=0">
+							{{item.count<=99?item.count:'99+'}}
+						</view>
 					</view>
 				</view>
 				<view class="icon_list" v-else-if="loginType==1">
@@ -31,6 +34,9 @@
 						@click="toPage(item.path,item.flag,item.tabIndex)">
 						<image :src="item.img" mode="widthFix" />
 						<text>{{ item.title }}</text>
+						<view class="badge" v-if="item.count!=0">
+							{{item.count<=99?item.count:'99+'}}
+						</view>
 					</view>
 				</view>
 				<view class="icon_list" v-else>
@@ -39,6 +45,9 @@
 						@click="toPage(item.path,item.flag,item.tabIndex,item.special)">
 						<image :src="item.img" mode="widthFix" />
 						<text>{{ item.title }}</text>
+						<view class="badge" v-if="item.count!=0">
+						{{item.count<=99?item.count:'99+'}}
+						</view>
 					</view>
 				</view>
 			</view>
@@ -70,7 +79,7 @@
 								:class="{ yellow: item.status == 0, red: item.status == -1 }">{{ item.type }}</text>
 						</view>
 						<!-- 提交日期 -->
-						<view class="warning_submitDate">
+						<view class="warning_submitDate" v-if="loginType == 3">
 							<image :src="clock" mode="widthFix" class="warning_icon" />
 							<text>提交日期</text><text>{{ item.clock }}</text>
 						</view>
@@ -82,7 +91,7 @@
 								style="color: #e51937">{{ item.overdue }}</text>
 						</view>
 						<!-- 提醒日期 -->
-						<view class="warning_warnDate" v-if="loginType == 3">
+						<view class="warning_warnDate">
 							<image :src="warnDate" mode="widthFix" class="warning_icon" />
 							<text>提醒日期</text><text>{{ item.warnDate }}</text>
 						</view>
@@ -184,14 +193,16 @@
 						img: iconSelfCheck,
 						path: "/pages/selfCheck/index", //跳转地址
 						flag: true, //是否是tabbar页面
-						tabIndex: 1
+						tabIndex: 1,
+						count: 20
 					},
 					{
 						title: "整改单",
 						img: iconSelfCheck,
 						path: "/pages/rectify/index",
 						flag: true,
-						tabIndex: 2
+						tabIndex: 2,
+						count: 3
 
 					},
 					{
@@ -199,7 +210,8 @@
 						img: iconWarning,
 						path: "/pages/warning/index",
 						flag: false,
-						tabIndex: 0 //不是tab页tabIndex随意
+						tabIndex: 0, //不是tab页tabIndex随意
+						count: 100
 					},
 				],
 				iconBar2: [{
@@ -207,14 +219,16 @@
 						img: iconFirmQuery,
 						path: "/pages/firmQuery/index",
 						flag: true,
-						tabIndex: 2
+						tabIndex: 2,
+						count: 0
 					},
 					{
 						title: "巡检任务",
 						img: iconInspection,
 						path: "/pages/inspection/index",
 						flag: false,
-						tabIndex: 0
+						tabIndex: 0,
+						count: 35
 
 					},
 					{
@@ -223,6 +237,7 @@
 						path: "/pages/rectify/index",
 						tabIndex: 1,
 						flag: true,
+						count: 399
 					},
 					{
 						title: "预警提醒",
@@ -231,6 +246,7 @@
 						tabIndex: 0,
 
 						flag: false,
+						count: 3
 					},
 				],
 				iconBar3: [{
@@ -240,6 +256,7 @@
 
 						path: "/pages/firmQuery/index",
 						flag: true,
+						count: 3
 					},
 					{
 						title: "企业自检",
@@ -247,7 +264,8 @@
 						path: "/pages/selfCheck/index",
 						flag: false,
 						tabIndex: 0,
-						special: true
+						special: true,
+						count: 3
 
 					},
 					{
@@ -255,7 +273,8 @@
 						img: iconRedify,
 						path: "/pages/rectify/index",
 						flag: true,
-						tabIndex: 1
+						tabIndex: 1,
+						count: 35
 
 					},
 					{
@@ -264,6 +283,7 @@
 						path: "/pages/inspection/index",
 						flag: false,
 						tabIndex: 0,
+						count: 355
 
 					},
 					{
@@ -272,6 +292,7 @@
 						path: "/pages/warning/index",
 						flag: false,
 						tabIndex: 0,
+						count: 3
 
 					},
 				],
@@ -388,6 +409,12 @@
 				uni.navigateTo({
 					url: `/pages/firmQuery/detail?id=${id}`
 				})
+			},
+			// 获取首页列表
+			getList(){
+				// 获取预警提醒列表
+				// logintype==3获取企业查列表
+				
 			}
 		},
 		components: {
@@ -401,10 +428,10 @@
 
 		},
 		onShow() {
-		
+
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
-				animation: false,  
+				animation: false,
 
 			})
 
@@ -415,13 +442,13 @@
 			// 		duration: 1500,
 			// 		icon: 'none',
 			// 		success() {
-						
+
 			// 			setTimeout(function(){
 			// 				uni.reLaunch({
 			// 					url:'/pages/login/index'
 			// 				})
 			// 			},1500)   
-						
+
 			// 		}
 			// 	});
 
@@ -448,7 +475,7 @@
 			width: 100%;
 			font-size: 34rpx;
 			color: #000000;
-			padding-top:var(--status-bar-height);
+			padding-top: var(--status-bar-height);
 			z-index: 1000;
 		}
 
@@ -498,6 +525,22 @@
 						display: flex;
 						flex-direction: column;
 						align-items: center;
+						position: relative;
+
+						.badge {
+							position: absolute;
+							border-radius: 50%;
+							width: 40upx;
+							line-height: 40rpx;
+							background: #FA5151;
+							color: #ffffff;
+							font-size: 20upx;
+							text-align: center;
+							border: 1upx solid #fff;
+							height: 40upx;
+							right: 19upx;
+							top:-5upx;
+						}
 
 						image {
 							width: 152rpx;
@@ -514,6 +557,23 @@
 						display: flex;
 						flex-direction: column;
 						align-items: center;
+						position: relative;
+
+						.badge {
+							position: absolute;
+							border-radius: 50%;
+							width: 40upx;
+							line-height: 40rpx;
+							background: #FA5151;
+							color: #ffffff;
+							font-size: 20upx;
+							text-align: center;
+							border: 1upx solid #fff;
+							height: 40upx;
+							right: 42upx;
+							top:2upx;
+						}
+						
 
 						image {
 							width: 152rpx;
@@ -594,7 +654,7 @@
 								color: #303030;
 							}
 
-							.yellow {  
+							.yellow {
 								color: #f1c345;
 							}
 

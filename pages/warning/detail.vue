@@ -40,6 +40,10 @@
 					<text class="title">提醒类型</text>
 					<text class="content red">{{ info.type }}</text>
 				</view>
+				<view class="item">
+					<text class="title">任务类型</text>
+					<text class="content red">{{ info.worktype }}</text>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -59,6 +63,7 @@
 					zgunit: "聚联科技有限公司", //整改单位
 					sgunit: "某某服务公司", //施工单位
 					executor: "孔德文", //执行人
+					worktype:"整改单任务"
 
 				},
 				loginType: 3

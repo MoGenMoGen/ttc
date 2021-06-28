@@ -54,6 +54,8 @@
 	import nomore from "components/nomore";
 	import corcode from "static/corcode.png";
 	import search from "static/search.png";
+	// 获取dept_id,传给后台筛选数据
+	var subjectDept=uni.getStorageSync("userinfo").dept_id;
 	export default {
 		data() {
 			return {
@@ -62,7 +64,8 @@
 				search,
 				page: {
 					current: 1,
-					size: 2
+					size: 2,
+					subjectDept
 				}, //分页传参
 				total: 0, //数据库中数据长度
 				// 企业查询列表
@@ -141,7 +144,9 @@
 		async onShow() {
 			this.page = {
 				current: 1,
-				size: 3
+				size: 1,
+				subjectDept
+				
 			}
 			this.queryList = [];
 			//隐藏默认tabbar显示自定义tabbar
@@ -167,12 +172,17 @@
 		},
 		// 下拉重新加载
 		onPullDownRefresh(){
-			this.page = {
-				current: 1,
-				size: 1
-			}
-			this.queryList = [];
-			this.getList(this.page)
+				this.page = {
+					current: 1,
+					size: 1,
+					subjectDept
+				}
+				this.queryList = [];
+				this.getList(this.page)
+				setTimeout(function(){
+					uni.stopPullDownRefresh()
+				},1000)
+			
 		}
 	}
 </script>

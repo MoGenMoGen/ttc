@@ -23,12 +23,12 @@
 							<text>提醒类型</text><text
 								:class="{ yellow: item.status == 0, red: item.status == -1 }">{{ item.type }}</text>
 						</view>
-						<!-- 提交日期 -->
-						<view class="warning_submitDate">
+						<!-- logintype==3 提交日期 -->
+						<view class="warning_submitDate" v-if="loginType == 3">
 							<image :src="clock" mode="widthFix" class="warning_icon" />
 							<text>提交日期</text><text>{{ item.clock }}</text>
 						</view>
-						<!-- logintype==3，只有监管测有逾期天数和提醒日期 -->
+						<!-- logintype==3，只有监管测有逾期天数-->
 						<!-- 逾期天数 -->
 						<view class="warning_overdue" v-if="loginType == 3">
 							<image :src="overdue" mode="widthFix" class="warning_icon" />
@@ -36,19 +36,19 @@
 							<text style="color: #e51937 ">{{ item.overdue }}</text>
 						</view>
 						<!-- 提醒日期 -->
-						<view class="warning_warnDate" v-if="loginType == 3">
+						<view class="warning_warnDate">
 							<image :src="warnDate" mode="widthFix" class="warning_icon" />
 							<text>提醒日期</text><text>{{ item.warnDate }}</text>
 						</view>
 					</view>
 				</view>
 			</view>
-		<nomore/>
+			<nomore />
 		</view>
 
 	</view>
 
-</template>     
+</template>
 
 <!-- app中使用vconsole -->
 <!-- <script module="vconsole" lang="renderjs">  
@@ -72,8 +72,10 @@
 	import warnDate from "static/warnDate.png";
 	// 提醒内容
 	import workcontent from "static/workcontent.png";
-
+	// 获取dept_id,传给后台筛选数据
+	var subjectDept = uni.getStorageSync("userinfo").dept_id;
 	export default {
+
 		data() {
 			// loginType:1.企业侧 2.服务商侧 3.监管机构侧
 			return {
@@ -112,25 +114,49 @@
 				clock,
 				overdue,
 				warnDate,
-				workcontent
+				workcontent,
+				page: {
+					current: 1,
+					size: 2,
+					subjectDept
+				}, //分页传参
 			}
 		},
 		components: {
-			searchBox,nomore
+			searchBox,
+			nomore
 		},
-		methods:{
+		methods: {
 			// 跳转到预警提醒详情页面
-			goToWarnDetail(id){
-			  uni.navigateTo({
-			      url: `/pages/warning/detail?id=${id}`,
-			    });
+			goToWarnDetail(id) {
+				uni.navigateTo({
+					url: `/pages/warning/detail?id=${id}`,
+				});
 			},
+			// 刷新重新获取数据
+			refresh() {
+				this.page = {
+					current: 1,
+					size: 3,
+					subjectDept
+
+				}
+				this.warnList = [];
+				this.getList(this.page)
+			},
+			// 获取预警提醒列表
+			async getList(parms) {
+				let data = await this.api.getwarningList(parms)
+				this.warnList = [...this.warnList, ...data.records]
+				this.total = data.total;
+				console.log("预警列表data", this.warnList);
+			}
 		},
 		onLoad() {
-		 	this.loginType = uni.getStorageSync("loginType")
-		 
-		 },
-		 
+			this.loginType = uni.getStorageSync("loginType")
+
+		},
+
 		onShow() {
 			// loginType==3标题改为逾期预警提醒
 			if (this.loginType == 3) {
@@ -138,17 +164,27 @@
 					title: "逾期预警提醒",
 				});
 			}
+			// 获取预警提醒提醒列表
+			this.refresh()
 
 		},
 		// 下拉重新加载
-		onPullDownRefresh(){
-			this.page = {
-				current: 1,
-				size: 1
+		onPullDownRefresh() {
+			this.refresh()
+			setTimeout(function(){
+				uni.stopPullDownRefresh()
+			},1000)
+		},
+		onReachBottom() {
+			console.log('触底');
+			if (this.total <= this.warnList.length) {
+				console.log(this.total, this.warnList.length, "fffff");
+			} else {
+				console.log(this.total, this.warnList.length, "dddddd");
+				this.page.current += 1;
+				this.getList(this.page);
 			}
-			// this.queryList = [];
-			// this.getList(this.page)
-		}
+		},
 	}
 </script>
 

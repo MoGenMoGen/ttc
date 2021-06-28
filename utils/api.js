@@ -26,18 +26,22 @@ function get(url, data, header) {
 			header: myheader,
 			url: config.serverURL + url,
 			success: function(res) {
-				console.log('get success',res)
+				console.log('get success', res)
 				// 登录失效重新登录
 				if (res.data.code == '401') {
 					console.log("401");
 					uni.showToast({
 						title: '登录失效了，重新登录',
 						duration: 2000,
-						icon: "none"
-					})
-					uni.reLaunch({
-						url: '/pages/login/index'
-					})
+						icon: "none",
+						})
+						setTimeout(function(){
+							uni.reLaunch({
+								url: '/pages/login/index'
+							})
+						},2000)
+						
+
 				} else if (res.data.code == '200')
 					resolve(res.data);
 				else {
@@ -54,7 +58,8 @@ function get(url, data, header) {
 				uni.showToast({
 					icon: "none",
 					title: JSON.stringify(err),
-					duration: 2000
+					duration: 2000,
+
 				});
 				reject(err);
 			},
@@ -88,17 +93,20 @@ function post(url, data, header) {
 			method: "post",
 			url: config.serverURL + url,
 			success: function(res) {
-				console.log('post success',res)
+				console.log('post success', res)
 				// 登录失效重新登录
 				if (res.data.code == '401') {
 					uni.showToast({
 						title: '登录失效了，重新登录',
 						duration: 2000,
-						icon: 'none'
+						icon: 'none',
+						complete() {
+							uni.reLaunch({
+								url: '/pages/login/index'
+							})
+						}
 					})
-					uni.reLaunch({
-						url: '/pages/login/index'
-					})
+
 				} else if (res.data.code == '200')
 					resolve(res.data);
 				else {
@@ -152,7 +160,7 @@ function loginpost(url, data, header) {
 			method: "post",
 			url: config.serverURL + url,
 			success: function(res) {
-				console.log('post success',res)
+				console.log('post success', res)
 				// 400账号或密码错误
 				if (res.data.error_code == '400') {
 					uni.showToast({
@@ -345,11 +353,12 @@ class api {
 
 	}
 	getUnitList(data) {
-		return new Promise(resolve=>{
-			get("/blade-system/dept/getRectifyOrgList",data, {
-				"Content-Type": "application/json","Blade-Auth":uni.getStorageSync("Blade-Auth")
-			})
-			.then(res=>resolve(res.data))
+		return new Promise(resolve => {
+			get("/blade-system/dept/getRectifyOrgList", data, {
+					"Content-Type": "application/json",
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
+				})
+				.then(res => resolve(res.data))
 		})
 
 	}
@@ -435,6 +444,15 @@ class api {
 				.then(res => resolve(res.data))
 		})
 
+	}
+	// 预警提醒列表
+	getwarningList(data) {
+		return new Promise(resolve => {
+			get("/blade-works/rectifybill/rectifyList", data, {
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
+				})
+				.then(res => resolve(res.data))
+		})
 	}
 
 
