@@ -274,6 +274,7 @@
 				imgList: [],
 				report:"",
 				closingContent:"",
+				twice:"",
 				bodyList: {
 
 				},
@@ -307,7 +308,8 @@
 				}
 				this.bodyList.serverimgList = path1;
 				this.bodyList.rectifyPic = this.bodyList.serverimgList.join(",");
-				console.log("图片上传到服务器", path1);
+				console.log("图片上传到服务器", this.bodyList.serverimgList);
+	
 			},
 			deleimg(index) {
 				this.imgList.splice(index, 1);
@@ -326,7 +328,15 @@
 			},
 			
 			finishshowpop() {
+				if(this.twice==""){
+					uni.showToast({
+						title:"请输入二次下发说明",
+						icon:"none"
+					})
+					return false
+				}
 				this.bodyList.reissueReport=this.twice;
+				this.bodyList.requReport=this.twice
 				this.api.postRectifyClose(this.bodyList)
 				this.popshow = false;
 				uni.navigateBack({
@@ -346,6 +356,13 @@
 				})
 			},
 			sureTo(){
+				if(this.closingContent==""){
+					uni.showToast({
+						title:"请输入结案内容",
+						icon:"none"
+					})
+					return false
+				}
 				this.bodyList.closeReport=this.closingContent
 				this.bodyList.closeUserId=this.userinfo.user_id
 				this.api.postRectifyClose(this.bodyList)
@@ -369,7 +386,13 @@
 				this.clear();
 			},
 			confirmTO() {
-				console.log(111111);
+				if(this.bodyList.receiptSign==""){
+					uni.showToast({
+						title:"请完成签名",
+						icon:"none"
+					})
+					return false
+				}
 				this.api.postRectifyAccept(this.bodyList)
 
 				uni.navigateBack({})
@@ -381,6 +404,20 @@
 				this.signs = ""
 			},
 			reportSure() {
+				if(this.report==""){
+					uni.showToast({
+						title:"请输入整改上报内容",
+						icon:"none"
+					})
+					return false
+				}
+				else if(this.bodyList.rectifyPic==""){
+					uni.showToast({
+						title:"请选择整改照片",
+						icon:"none"
+					})
+					return false
+				}
 				this.bodyList.rectifyReport = this.report
 				this.bodyList.reportUserId=this.userinfo.user_id
 				this.api.postRectifyReport(this.bodyList)

@@ -22,7 +22,8 @@
 				// "navigationBarTitleText": "自检任务",
 				// "navigationBarBackgroundColor": "#fff",
 				// "navigationBarTextStyle": "black"
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh":true
 			}
 		},
 		{

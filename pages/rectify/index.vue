@@ -18,7 +18,7 @@
 			</view>
 
 
-			<searchBox :placeholderIn="placeholderIn"></searchBox>
+			<searchBox :placeholderIn="placeholderIn" @search="search"></searchBox>
 			<view class="rectifyBody">
 				<view class="rectifyList" v-for="(item,index) in listBody" :key="index" @click="changePage(item.id)">
 					<view class="rectifyListIn">
@@ -202,6 +202,17 @@
 				this.listBody = [...this.listBody, ...data.records]
 				this.total = data.total;
 				console.log(data.records);
+			},
+			async search(data){
+				console.log({...data,state:this.currentIndex + 1});
+				this.api.getQueryList({...data,state:this.currentIndex + 1}).then(res => {
+					console.log(res);
+					
+					this.listBody=res.records;
+					console.log("www",this.listBody);
+				});
+				
+				
 			}
 		},
 		onLoad() {
@@ -246,7 +257,8 @@
 					}
 				});
 			}
-		}
+		},
+		
 
 
 	}

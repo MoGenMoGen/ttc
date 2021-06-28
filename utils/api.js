@@ -445,6 +445,7 @@ class api {
 		})
 
 	}
+
 	// 预警提醒列表
 	getwarningList(data) {
 		return new Promise(resolve => {
@@ -455,6 +456,36 @@ class api {
 		})
 	}
 
+
+
+	//分页查询
+	getQueryList(data){
+		return new Promise(resolve=>{
+			get("/blade-works/rectifybill/queryList",data,{
+				"Content-Type": "application/json",
+				"Blade-Auth": uni.getStorageSync("Blade-Auth")
+			}).then(res => resolve(res.data))
+		})
+	}
+	//自检、巡检列表获取
+	getBillList(data){
+	return new Promise(resolve=>{
+		get("/blade-works/taskbill/billList",data,{
+			"Content-Type": "application/json",
+			"Blade-Auth": uni.getStorageSync("Blade-Auth")
+		}).then(res => resolve(res.data))
+	})
+	}
+	//自检、巡检列表详情获取
+	getBillDetail(data){
+		return new Promise(resolve=>{
+			get("/blade-works/taskbill/billDetail",data,{
+				"Content-Type": "application/json",
+				"Blade-Auth": uni.getStorageSync("Blade-Auth")
+			
+		}).then(res=>resolve(res.data))
+	})
+	}
 
 }
 export {

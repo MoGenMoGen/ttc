@@ -10,7 +10,7 @@
 			<image class="iconimg" src="../static/dateicon.png" mode="widthFix" />
 		</view>
 		<view class="taskBox">
-			<input type="text" class="task" :placeholder="placeholderIn" placeholder-class="placeholderStyle" v-model="content"></input>
+			<input type="text" class="task" :placeholder="placeholderIn" placeholder-class="placeholderStyle" v-model="cd"></input>
 		</view>
 		<view class="taskBtn" @click="search">
 			搜索
@@ -30,7 +30,7 @@
 			return {
 				// date: currentDate,
 				date: "",
-				content:""
+				cd:""
 			};
 		},
 		methods: {
@@ -53,7 +53,7 @@
 				return `${year}-${month}-${day}`;
 			},
 			search(){
-				 this.$emit('search', {date:this.date,content:this.content})
+				 this.$emit('search', {date:this.date,cd:this.cd})
 			}
 		},
 		computed: {

@@ -4,7 +4,7 @@
 		<view class="taskContent">
 			<view class="taskContentInList">
 				<text class="taskContentInListHead">任务编号 </text>
-				<text class="taskContentInListContent">{{ arr.number }}</text>
+				<text class="taskContentInListContent">{{ arr.cd }}</text>
 			</view>
 			<view class="taskContentInListTwo">
 				<text class="taskContentInListHead" v-if="loginType == 3 && currentIndex == 1">提醒内容</text>
@@ -121,7 +121,8 @@
 	export default {
 		data() {
 			return {
-				currentIndex:"",
+				currentIndex:1,
+				loginType:2,
 				del,
 				activeRadio: "",
 				check: "10",
@@ -184,9 +185,17 @@
 			}
 		},
 		onLoad(e) {
-			this.currentIndex = e.currentIndex;
-			this.loginType = e.loginType;
-			console.log(this.currentIndex);
+			this.id=e.id
+			this.currentIndex=e.currentIndex
+			this.loginType=uni.getStorageSync("loginType")
+			// console.log(this.loginType)
+			// console.log(this.currentIndex)
+			// console.log(this.currentIndex);
+		},
+		async onShow(){
+			console.log(this.id)
+			this.arr=await this.api.getBillDetail({id:this.id})
+			console.log("swqes",this.arr)
 		},
 		components: {},
 	};
