@@ -449,7 +449,7 @@ class api {
 	// 预警提醒列表
 	getwarningList(data) {
 		return new Promise(resolve => {
-			get("/blade-works/rectifybill/rectifyList", data, {
+			get("/blade-works/rectifybill/home", data, {
 					"Blade-Auth": uni.getStorageSync("Blade-Auth")
 				})
 				.then(res => resolve(res.data))
@@ -486,6 +486,7 @@ class api {
 		}).then(res=>resolve(res.data))
 	})
 	}
+	
 
 }
 export {

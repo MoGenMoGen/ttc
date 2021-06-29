@@ -36,7 +36,13 @@
 					<view class="item_container">
 						<view class="item_title">企业码:</view>
 						<view class="item_content">
-							<image :src="corcode" mode="widthFix" />
+							<!-- <image :src="corcode" mode="widthFix" /> -->
+							<yuanqi-qr-code 
+							    ref="yuanqiQRCode"
+							    :text="item.id"
+								:size="size"
+								logo="/static/avatar.png"
+							    ></yuanqi-qr-code>
 						</view>
 					</view>
 				</view>
@@ -62,6 +68,7 @@
 				info: "", //输入的搜索信息
 				loginType: 2,
 				search,
+				size:200,
 				page: {
 					current: 1,
 					size: 2,
@@ -106,6 +113,7 @@
 			nomore,
 
 		},
+		
 		methods: {
 			// 切换tab 
 			tabChange(path) {
@@ -131,8 +139,9 @@
 				})
 			},
 			// 获取企业查询列表
-			async getList(parms) {
-				let data = await this.api.getFirmQueryList(parms)
+			async getList(params) {
+				console.log("参数",params);
+				let data = await this.api.getFirmQueryList(params)
 				this.queryList = [...this.queryList, ...data.records]
 				this.total = data.total;
 			}
@@ -141,10 +150,22 @@
 			// 从缓存中获取loginType,角色信息
 			this.loginType = uni.getStorageSync("loginType")
 		},
-		async onShow() {
+		mounted(){
+			console.log("mounted");
+			// 生成二维码
+			let coderefs=[];
+			coderefs=this.$refs.yuanqiQRCode;
+			console.log("111",coderefs);
+			if(coderefs.length>0){
+				for(let i=0;i<coderefs.length;i++)
+			 this.$refs.yuanqiQRCode[i].make();
+			}
+			
+		},
+		 onShow() {
 			this.page = {
 				current: 1,
-				size: 1,
+				size: 3,
 				subjectDept
 				
 			}
@@ -155,7 +176,14 @@
 
 			})
 			this.getList(this.page)
-			// document.body.scrollTop=0;
+			// 生成二维码
+			// let coderefs=this.$refs.yuanqiQRCode;
+			// console.log("111",coderefs);
+			// if(!coderefs){
+			// 	for(let i=0;i<coderefs.length;i++)
+			//  this.$refs.yuanqiQRCode[i].make();
+			// }
+			
 
 
 		},

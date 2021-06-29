@@ -2,7 +2,8 @@
 	<view class="pages_home_tab">
 		<!--自定义 navbar -->
 		<view class="navbar">
-			首页
+			<image src="/static/saoma.png" mode="widthFix" @click="scaning"></image>
+			<text>首页</text>
 		</view>
 		<!-- 轮播图 开始 -->
 
@@ -46,7 +47,7 @@
 						<image :src="item.img" mode="widthFix" />
 						<text>{{ item.title }}</text>
 						<view class="badge" v-if="item.count!=0">
-						{{item.count<=99?item.count:'99+'}}
+							{{item.count<=99?item.count:'99+'}}
 						</view>
 					</view>
 				</view>
@@ -69,31 +70,32 @@
 						<!-- 提醒内容 -->
 						<view class="warning_content">
 							<image :src="workcontent" mode="widthFix" class="warning_icon" />
-							<text>提醒内容</text><text>{{ item.content }}</text>
+							<text>提醒内容</text><text>{{ item.title }}</text>
 						</view>
 						<!-- 提醒类型 -->
 						<!-- logintype==3,监管侧没有提醒类型 -->
 						<view class="warning_type" v-if="loginType != 3">
 							<image :src="type" mode="widthFix" class="warning_icon" />
-							<text>提醒类型</text><text
-								:class="{ yellow: item.status == 0, red: item.status == -1 }">{{ item.type }}</text>
+							<text>提醒类型</text>
+							<text :class="{ yellow: item.warningState == 0||item.warningState==1, red: item.status == 2 }" v-if="item.status == 2">已逾期提醒</text>
+							<text :class="{ yellow: item.warningState==0||item.warningState==1, red: item.status==2 }" v-else>待执行提醒</text>
 						</view>
 						<!-- 提交日期 -->
 						<view class="warning_submitDate" v-if="loginType == 3">
 							<image :src="clock" mode="widthFix" class="warning_icon" />
-							<text>提交日期</text><text>{{ item.clock }}</text>
+							<text>提交日期</text><text>{{ item.issueDate }}</text>
 						</view>
 						<!-- logintype==3，只有监管测有逾期天数和提醒日期 -->
 						<!-- 逾期天数 -->
 						<view class="warning_overdue" v-if="loginType == 3">
 							<image :src="overdue" mode="widthFix" class="warning_icon" />
 							<text style="color: #e51937">逾期天数</text><text
-								style="color: #e51937">{{ item.overdue }}</text>
+								style="color: #e51937">{{ item.nextDate }}</text>
 						</view>
 						<!-- 提醒日期 -->
 						<view class="warning_warnDate">
 							<image :src="warnDate" mode="widthFix" class="warning_icon" />
-							<text>提醒日期</text><text>{{ item.warnDate }}</text>
+							<text>提醒日期</text><text>{{ item.warningTime }}</text>
 						</view>
 					</view>
 				</view>
@@ -101,7 +103,7 @@
 			<!-- 预警提醒 结束 -->
 			<!-- 企业查 开始 -->
 			<!-- loginType==3监管侧独有 -->
-			<view class="home_firm_query">
+			<view class="home_firm_query" v-if="loginType==3">
 				<view class="firm_query_info">
 					<view class="firm_query_info_text">
 						企业
@@ -113,20 +115,25 @@
 					<view class="firm_query_item" v-for="item in queryList" :key="item.id" @click="GoToDetail(item.id)">
 						<view class="item_container">
 							<view class="item_title">公司名称:</view>
-							<view class="item_content">{{item.name}}</view>
+							<view class="item_content">{{item.fullName}}</view>
 						</view>
 						<view class="item_container">
 							<view class="item_title">联系人:</view>
-							<view class="item_content">{{item.contact}}</view>
+							<view class="item_content" v-if="item.user.length>0">{{item.user[0].name}}</view>
 						</view>
 						<view class="item_container">
 							<view class="item_title">联系电话:</view>
-							<view class="item_content">{{item.tel}}</view>
+							<view class="item_content" v-if="item.user.length>0">{{item.user[0].phone}}</view>
 						</view>
 						<view class="item_container">
 							<view class="item_title">企业码:</view>
 							<view class="item_content">
-								<image :src="item.corcode" mode="widthFix" />
+								<yuanqi-qr-code
+								    ref="yuanqiQRCode"
+								    :text="item.id"
+									:size="size"
+									logo="/static/avatar.png"
+								    ></yuanqi-qr-code>
 							</view>
 						</view>
 					</view>
@@ -168,6 +175,8 @@
 	import workcontent from "static/workcontent.png";
 	// 企业码
 	import corcode from "static/corcode.png";
+	// dept_id
+	const buildOrgId = uni.getStorageSync("userinfo").dept_id;
 	export default {
 		data() {
 			// loginType:1.企业侧 2.服务商侧 3.监管机构侧
@@ -186,6 +195,7 @@
 				warnDate,
 				workcontent,
 				corcode,
+				size:200,
 				swiperList: [bg, bg, bg],
 				// 对应loginType1,2,3
 				iconBar1: [{
@@ -194,7 +204,7 @@
 						path: "/pages/selfCheck/index", //跳转地址
 						flag: true, //是否是tabbar页面
 						tabIndex: 1,
-						count: 20
+						count: 0
 					},
 					{
 						title: "整改单",
@@ -202,7 +212,7 @@
 						path: "/pages/rectify/index",
 						flag: true,
 						tabIndex: 2,
-						count: 3
+						count: 0
 
 					},
 					{
@@ -211,7 +221,7 @@
 						path: "/pages/warning/index",
 						flag: false,
 						tabIndex: 0, //不是tab页tabIndex随意
-						count: 100
+						count: 0
 					},
 				],
 				iconBar2: [{
@@ -228,7 +238,7 @@
 						path: "/pages/inspection/index",
 						flag: false,
 						tabIndex: 0,
-						count: 35
+						count: 0
 
 					},
 					{
@@ -237,7 +247,7 @@
 						path: "/pages/rectify/index",
 						tabIndex: 1,
 						flag: true,
-						count: 399
+						count: 0
 					},
 					{
 						title: "预警提醒",
@@ -246,7 +256,7 @@
 						tabIndex: 0,
 
 						flag: false,
-						count: 3
+						count: 0
 					},
 				],
 				iconBar3: [{
@@ -256,7 +266,7 @@
 
 						path: "/pages/firmQuery/index",
 						flag: true,
-						count: 3
+						count: 0
 					},
 					{
 						title: "企业自检",
@@ -265,7 +275,7 @@
 						flag: false,
 						tabIndex: 0,
 						special: true,
-						count: 3
+						count: 0
 
 					},
 					{
@@ -274,7 +284,7 @@
 						path: "/pages/rectify/index",
 						flag: true,
 						tabIndex: 1,
-						count: 35
+						count: 0
 
 					},
 					{
@@ -283,7 +293,7 @@
 						path: "/pages/inspection/index",
 						flag: false,
 						tabIndex: 0,
-						count: 355
+						count: 0
 
 					},
 					{
@@ -292,64 +302,14 @@
 						path: "/pages/warning/index",
 						flag: false,
 						tabIndex: 0,
-						count: 3
+						count: 0
 
 					},
 				],
 				//预警提醒列表
-				warnList: [{
-						//提醒类型
-						type: "待执行提醒",
-						status: 0, //表示待执行
-						//提醒内容
-						content: "【广知科技有限公司】消防器材未按照标准规范摆放消防通道有障碍物存放",
-						overdue: "4天", //逾期天数
-						warnDate: "2020-12-15", //提醒日期
-						clock: "2020-12-15", //提交日期
-					},
-					{
-						type: "待执行提醒",
-						status: 0, //表示待执行
-						content: "【广知科技有限公司】消防器材未按照标准规范摆放消防通道有障碍物存放",
-						overdue: "4天",
-						warnDate: "2020-12-15",
-						clock: "2020-12-15",
-					},
-					{
-						type: "已逾期提醒",
-						status: -1, //表示已逾期
-						content: "【广知科技有限公司】消防器材未按照标准规范摆放消防通道有障碍物存放",
-						overdue: "4天",
-						warnDate: "2020-12-15",
-						clock: "2020-12-15",
-					},
-				],
+				warnList: [],
 				// 企业查询列表
-				queryList: [{
-						//公司名称
-						name: "广知科技有限公司",
-						//联系人
-						contact: "张章",
-						tel: "13900110000", //联系电话
-						corcode: corcode, //企业码
-					},
-					{
-						//公司名称
-						name: "广知科技有限公司",
-						//联系人
-						contact: "张章",
-						tel: "13900110000", //联系电话
-						corcode: corcode, //企业码
-					},
-					{
-						//公司名称
-						name: "广知科技有限公司",
-						//联系人
-						contact: "张章",
-						tel: "13900110000", //联系电话
-						corcode: corcode, //企业码
-					},
-				],
+				queryList: [],
 			};
 		},
 		methods: {
@@ -411,10 +371,53 @@
 				})
 			},
 			// 获取首页列表
-			getList(){
+			async getList(params1, params2) {
 				// 获取预警提醒列表
+				let data1 = await this.api.getwarningList(params1)
+				console.log("首页预警", data1);
+				// 不同loginType，数组中对象count赋值
+				if (this.loginType == 1) {
+					this.iconBar1[0].count = data1.records[0].taskBillCount;
+					this.iconBar1[1].count = data1.records[0].rectifyCount;
+					this.iconBar1[2].count = data1.total;
+				}
+				if (this.loginType == 2) {
+					// this.iconBar2[0].count=data1.records[data1.records.length-1].taskBillCount;
+					this.iconBar2[2].count = data1.records[0].rectifyCount;
+					this.iconBar2[3].count = data1.total;
+				}
+				if (this.loginType == 3) {
+					this.iconBar3[1].count = data1.records[0].taskBillCount;
+					this.iconBar3[2].count = data1.records[0].rectifyCount;
+					this.iconBar3[4].count = data1.total;
+				}
+				this.warnList = data1.records
+				this.warnList.shift()
 				// logintype==3获取企业查列表
-				
+				if (this.loginType == 3) {
+					let data2 = await this.api.getFirmQueryList(params2)
+					
+					console.log("首页企业查", data2);
+					this.queryList=data2.records
+				}
+
+			},
+			// 扫描二维码
+			scaning(){
+				uni.scanCode({
+					success:function(res){
+						console.log('二维码扫描成功 ',res);
+						uni.navigateTo({
+							url:`/pages/firmQuery/detail?id=${res.result}`
+						})
+					},
+					fail:function(){
+						console.log('二维码扫描失败');
+					},
+					complete:function(){
+						console.log('二维码扫描完成');
+					}
+				})
 			}
 		},
 		components: {
@@ -422,13 +425,42 @@
 			nomore
 		},
 		onLoad() {
-			console.log("onload")
+			console.log("onload",111111)
 			uni.setStorageSync('tabIndex', 0)
 			this.loginType = uni.getStorageSync("loginType")
+			let params2;
+			if (this.loginType == 3) {
+				params2 = {
+					current: 1,
+					size: 3,
+					subjectDept: buildOrgId
+				}
+			} else {
+				params2 = {}
+			}
+
+			// 获取首页列表
+			this.getList({
+				buildOrgId,
+				current: 1,
+				size: 4
+			}, params2)
 
 		},
+		mounted(){
+			console.log("mounted");
+			// 生成二维码
+			let coderefs=[];
+			coderefs=this.$refs.yuanqiQRCode;
+			console.log("111",coderefs);
+			if(coderefs.length>0){
+				for(let i=0;i<coderefs.length;i++)
+			 this.$refs.yuanqiQRCode[i].make();
+			}
+			
+		},
 		onShow() {
-
+			console.log("onshow");
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
 				animation: false,
@@ -469,14 +501,29 @@
 			background-color: #fafafa;
 			position: fixed;
 			top: 0;
-			text-align: center;
-			height: 88upx;
-			line-height: 88upx;
+			// text-align: center;
+			// height: 88upx;
+			// line-height: 88upx;
 			width: 100%;
-			font-size: 34rpx;
+			// font-size: 34rpx;
 			color: #000000;
 			padding-top: var(--status-bar-height);
 			z-index: 1000;
+			display: flex;
+			align-items: center;
+			// justify-content: center;
+			text{
+				color: #000000;
+				height: 88upx;
+				line-height: 88upx;
+				font-size: 34upx;
+				text-align: center;
+				width:550upx ;
+			}
+			image{
+				margin-left:50upx;
+				width:50upx;
+			}
 		}
 
 		.pages_home_container {
@@ -539,7 +586,7 @@
 							border: 1upx solid #fff;
 							height: 40upx;
 							right: 19upx;
-							top:-5upx;
+							top: -5upx;
 						}
 
 						image {
@@ -571,9 +618,9 @@
 							border: 1upx solid #fff;
 							height: 40upx;
 							right: 42upx;
-							top:2upx;
+							top: 2upx;
 						}
-						
+
 
 						image {
 							width: 152rpx;

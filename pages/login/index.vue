@@ -33,7 +33,7 @@
       <!-- 表单 结束 -->
     </view>
     <!-- 忘记密码 -->
-    <text class="forget_pass">忘记密码</text>
+    <text class="forget_pass" @click="forget">忘记密码</text>
   </view>
 </template>
 
@@ -102,6 +102,20 @@ export default {
         });
       }
     },
+	forget(){
+		uni.showModal({
+		          content: '请联系管理员重置密码',
+		          showCancel: false,
+		          buttonText: '确定',
+		          success: (res) => {
+		            if (res.confirm) {
+		              console.log('用户点击确定');
+		            } else if (res.cancel) {
+		              console.log('用户点击取消');
+		            }
+		          }
+		        })
+	}
   },
 };
 </script>
