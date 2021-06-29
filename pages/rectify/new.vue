@@ -158,6 +158,7 @@
 				// 		console.log(err);
 				// 	},
 				// });
+				
 				this.info.imgList = [...this.info.imgList, ...await this.api.chooseImages('', 9)];
 				console.log(1111, this.info.imgList);
 				let path = this.info.imgList; //所有上传的图片的地址
@@ -207,7 +208,7 @@
 				
 			},
 			deleimg(index) {
-				this.info.imgList.splice(index, 1);
+				this.info.splice(index, 1);
 
 			},
 			changePageTo() {
@@ -503,7 +504,7 @@
 					height: 160rpx;
 
 					image {
-						width: 100%;
+						width: 100%; 
 						height: 100%;
 					}
 				}
