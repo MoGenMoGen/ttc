@@ -27,21 +27,27 @@
 					<text class="title" v-if="loginType==2">自检任务</text>
 					<!-- loginType==3 -->
 					<text class="title border" @click="handleSelfCheck" v-else >自检任务</text>
-					<text class="content red">{{ info.selfCheck }}</text>
+					<text class="content red">{{ info.taskBillCount }}</text>
 				</view>
 				<view class="item">
 					<text class="title border" @click="handleRedify">整改单数</text>
-					<text class="content red">{{ info.redify }}</text>
+					<text class="content red">{{ info.rectifyBillCount }}</text>
 				</view>
 
 				<view class="item">
 					<text class="title">预警提醒</text>
-					<text class="content red">{{ info.warning }}</text>
+					<text class="content red">{{ info.warningCount }}</text>
 				</view>
 
 				<view class="item">
 					<text class="title">企业码</text>
-					<image :src="info.code" mode="widthFix"></image>
+					<!-- <image :src="info.code" mode="widthFix"></image> -->
+					 <yuanqi-qr-code
+					     ref="yuanqiQRCode"
+					     :text="'/pages/firmQuery/detail?id='+id"
+					 	:size="size"
+					 	logo="/static/avatar.png"
+					     ></yuanqi-qr-code>
 				</view>
 			</view>
 		</view>
@@ -53,6 +59,9 @@
 	export default {
 		data() {
 			return {
+				size:200,
+				logo:"/static/avatar.png",
+				id:"",
 				info: {
 					// 公司名称
 					fullName: "摩根电器有限公司",
@@ -64,14 +73,11 @@
 					// // 联系电话
 					// tel: "15185161111",
 					// 自检任务
-					selfCheck: 58,
+					taskBillCount: 0,
 					// 整改单数
-					redify: 25,
+					rectifyBillCount: 0,
 					// 预警提醒
-					warning: 55,
-					// 企业码
-					code: corcode,
-					id:""
+					warningCount: 0,
 				},
 				// loginType只能为2/3
 				loginType: 2
@@ -100,7 +106,20 @@
 			let data=await this.api.getFirmQueryDetail({id:this.id})
 			this.info=data;
 			console.log("企业查详情",data);
-		}
+		},
+		mounted(){
+			console.log("mounted");
+			// 生成二维码
+			let coderefs=[];
+			if(this.$refs.yuanqiQRCode)
+			coderefs=this.$refs.yuanqiQRCode;  
+			console.log("111",coderefs);
+			if(coderefs.length>0){
+				for(let i=0;i<coderefs.length;i++)
+			 this.$refs.yuanqiQRCode[i].make();
+			}
+			
+		},
 	}
 </script>
 

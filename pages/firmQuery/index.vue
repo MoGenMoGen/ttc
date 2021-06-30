@@ -11,7 +11,7 @@
 				<view class="inputbox">
 					<image :src="search" mode="widthFix"></image>
 					<input type="text" placeholder="请输入企业名称、联系人等信息查询" maxlength="15" placeholder-style="color:#909090"
-						v-model="info" />
+						v-model="searchinfo" />
 				</view>
 				<view class="btn_search" @click="handlesearch">
 					搜索
@@ -39,9 +39,9 @@
 							<!-- <image :src="corcode" mode="widthFix" /> -->
 							<yuanqi-qr-code 
 							    ref="yuanqiQRCode"
-							    :text="item.id"
+							    :text="'/pages/firmQuery/detail?id='+item.id"
 								:size="size"
-								logo="/static/avatar.png"
+								:logo="logo"
 							    ></yuanqi-qr-code>
 						</view>
 					</view>
@@ -65,10 +65,11 @@
 	export default {
 		data() {
 			return {
-				info: "", //输入的搜索信息
+				searchinfo: "", //输入的搜索信息
 				loginType: 2,
 				search,
 				size:200,
+				logo:"/static/avatar.png",
 				page: {
 					current: 1,
 					size: 2,
@@ -127,9 +128,10 @@
 					},
 				});
 			},
-			// 搜索功能
-			handlesearch() {
-				console.log("搜索按钮触发");
+			// 搜索功能   
+			async handlesearch() {
+				let data=await this.api.getFirmQuerySearch({detail:this.searchinfo});
+				console.log("搜索按钮触发",data);
 			},
 			// 进入详情
 			GoToDetail(id) {
@@ -149,11 +151,13 @@
 		onLoad() {
 			// 从缓存中获取loginType,角色信息
 			this.loginType = uni.getStorageSync("loginType")
+			subjectDept=uni.getStorageSync("userinfo").dept_id;
 		},
 		mounted(){
-			console.log("mounted");
+			console.log("mounted1111111111111111111111111111111111111111");
 			// 生成二维码
 			let coderefs=[];
+			if(this.$refs.yuanqiQRCode)
 			coderefs=this.$refs.yuanqiQRCode;
 			console.log("111",coderefs);
 			if(coderefs.length>0){

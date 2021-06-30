@@ -178,8 +178,8 @@
 		"onReachBottomDistance":100
 	},
 	"networkTimeout":{
-		"uploadFile":10000,
-		"request":10000
+		"uploadFile":5000,
+		"request":5000
 	},
 	"condition": { //模式配置，仅开发期间生效
 		"current": 1, //当前激活的模式(list 的索引项)

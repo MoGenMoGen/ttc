@@ -130,7 +130,7 @@
 							<view class="item_content">
 								<yuanqi-qr-code
 								    ref="yuanqiQRCode"
-								    :text="item.id"
+								   :text="'/pages/firmQuery/detail?id='+item.id"
 									:size="size"
 									logo="/static/avatar.png"
 								    ></yuanqi-qr-code>
@@ -142,7 +142,6 @@
 			<nomore />
 			<!-- 企业查 结束 -->
 		</view>
-
 		<tabbar :loginType="loginType" :tabIndex='0'> </tabbar>
 	</view>
 </template>
@@ -406,12 +405,12 @@
 			scaning(){
 				uni.scanCode({
 					success:function(res){
-						console.log('二维码扫描成功 ',res);
+						console.log('二维码扫描成功 ',res.result);
 						uni.navigateTo({
-							url:`/pages/firmQuery/detail?id=${res.result}`
+							url:res.result
 						})
 					},
-					fail:function(){
+					fail:function(){   
 						console.log('二维码扫描失败');
 					},
 					complete:function(){
@@ -451,7 +450,10 @@
 			console.log("mounted");
 			// 生成二维码
 			let coderefs=[];
-			coderefs=this.$refs.yuanqiQRCode;
+			if(this.$refs.yuanqiQRCode)
+			{
+				coderefs=this.$refs.yuanqiQRCode;
+			}
 			console.log("111",coderefs);
 			if(coderefs.length>0){
 				for(let i=0;i<coderefs.length;i++)

@@ -21,7 +21,14 @@
 					<!-- loginType==1才有 -->
 					<view style="display: flex; align-items: center">
 						<view class="code" v-if="loginType == 1">
-							<image :src="code" mode="widthFix" />
+							<!-- <image :src="code" mode="widthFix" /> -->
+							<yuanqi-qr-code
+							    ref="yuanqiQRCode"
+							    :text="'/pages/profile/personinfo?id='+info.id"
+								:size="size"
+								borderSize=10
+								:logo="info.avatar"
+							    ></yuanqi-qr-code>
 						</view>
 						<view class="arrow">
 							<image :src="arrow" mode="widthFix" style="width: 32upx" />
@@ -131,6 +138,8 @@
 				arrow2,
 				loginType: 1,
 				userinfo:{},
+				size:120,
+				logo:"",
 				info: {
 					name: "雨新斯",
 					tel: "13590001234",
@@ -148,6 +157,8 @@
 					dyinspect: 12, //当月巡检数
 					inspection: 0.24, //巡检率
 					productday: 896,
+					id:"123",
+					avatar:avatar
 				},
 				// echarts配置
 				option: {
@@ -426,6 +437,19 @@
 		beforeMount() {
 			
 		},
+		mounted(){
+			console.log("mounted");
+			// 生成二维码
+			let coderefs=[];
+			if(this.$refs.yuanqiQRCode)
+			coderefs=this.$refs.yuanqiQRCode;
+			console.log("111",coderefs);
+			if(coderefs.length>0){
+				for(let i=0;i<coderefs.length;i++)
+			 this.$refs.yuanqiQRCode[i].make();
+			}
+			
+		},
 		onLoad() {
 		 	this.loginType = uni.getStorageSync("loginType")
 		 this.info.redifyrate = this.turn(this.info.redifyrate);
@@ -557,7 +581,7 @@
 					}
 
 					.code {
-						width: 64upx;
+						// width: 64upx;
 						float: right;
 						margin-right: 20upx;
 

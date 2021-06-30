@@ -435,6 +435,15 @@ class api {
 		})
 
 	}
+	// 企业查搜索
+     getFirmQuerySearch(data){
+		 return new Promise(resolve => {
+		 	get("/blade-system/dept/queryDeptList", data, {
+		 			"Blade-Auth": uni.getStorageSync("Blade-Auth")
+		 		})
+		 		.then(res => resolve(res.data))
+		 })
+	 }	
 	// 企业查详情
 	getFirmQueryDetail(data) {
 		return new Promise(resolve => {

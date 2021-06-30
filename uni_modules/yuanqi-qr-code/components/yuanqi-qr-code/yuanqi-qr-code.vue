@@ -49,7 +49,7 @@
 			return {
 				url: "",
 				isPainted: false,
-				canvasId: canvasId
+				canvasId: canvasId,
 				
 			};
 		},
