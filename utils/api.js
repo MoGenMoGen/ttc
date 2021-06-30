@@ -486,8 +486,12 @@ class api {
 		}).then(res=>resolve(res.data))
 	})
 	}
-	
-
+	//自检巡检确认
+	postBillSubmit(data) {
+		return new Promise(resolve => {
+			post("/blade-works/taskbill/billSubmit", data).then(res => relsolve(res))
+		})
+	}
 }
 export {
 	api

@@ -42,7 +42,8 @@
 				<text class="taskContentInListContent">{{ arr.completeDate }}</text>
 			</view>
 
-			<view class="taskContentInList" v-if=" (currentIndex != 0 && loginType == 1) || (currentIndex == 1 && loginType == 3) ">
+			<view class="taskContentInList"
+				v-if=" (currentIndex != 0 && loginType == 1) || (currentIndex == 1 && loginType == 3) ">
 				<text class="taskContentInListHead">逾期天数</text>
 				<text style="color:red" class="taskContentInListContent">{{arr.withinTime}}</text>
 			</view>
@@ -69,16 +70,16 @@
 					</view>
 				</view>
 				<view class="taskChoseList" v-for="(item,index) in arr.taskItemList" :key="index"
-					v-if="item.taskBillItem.types==1">
+					v-if="item.taskBillItem.types==2">
 					<view class="ListHead">
 						<text>{{ index + 1 }}、 </text>
 						<text>{{ item.taskBillItem.name }}</text>
 					</view>
 					<view class="choose">
 						<view>
-							<checkbox-group @change="checkboxChange">
-								<label v-for="(item1,index1) in item.taskItemOption" :key="index" class="radioInput">
-									<checkbox :value="index" /><text>{{item1.cont}}</text>
+							<checkbox-group @change="checkboxChange(index,$event)">
+								<label v-for="(item1,index1) in item.taskItemOption" :key="item1.id" class="radioInput">
+									<checkbox :value="item1.id" /><text>{{item1.cont}}</text>
 								</label>
 							</checkbox-group>
 						</view>
@@ -154,23 +155,16 @@
 						name: "无",
 					},
 				],
-				// imgList: ["/static/takephoto.png"],
+
 				arr: {
-					// number: "RW20210330001",
-					// content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-					// person: "张宁",
-					// subdate: "2020-12-15",
-					// withinTime: "四天",
-					// completeDate: "2020-03-20",
-					// reviewdate: "2021-5-20",
-					// taskStatus: "待执行",
-					// reform: "广知科技有限公司",
-					// Construction: "某某某服务有限公司"
 
 				},
 				taskChoseArr: [
-
-				],
+				], 
+				taskItemOption:[],
+				list:{
+					
+				}
 			};
 		},
 		methods: {
@@ -191,36 +185,49 @@
 
 			},
 			deleimg(index) {
-				this.arr.serverimgList.splice(index,1)
-				this.imgList.splice(index,1)
+				this.arr.serverimgList.splice(index, 1)
+				this.imgList.splice(index, 1)
 				this.arr.taskPic = this.arr.serverimgList.join(",");
 
 			},
 			backTo() {
 				uni.navigateBack()
 			},
-			sureTo(){
-				this.arr.rmks=this.textIn
-				console.log(this.arr.rmks)
-				console.log(this.arr.taskPic)
-				if(this.imgList==""){
-					uni.showToast({
-						title:"请选择照片",
-						icon:"none"
-					})
-					return false
-				}
-				
-				else if(this.arr.rmks==""){
-					uni.showToast({
-						title:"请输入备注",
-						icon:"none"
-					})
-					return false
-				}
-				uni.navigateBack({
-					
+			sureTo() {
+				this.list.id=this.id
+				this.list.taskPic=this.arr.taskPic
+				this.list.rmks=this.textIn
+				this.taskChoseArr.forEach(item=>{
+					this.taskItemOption=this.taskItemOption.concat(item.optionId)
 				})
+				this.list.taskItemOption=this.taskItemOption
+				console.log("aa",this.taskItemOption);
+				console.log(this.list);
+				if (this.imgList == "") {
+					uni.showToast({
+						title: "请选择照片",
+						icon: "none"
+					})
+					return false
+				} else if (this.taskChoseArr.rmks == "") {
+					uni.showToast({
+						title: "请输入备注",
+						icon: "none"
+					})
+					return false
+				}
+				else if(this.taskChoseArr.length != this.arr.taskItemList.length)
+				{
+					uni.showToast({
+						title:"存在选项未选",
+						icon:"none"
+					})
+					return false
+				}
+				this.api.postBillSubmit(this.list)
+				// uni.navigateBack({
+
+				// })
 			},
 			radioChange: function(index, evt) {
 				console.log(evt, index)
@@ -231,30 +238,48 @@
 				if (this.taskChoseArr.length === 0) {
 					this.taskChoseArr.push(data)
 				} else {
-					let j = 0,
-						flag = false
-					for (let i = 0; i < this.taskChoseArr.length; i++) {
-						console.log(this.taskChoseArr[i].itemId, data.itemId)
-						if (this.taskChoseArr[i].itemId == data.itemId) {
-							console.log(11)
-							flag = false
-							j= i
-						} else {
-							console.log(22)
-							flag = true
-						}
-					}
-					console.log(flag, j)
-					if (flag) {
-						this.taskChoseArr.push(data)
+					console.log(this.taskChoseArr.filter(item => item.itemId == data.itemId));
+					if (this.taskChoseArr.filter(item => item.itemId == data.itemId).length == 1) {
+						this.taskChoseArr.forEach(item1 => {
+							if (item1.itemId == data.itemId) {
+								item1.optionId = data.optionId
+							}
+						})
 					} else {
-						this.taskChoseArr[j].optionId = data.optionId
+						this.taskChoseArr.push(data)
 					}
 				}
 
 				console.log(this.taskChoseArr)
 			},
-			
+
+			checkboxChange: function(index, evt) {
+				console.log(index, evt.detail.value)
+
+				let data = {
+					itemId: this.arr.taskItemList[index].taskBillItem.id,
+					optionId: evt.detail.value
+				}
+				if (this.taskChoseArr.length == 0) {
+					this.taskChoseArr.push(data)
+				} else {
+					// console.log(this.taskChoseArr.filter(item => item.itemId == data.itemId));
+					if (this.taskChoseArr.filter(item => item.itemId == data.itemId).length == 1) {
+						this.taskChoseArr.forEach(item1 => {
+							if (item1.itemId == data.itemId) {
+								item1.optionId = data.optionId
+							}
+						})
+					} else {
+						this.taskChoseArr.push(data)
+					}
+				}
+				console.log("11",this.taskChoseArr);
+
+
+
+			}
+
 		},
 		onLoad(e) {
 			this.id = e.id
@@ -270,7 +295,7 @@
 				id: this.id
 			})
 		
-		
+
 			console.log("swqes", this.arr)
 		},
 		components: {},

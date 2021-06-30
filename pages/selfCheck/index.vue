@@ -3,60 +3,64 @@
 	<view class="pages_selfCheck">
 		<!--自定义 navbar -->
 		<view class="navbar">
-			自检任务
-		</view>
-		<view class="selfCheckContainer">
-			<view class="nav-top">
-				<view class="navheader" v-for="(item, index) in navList" :key="index"
-					:class="{ active: currentIndex == index }" @click="changeNav(index)">{{ item.title }}
-				</view>
+			<text>自检任务</text> 
+			<view class="back" @click="backTo">
+				<image src="../../static/leftto.png" mode=""></image> 
 			</view>
-			<searchBox :placeholderIn="placeholderIn"></searchBox>
-			<view class="taskContent">
-				<view class="taskContentIn" v-for="(item, index) in worksArr" :key="index" @click="taskContentTo(item.id)">
-					<view class="taskContentInList">
-						<image src="../../static/worktype.png" mode="" />
-						<text class="taskContentInListHead">任务编号 </text>
-						<text class="taskContentInListContent">{{ item.cd }}</text>
+			</view>
+			<view class="selfCheckContainer">
+				<view class="nav-top">
+					<view class="navheader" v-for="(item, index) in navList" :key="index"
+						:class="{ active: currentIndex == index }" @click="changeNav(index)">{{ item.title }}
 					</view>
-					<view class="taskContentInList ">
-						<image src="../../static/workcontent.png" mode="" />
-						<view class="taskContentInListHead">任务内容 </view>
-						<view class="taskContentInListContent">{{ item.contReport }}</view>
-					</view>
-					<view class="taskContentInList">
-						<image src="../../static/person.png" mode="" />
-						<text class="taskContentInListHead">执行人 </text>
-						<text class="taskContentInListContent">{{
+				</view>
+				<searchBox :placeholderIn="placeholderIn"></searchBox>
+				<view class="taskContent">
+					<view class="taskContentIn" v-for="(item, index) in worksArr" :key="index"
+						@click="taskContentTo(item.id)">
+						<view class="taskContentInList">
+							<image src="../../static/worktype.png" mode="" />
+							<text class="taskContentInListHead">任务编号 </text>
+							<text class="taskContentInListContent">{{ item.cd }}</text>
+						</view>
+						<view class="taskContentInList ">
+							<image src="../../static/workcontent.png" mode="" />
+							<view class="taskContentInListHead">任务内容 </view>
+							<view class="taskContentInListContent">{{ item.contReport }}</view>
+						</view>
+						<view class="taskContentInList">
+							<image src="../../static/person.png" mode="" />
+							<text class="taskContentInListHead">执行人 </text>
+							<text class="taskContentInListContent">{{
               item.performerId
             }}</text>
-					</view>
-					<view class="taskContentInList">
-						<image src="../../static/clock.png" mode="" />
-						<view class="taskContentInListHead">提交日期 </view>
-						<view class="taskContentInListContent">{{ item.completeDate }}</view>
-					</view>
-					<view v-if="currentIndex == 1" class="taskContentInList">
-						<image src="../../static/withinTime.png" mode="" />
-						<view style="color:red" class="taskContentInListHead">逾期天数
 						</view>
-						<view style="color:red" class="taskContentInListContent">
-          </view>
-					</view>
-					<view v-if="currentIndex == 2" class="taskContentInList">
-						<image src="../../static/completeDate.png" mode="" />
-						<view class="taskContentInListHead">完成日期 </view>
-						<view class="taskContentInListContent">{{
+						<view class="taskContentInList">
+							<image src="../../static/clock.png" mode="" />
+							<view class="taskContentInListHead">提交日期 </view>
+							<view class="taskContentInListContent">{{ item.completeDate }}</view>
+						</view>
+						<view v-if="currentIndex == 1" class="taskContentInList">
+							<image src="../../static/withinTime.png" mode="" />
+							<view style="color:red" class="taskContentInListHead">逾期天数
+							</view>
+							<view style="color:red" class="taskContentInListContent">
+							</view>
+						</view>
+						<view v-if="currentIndex == 2" class="taskContentInList">
+							<image src="../../static/completeDate.png" mode="" />
+							<view class="taskContentInListHead">完成日期 </view>
+							<view class="taskContentInListContent">{{
               item.completeDate
             }}</view>
+						</view>
 					</view>
 				</view>
+				<nomore></nomore>
 			</view>
-			<nomore></nomore>
-		</view>
 
-		<tabbar :loginType="loginType" :tabIndex='1' v-if=" loginType !=3"></tabbar>
-	</view>
+			<tabbar :loginType="loginType" :tabIndex='1' v-if=" loginType !=3"></tabbar>
+		</view>
 
 </template>
 
@@ -119,11 +123,11 @@
 		methods: {
 			changeNav(index) {
 				this.currentIndex = index;
-				this.worksArr=[]
+				this.worksArr = []
 				this.getList({
-					state:this.currentIndex+1,
-					current:1,
-					size:5
+					state: this.currentIndex + 1,
+					current: 1,
+					size: 5
 				})
 			},
 			change(path) {
@@ -143,6 +147,12 @@
 				this.total = data.total;
 				console.log(data.records);
 			},
+			backTo(){
+				console.log(1111);
+				uni.switchTab({
+					url:"../index/index"
+				})
+			}
 		},
 		components: {
 			searchBox,
@@ -155,15 +165,15 @@
 				animation: false,
 
 			})
-			this.worksArr=[]
-			this.page={
-				current:1,
-				size:5
+			this.worksArr = []
+			this.page = {
+				current: 1,
+				size: 5
 			}
-			this.loginType=uni.getStorageSync("loginType")
+			this.loginType = uni.getStorageSync("loginType")
 			this.getList({
 				...{
-					state:this.currentIndex+1
+					state: this.currentIndex + 1
 				},
 				...this.page
 			})
@@ -171,37 +181,36 @@
 		onLoad() {
 			this.loginType = uni.getStorageSync("loginType")
 		},
-		onReachBottom(){
+		onReachBottom() {
 			console.log("触底");
-			if(this.total<=this.worksArr.length){
+			if (this.total <= this.worksArr.length) {
 				console.log(this.total, this.worksArr.length, "fffff");
-			}
-			else{
+			} else {
 				console.log(this.total, this.worksArr.length);
-				this.page.current+=1;
+				this.page.current += 1;
 				this.getList({
 					...this.page,
 					...{
-						state:this.currentIndex+1
+						state: this.currentIndex + 1
 					}
 				})
 			}
 		},
 		onPullDownRefresh() {
-			this.page={
-				current:1,
-				size:5,
+			this.page = {
+				current: 1,
+				size: 5,
 			}
-			this.worksArr=[];
+			this.worksArr = [];
 			this.getList({
 				...this.page,
 				...{
-					state:this.currentIndex+1
+					state: this.currentIndex + 1
 				}
 			})
-			setTimeout(function(){
+			setTimeout(function() {
 				uni.stopPullDownRefresh()
-			},1000)
+			}, 1000)
 		}
 	};
 </script>
@@ -219,7 +228,7 @@
 		background-color: #fafafa;
 		position: fixed;
 		top: 0;
-		padding-top:var(--status-bar-height);
+		padding-top: var(--status-bar-height);
 		z-index: 1000;
 		text-align: center;
 		height: 88upx;
@@ -227,6 +236,20 @@
 		width: 100%;
 		font-size: 34rpx;
 		color: #000000;
+	}
+
+	.back {
+		position: absolute;
+		top: 50%;
+		left: 34rpx;
+		width: 18rpx;
+		height: 34rpx;
+	
+	}
+	.back image{
+		
+			width: 100%;
+			height: 100%;
 	}
 
 	.selfCheckContainer {
