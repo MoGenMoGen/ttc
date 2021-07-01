@@ -4,12 +4,11 @@
 		<view class="taskContent">
 			<view class="taskContentInList">
 				<text class="taskContentInListHead">任务编号 </text>
-				<text class="taskContentInListContent">{{ arr.number }}</text>
+				<text class="taskContentInListContent">{{ arr.cd }}</text>
 			</view>
 			<view class="taskContentInListTwo">
-				<text class="taskContentInListHead" v-if="loginType == 3 && currentIndex == 1">提醒内容</text>
-				<text class="taskContentInListHead" v-else>任务内容</text>
-				<text class="taskContentInListContent">{{ arr.content }}</text>
+				<text class="taskContentInListHead">任务内容</text>
+				<text class="taskContentInListContent">{{ arr.contReport }}</text>
 			</view>
 			<view class="taskContentInListTwo">
 				<text class="taskContentInListHead">整改单位</text>
@@ -22,11 +21,11 @@
 
 			<view class="taskContentInList">
 				<text class="taskContentInListHead">执行人 </text>
-				<text class="taskContentInListContent">{{ arr.person }}</text>
+				<text class="taskContentInListContent">{{ arr.issueUserName }}</text>
 			</view>
 			<view class="taskContentInList">
 				<text class="taskContentInListHead">提交日期 </text>
-				<text class="taskContentInListContent">{{ arr.subdate }}</text>
+				<text class="taskContentInListContent">{{ arr.completeDate }}</text>
 			</view>
 
 			<view class="taskContentInList">
@@ -35,11 +34,11 @@
 			</view>
 			<view class="taskContentInList">
 				<text class="taskContentInListHead">任务状态</text>
-				<text class="taskContentInListContent">{{ arr.taskStatus }}</text>
+				<text class="taskContentInListContent">{{ currentState(arr.state) }}</text>
 			</view>
 			<view class="taskContentInList" v-if="currentIndex == 2">
 				<text class="taskContentInListHead">完成日期</text>
-				<text class="taskContentInListContent">{{ arr.completeDate }}</text>
+				<text class="taskContentInListContent"></text>
 			</view>
 
 			<view class="taskContentInList" v-if="
@@ -47,41 +46,60 @@
         ">
 				<text class="taskContentInListHead">逾期天数</text>
 				<text style="color:red" class="taskContentInListContent">{{
-          arr.withinTime
+          arr.nextDate
         }}</text>
 			</view>
 		</view>
 		<view class="taskBodyOne" v-if="currentIndex != 2">
 			<view class="taskChose">
-				<view class="taskChoseList" v-for="(item, index) in taskChoseArr" :key="index">
+				<view class="taskChoseList" v-for="(item, index) in arr.taskItemList" :key="index"
+					v-if="item.taskBillItem.types==1">
 					<view class="ListHead">
 						<text>{{ index + 1 }}、 </text>
-						<text>{{ item.name }}</text>
+						<text>{{ item.taskBillItem.name }}</text>
 					</view>
 					<view class="choose">
-						<text>有</text>
 						<view>
-							<image style="width:32rpx;height:32rpx;" src="../../static/isChosed.png"></image>
-							<image style="width:32rpx;height:32rpx;" src="../../static/unChosed.png"></image>
-						</view>
+							<radio-group @change="radioChange(index,$event)">
+								<label v-for="(item1,index1) in item.taskItemOption" :key="item1.id" class="radioInput">
+									<radio :value="item1.id" style="transform: scale(0.60)" />
+									<text>{{item1.cont}}</text>
+								</label>
+							</radio-group>
 
-						<text>无</text>
+						</view>
+					</view>
+				</view>
+				<view class="taskChoseList" v-for="(item,index) in arr.taskItemList" :key="index"
+					v-if="item.taskBillItem.types==2">
+					<view class="ListHead">
+						<text>{{ index + 1 }}、 </text>
+						<text>{{ item.taskBillItem.name }}</text>
+					</view>
+					<view class="choose">
 						<view>
-							<image style="width:32rpx;height:32rpx;" src="../../static/isChosed.png"></image>
-							<image style="width:32rpx;height:32rpx;" src="../../static/unChosed.png"></image>
+							<checkbox-group @change="checkboxChange(index,$event)">
+								<label v-for="(item1,index1) in item.taskItemOption" :key="item1.id" class="radioInput">
+									<checkbox :value="item1.id" /><text>{{item1.cont}}</text>
+								</label>
+							</checkbox-group>
 						</view>
 					</view>
 				</view>
 			</view>
 			<view class="photograpBox">
 				<view class="title">拍照上传 </view>
-				<view class="photograp" v-if="loginType == 1">
-					<image src="../../static/takephoto.png" mode="" @click="toPhoto()" />
-				</view>
+				<view class="photo">
 
-				<view class="choseImg" v-for="(item, index) in imgList" :key="index">
-					<image :src="item" mode="" class="imgs" v-if="loginType == 1" />
-					<image v-if="loginType == 1" class="deleteImg" :src="del" mode="" @click="deleimg(index)" />
+
+					<view class="photograp" v-if="loginType == 1">
+						<image src="../../static/takephoto.png" mode="" @click="toPhoto()" />
+					</view>
+
+					<view class="choseImg" v-for="(item, index) in imgList" :key="index">
+						<image :src="item" mode="" class="imgs" v-if="loginType == 1" />
+						<image v-if="loginType == 1" class="deleteImg" :src="del" mode="" @click="deleimg(index)" />
+					</view>
 				</view>
 			</view>
 			<view class="note">
@@ -121,72 +139,113 @@
 	export default {
 		data() {
 			return {
+				currentIndex: 1,
 				loginType: 2,
 				del,
 				activeRadio: "",
 				check: "10",
 				checkTwo: "20",
 				radioGroup: ["有", "无"],
-				imgList: ["/static/takephoto.png"],
-				arr: {
-					number: "RW20210330001",
-					content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-					person: "张宁",
-					subdate: "2020-12-15",
-					withinTime: "四天",
-					completeDate: "2020-03-20",
-					reviewdate: "2021-5-20",
-					taskStatus: "待执行",
-					reform: "广知科技有限公司",
-					Construction: "某某某服务有限公司",
-				},
-				taskChoseArr: [{
-						name: "消防控制室",
-						case: "有",
-					},
-					{
-						name: "火灾自动报警系统",
-						case: "有",
-					},
-					{
-						name: "自动灭火系统",
-						case: "有",
-					},
-					{
-						name: "防排烟系统",
-						case: "有",
-					},
-					{
-						name: "灭火器",
-						case: "有",
-					},
+				imgList: [],
+				arr: {},
+				taskChoseArr: [
+
 				],
 			};
 		},
+
 		methods: {
-			toPhoto() {
-				uni.chooseImage({
-					sourceType: ["camera", "album "],
-					success: function(res) {
-						console.log(JSON.stringify(res.tempFilePaths));
-					},
-					fail(err) {
-						console.log(err);
-					},
-				});
+			async toPhoto() {
+				this.imgList = [...this.imgList, ...await this.api.chooseImages('', 9)];
+				let path = this.imgList;
+				console.log("wew", this.imgList)
+
+				let path1 = [];
+				this.arr.taskPic = '';
+				for (let i = 0; i < path.length; i++) {
+					console.log(i, "dwsfsf54645646");
+					let res = await this.api.upLoad(path[i]);
+					path1.push(res)
+				}
+				this.arr.serverimgList = path1;
+				this.arr.taskPic = this.arr.serverimgList.join(",");
+
 			},
 			deleimg(index) {
 				this.imgList.splice(index);
-				console.log("dele");
+				this.imgList.splice(index, 1)
+				this.arr.taskPic = this.arr.serverimgList.join(",");
 			},
 			backTo() {
 				uni.navigateBack()
+			},
+			radioChange: function(index, evt) {
+				let data = {
+					itemId: this.arr.taskItemList[index].taskBillItem.id,
+					optionId: evt.detail.value
+				}
+				if (this.taskChoseArr.length === 0) {
+					this.taskChoseArr.push(data)
+				} else {
+					console.log(this.taskChoseArr.filter(item => item.itemId == data.itemId));
+					if (this.taskChoseArr.filter(item => item.itemId == data.itemId).length == 1) {
+						this.taskChoseArr.forEach(item1 => {
+							if (item1.itemId == data.itemId) {
+								item1.optionId = data.optionId
+							}
+						})
+					} else {
+						this.taskChoseArr.push(data)
+					}
+				}
+			},
+			checkboxChange: function(index, evt) {
+				let data = {
+					itemId: this.arr.taskItemList[index].taskBillItem.id,
+					optionId: evt.detail.value
+				}
+				if (this.taskChoseArr.length == 0) {
+					this.taskChoseArr.push(data)
+				} else {
+					// console.log(this.taskChoseArr.filter(item => item.itemId == data.itemId));
+					if (this.taskChoseArr.filter(item => item.itemId == data.itemId).length == 1) {
+						this.taskChoseArr.forEach(item1 => {
+							if (item1.itemId == data.itemId) {
+								item1.optionId = data.optionId
+							}
+						})
+					} else {
+						this.taskChoseArr.push(data)
+					}
+				}
+			}
+		},
+		computed: {
+			currentState() {
+				return function(state) {
+					if (state == 1)
+						return "待签收";
+					else if (state == 2)
+						return "待执行";
+					else if (state == 3)
+						return "已完成"
+					else if (state == 4)
+						return "已结案"
+				}
 			}
 		},
 		onLoad(e) {
+			this.id = e.id
 			this.currentIndex = e.currentIndex;
 			// 从缓存中获取loginType,角色信息
 			this.loginType = uni.getStorageSync("loginType")
+		},
+		async onShow() {
+			this.arr = await this.api.getBillDetail({
+				id: this.id
+			})
+			this.arr.taskPic = this.arr.taskPic.split(",")
+
 		},
 		components: {},
 	};

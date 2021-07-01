@@ -4,8 +4,8 @@
 		<!--自定义 navbar -->
 		<view class="navbar">
 			<text>自检任务</text> 
-			<view class="back" @click="backTo">
-				<image src="../../static/leftto.png" mode=""></image> 
+			<view class="back" @click="backTo" v-if="loginType==3">
+				<image src="../../static/back.png" mode=""></image> 
 			</view>
 			</view>
 			<view class="selfCheckContainer">
@@ -28,11 +28,16 @@
 							<view class="taskContentInListHead">任务内容 </view>
 							<view class="taskContentInListContent">{{ item.contReport }}</view>
 						</view>
+						<view class="taskContentInList " v-if="loginType==3">
+							<image src="../../static/qiye.png" mode="" />
+							<view class="taskContentInListHead">企业名称</view>
+							<view class="taskContentInListContent">{{ item.performOrgName }}</view>
+						</view>
 						<view class="taskContentInList">
 							<image src="../../static/person.png" mode="" />
 							<text class="taskContentInListHead">执行人 </text>
 							<text class="taskContentInListContent">{{
-              item.performerId
+              item.issueUserName
             }}</text>
 						</view>
 						<view class="taskContentInList">
@@ -51,7 +56,7 @@
 							<image src="../../static/completeDate.png" mode="" />
 							<view class="taskContentInListHead">完成日期 </view>
 							<view class="taskContentInListContent">{{
-              item.completeDate
+              item.completeTime
             }}</view>
 						</view>
 					</view>
@@ -73,7 +78,7 @@
 			return {
 				loginType: 1,
 				currentIndex: 0,
-				placeholderIn: "任务编号、任务内容",
+				placeholderIn: "任务编号",
 				navList: [{
 						title: "待执行任务",
 					},
@@ -85,38 +90,6 @@
 					},
 				],
 				worksArr: [
-					// {
-					// 	number: "RW20210330001",
-					// 	content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-					// 	person: "张宁",
-					// 	subdate: "2020-12-15",
-					// 	withinTime: "四天",
-					// 	completeDate: "2020-03-20",
-					// },
-					// {
-					// 	number: "RW20210330001",
-					// 	content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-					// 	person: "张宁",
-					// 	subdate: "2020-12-15",
-					// 	withinTime: "四天",
-					// 	completeDate: "2020-03-20",
-					// },
-					// {
-					// 	number: "RW20210330001",
-					// 	content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-					// 	person: "张宁",
-					// 	subdate: "2020-12-15",
-					// 	withinTime: "四天",
-					// 	completeDate: "2020-03-20",
-					// },
-					// {
-					// 	number: "RW20210330001",
-					// 	content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-					// 	person: "张宁",
-					// 	subdate: "2020-12-15",
-					// 	withinTime: "四天",
-					// 	completeDate: "2020-03-20",
-					// },
 				],
 			};
 		},
@@ -167,7 +140,7 @@
 			})
 			this.worksArr = []
 			this.page = {
-				current: 1,
+				current: 1, 
 				size: 5
 			}
 			this.loginType = uni.getStorageSync("loginType")

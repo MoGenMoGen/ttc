@@ -7,45 +7,49 @@
 				<text class="taskContentInListContent">{{ arr.cd }}</text>
 			</view>
 			<view class="taskContentInListTwo">
-				<text class="taskContentInListHead" v-if="loginType == 3 && currentIndex == 1">提醒内容</text>
-				<text class="taskContentInListHead" v-else>任务内容</text>
+				<!-- <text class="taskContentInListHead" v-if="loginType == 3 && currentIndex == 1">提醒内容</text> -->
+				<text class="taskContentInListHead" >任务内容</text>
 				<text class="taskContentInListContent">{{ arr.contReport }}</text>
 			</view>
-			<view class="taskContentInListTwo" v-if="loginType == 3">
+			<!-- <view class="taskContentInListTwo" v-if="loginType == 3">
 				<text class="taskContentInListHead">整改单位</text>
 				<text class="taskContentInListContent">{{ arr.reform }}</text>
+			</view> -->
+			<view class="taskContentInList"  v-if="loginType == 3">
+				<text class="taskContentInListHead">企业名称 </text>
+				<text class="taskContentInListContent">{{ arr.performOrgName }}</text>
 			</view>
-			<view class="taskContentInList" v-if="loginType == 3 && currentIndex != 0">
+			<view class="taskContentInList" v-if="loginType == 3 && currentIndex==2">
 				<text class="taskContentInListHead">施工单位 </text>
 				<text class="taskContentInListContent">{{ arr.Construction }}</text>
 			</view>
 
 			<view class="taskContentInList">
 				<text class="taskContentInListHead">执行人 </text>
-				<text class="taskContentInListContent">{{ arr.performerId }}</text>
+				<text class="taskContentInListContent">{{ arr.issueUserName }}</text>
 			</view>
 			<view class="taskContentInList">
 				<text class="taskContentInListHead">提交日期 </text>
-				<text class="taskContentInListContent">{{ arr.subdate }}</text>
+				<text class="taskContentInListContent">{{ arr.completeDate }}</text>
 			</view>
 
-			<view class="taskContentInList" v-if="loginType == 3">
+			<view class="taskContentInList" v-if="loginType == 3&& currentIndex==2">
 				<text class="taskContentInListHead">复查日期</text>
 				<text class="taskContentInListContent">{{ arr.reviewdate }}</text>
 			</view>
-			<view class="taskContentInList" v-if="loginType == 3">
+			<view class="taskContentInList" v-if="loginType == 3&& currentIndex==2">
 				<text class="taskContentInListHead">任务状态</text>
-				<text class="taskContentInListContent">{{ arr.state }}</text>
+				<text class="taskContentInListContent">{{currentState(arr.state) }}</text>
 			</view>
 			<view class="taskContentInList" v-if="currentIndex == 2">
 				<text class="taskContentInListHead">完成日期</text>
-				<text class="taskContentInListContent">{{ arr.completeDate }}</text>
+				<text class="taskContentInListContent"></text>
 			</view>
 
 			<view class="taskContentInList"
 				v-if=" (currentIndex != 0 && loginType == 1) || (currentIndex == 1 && loginType == 3) ">
 				<text class="taskContentInListHead">逾期天数</text>
-				<text style="color:red" class="taskContentInListContent">{{arr.withinTime}}</text>
+				<text style="color:red" class="taskContentInListContent">{{arr.nextDate}}</text>
 			</view>
 		</view>
 		<view class="taskBodyOne">
@@ -89,8 +93,6 @@
 			<view class="photograpBox" v-if="currentIndex!=2">
 				<view class="title">拍照上传 </view>
 				<view class="photo">
-
-
 					<view class="photograp" v-if="loginType == 1">
 						<image src="../../static/takephoto.png" mode="" @click="toPhoto()" />
 					</view>
@@ -106,26 +108,28 @@
 				<textarea v-if="loginType==1" v-model="textIn" class="textIn" name="" id="" cols="30" rows="10"
 					placeholder="多行输入" placeholder-class="textInPlaceholder"></textarea>
 			</view>
-			<view class="bottomBtn" v-if="loginType==1">
+			<view class="bottomBtn" v-if="loginType==1&&currentIndex!=2">
 				<button class="cancel" @click="backTo">取消</button>
 				<button class="confirm" @click="sureTo">确认完成</button>
 			</view>
 			<view class="taskState" v-if="loginType==3&&currentIndex!=2">
 				<text>任务状态</text>
-				<text class="perform">待执行</text>
+				<text class="perform">{{currentState(arr.state)}}</text>
 			</view>
 		</view>
 		<view class="taskBodyTwo" v-if="currentIndex == 2">
 			<view class="taskIn">
-				<view class="taskInList" v-for="(item, index) in taskChoseArr" :key="index">
+				<view class="taskInList" v-for="(item, index) in arr.taskItemList" :key="index">
 					<text>{{ index +1}}、 </text>
-					<text>{{ item.name }}</text>
-					<view class="taskInCase">有</view>
+					<text>{{ item.taskBillItem.name }}</text>
+					<view class="taskInCase" v-for="(item1,index1) in item.taskItemOption" :key="index">
+						<text v-if="item1.state==1">{{item1.cont}}</text>
+					</view>
 				</view>
 			</view>
 			<view class="choosedImg">
-				<view class="imgContainer">
-					<image src="../../static/takephoto.png" mode="" />
+				<view class="imgContainer" >
+					<image v-for="(item,index) in arr.taskPic" :key="index" :src="item" mode="" />
 				</view>
 			</view>
 		</view>
@@ -146,7 +150,7 @@
 				activeRadio: "",
 				check: "10",
 				checkTwo: "20",
-				flag: false,
+				
 				items: [{
 						name: "有",
 
@@ -166,6 +170,20 @@
 					
 				}
 			};
+		},
+		computed:{
+			currentState() {
+				return function(state) {
+					if (state == 1)
+						return "待签收";
+					else if (state == 2)
+						return "待执行";
+					else if (state == 3)
+						return "已完成"
+					else if (state == 4)
+						return "已结案"
+				}  
+			}
 		},
 		methods: {
 			async toPhoto() {
@@ -194,15 +212,7 @@
 				uni.navigateBack()
 			},
 			sureTo() {
-				this.list.id=this.id
-				this.list.taskPic=this.arr.taskPic
-				this.list.rmks=this.textIn
-				this.taskChoseArr.forEach(item=>{
-					this.taskItemOption=this.taskItemOption.concat(item.optionId)
-				})
-				this.list.taskItemOption=this.taskItemOption
-				console.log("aa",this.taskItemOption);
-				console.log(this.list);
+			
 				if (this.imgList == "") {
 					uni.showToast({
 						title: "请选择照片",
@@ -224,10 +234,19 @@
 					})
 					return false
 				}
+				this.list.id=this.id
+				this.list.taskPic=this.arr.taskPic
+				this.list.rmks=this.textIn
+				this.taskChoseArr.forEach(item=>{
+					this.taskItemOption=this.taskItemOption.concat(item.optionId)
+				})
+				this.list.taskItemOption=this.taskItemOption
+				console.log("aa",this.taskItemOption);
+				console.log(this.list);
 				this.api.postBillSubmit(this.list)
-				// uni.navigateBack({
+				uni.navigateBack({
 
-				// })
+				})
 			},
 			radioChange: function(index, evt) {
 				console.log(evt, index)
@@ -294,7 +313,9 @@
 			this.arr = await this.api.getBillDetail({
 				id: this.id
 			})
-		
+			this.arr.taskPic=this.arr.taskPic.split(",")
+			console.log('22',this.arr.taskPic)
+			
 
 			console.log("swqes", this.arr)
 		},
@@ -574,7 +595,6 @@
 
 	.choosedImg {
 		width: 710rpx;
-		height: 208rpx;
 		background: #ffffff;
 		box-shadow: 0rpx 4rpx 10rpx rgba(0, 0, 0, 0.04);
 		opacity: 1;
@@ -584,15 +604,18 @@
 	}
 
 	.imgContainer {
-		width: 160rpx;
-		height: 160rpx;
+		width: 600rpx;
+		
+		// height: 160rpx;
 		background: rgba(0, 0, 0, 0);
 		opacity: 1;
+		word-wrap: break-word;
 	}
 
 	.imgContainer image {
-		width: 100%;
-		height: 100%;
+		margin-left:30rpx ;
+		width:160rpx;
+		height: 160rpx;
 	}
 
 	.taskState {

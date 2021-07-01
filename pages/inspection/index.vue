@@ -10,42 +10,42 @@
 			</view>
 			<searchBox :placeholderIn="placeholderIn"></searchBox>
 			<view class="taskContent">
-				<view class="taskContentIn" v-for="(item, index) in worksArr" :key="index" @click="taskContentTo()">
+				<view class="taskContentIn" v-for="(item, index) in worksArr" :key="index" @click="taskContentTo(item.id)">
 					<view class="taskContentInList">
 						<image src="../../static/worktype.png" mode="" />
 						<text class="taskContentInListHead">任务编号</text>
-						<text class="taskContentInListContent">{{ item.number }}</text>
+						<text class="taskContentInListContent">{{ item.cd}}</text>
 					</view>
 					<view class="taskContentInList ">
 						<image src="../../static/workcontent.png" mode="" />
 						<view class="taskContentInListHead">任务内容 </view>
-						<view class="taskContentInListContent">{{ item.content }}</view>
+						<view class="taskContentInListContent">{{ item.contReport }}</view>
 					</view>
 					<view class="taskContentInList">
 						<image src="../../static/person.png" mode="" />
 						<text class="taskContentInListHead">执行人 </text>
 						<text class="taskContentInListContent">{{
-              item.person
+              item.issueUserName
             }}</text>
 					</view>
 					<view class="taskContentInList">
 						<image src="../../static/clock.png" mode="" />
 						<view class="taskContentInListHead">提交日期 </view>
-						<view class="taskContentInListContent">{{ item.subdate }}</view>
+						<view class="taskContentInListContent">{{ item.completeDate }}</view>
 					</view>
 					<view v-if="currentIndex == 1" class="taskContentInList">
 						<image src="../../static/withinTime.png" mode="" />
 						<view style="color:red" class="taskContentInListHead">逾期天数
 						</view>
-						<view style="color:red" class="taskContentInListContent">{{
-              item.withinTime
-            }}</view>
+						<view style="color:red" class="taskContentInListContent">
+             
+           </view>
 					</view>
 					<view v-if="currentIndex == 2" class="taskContentInList">
 						<image src="../../static/completeDate.png" mode="" />
 						<view class="taskContentInListHead">完成日期 </view>
 						<view class="taskContentInListContent">{{
-              item.completeDate
+              item.completeTime
             }}</view>
 					</view>
 				</view>
@@ -67,7 +67,7 @@
 			return {
 				loginType: 1,
 				currentIndex: 0,
-				placeholderIn: "任务编号、任务内容",
+				placeholderIn: "任务编号",
 				navList: [{
 						title: "企业待办",
 					},
@@ -78,55 +78,38 @@
 						title: "已完成任务",
 					},
 				],
-				worksArr: [{
-						number: "RW20210330001",
-						content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-						person: "张宁",
-						subdate: "2020-12-15",
-						withinTime: "四天",
-						completeDate: "2020-03-20",
-					},
-					{
-						number: "RW20210330001",
-						content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-						person: "张宁",
-						subdate: "2020-12-15",
-						withinTime: "四天",
-						completeDate: "2020-03-20",
-					},
-					{
-						number: "RW20210330001",
-						content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-						person: "张宁",
-						subdate: "2020-12-15",
-						withinTime: "四天",
-						completeDate: "2020-03-20",
-					},
-					{
-						number: "RW20210330001",
-						content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-						person: "张宁",
-						subdate: "2020-12-15",
-						withinTime: "四天",
-						completeDate: "2020-03-20",
-					},
+				worksArr: [
+					
 				],
 			};
 		},
 		methods: {
 			changeNav(index) {
 				this.currentIndex = index;
+				this.worksArr = []
+				this.getList({
+					state: this.currentIndex + 1,
+					current: 1,
+					size: 5
+				})
 			},
 			change(path) {
 				uni.reLaunch({
 					url: path,
 				});
 			},
-			taskContentTo() {
+			taskContentTo(id) {
 				console.log(111);
 				uni.navigateTo({
-					url: `/pages/inspection/detail?currentIndex=${this.currentIndex}`,
+					url: `/pages/inspection/detail?currentIndex=${this.currentIndex}&id=${id}`,
 				});
+			},
+			async getList(params) {
+				let data = await this.api.getBillList(params)
+				console.log(data);
+				this.worksArr = [...this.worksArr, ...data.records]
+				this.total = data.total;
+				console.log(data.records);
 			},
 		},
 		components: {
@@ -143,8 +126,52 @@
 			uni.hideTabBar({
 				animation: false,
 
+			}) 
+			this.worksArr = []
+			this.page = {
+				current: 1,
+				size: 5
+			}
+			this.getList({
+				...{
+					state: this.currentIndex + 1
+				},
+				...this.page
 			})
+			
+			
 		},
+		onReachBottom() {
+			console.log("触底");
+			if (this.total <= this.worksArr.length) {
+				console.log(this.total, this.worksArr.length, "fffff");
+			} else {
+				console.log(this.total, this.worksArr.length);
+				this.page.current += 1;
+				this.getList({
+					...this.page,
+					...{
+						state: this.currentIndex + 1
+					}
+				})
+			}
+		},
+		onPullDownRefresh() {
+			this.page = {
+				current: 1,
+				size: 5,
+			}
+			this.worksArr = [];
+			this.getList({
+				...this.page,
+				...{
+					state: this.currentIndex + 1
+				}
+			})
+			setTimeout(function() {
+				uni.stopPullDownRefresh()
+			}, 1000)
+		}
 	};
 </script>
 

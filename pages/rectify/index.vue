@@ -4,7 +4,7 @@
 			<view class="title">
 				整改单
 			</view>
-			<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo" style="margin-top: 100rpx;">
+			<image v-if="loginType==3||loginType==2" src="../../static/add.png" mode="widthFix" @click="addNewTo">
 			</image>
 
 		</view>
@@ -109,37 +109,9 @@
 					current: 1,
 					size: 5
 				},
-				listBar: ["代签收", "待执行", "待结案", "已完成"],
+				listBar: ["待签收", "待执行", "待结案", "已完成"],
 				listBody: [
-					// {
-					// 	cd:"RW20210330001",
-					// 	content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-					// 	issueDay:"2020-12-15",
-					// 	currentState:"待签收",
-					// 	receiptDate:"2020-3-20",
-					// 	finishDate:'2020-3-20'
-					// },
-					// {
-					// 	cd:"RW20210330001",
-					// 	content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-					// 	issueDay:"2020-12-15",
-					// 	currentState:"待签收",
-					// 	receiptDate:"2020-3-20",finishDate:'2020-3-20'
-					// },
-					// {
-					// 	cd:"RW20210330001",
-					// 	content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-					// 	issueDay:"2020-12-15",
-					// 	currentState:"待签收",
-					// 	receiptDate:"2020-3-20",finishDate:'2020-3-20'
-					// },
-					// {
-					// 	cd:"RW20210330001",
-					// 	content: "消防器材未按照标准规范摆放，消防通道有障碍物存放",
-					// 	issueDay:"2020-12-15",
-					// 	currentState:"待签收",
-					// 	receiptDate:"2020-3-20",finishDate:'2020-3-20'
-					// },
+					
 				]
 			}
 		},
