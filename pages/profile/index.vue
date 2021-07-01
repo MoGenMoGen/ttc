@@ -5,17 +5,17 @@
 			
 			<!-- 个人中心头部背景部分 开始 -->
 			<view class="profile_info_bg">
-				<view class="profile_info" @click="goToperson">
+				<view class="profile_info" @click="goToperson(userinfo.user_id)">
 					<view style="display: flex">
 						<view class="avatar">
-							<image :src="avatar" mode="aspectFill" />
+							<image :src="userdata.avatar?userdata.avatar:avatar" mode="aspectFill" />
 						</view>
 						<view class="info_detail">
 							<view class="myinfo">
-								<text class="name">{{ info.name }}</text>
-								<text class="tel">{{ info.tel }}</text>
+								<text class="name">{{ userdata.realName }}</text>
+								<text class="tel">{{ userdata.phone }}</text>
 							</view>
-							<view class="film_name">{{ info.film }}</view>
+							<view class="film_name">{{ userdata.deptName }}</view>
 						</view>
 					</view>
 					<!-- loginType==1才有 -->
@@ -27,7 +27,7 @@
 							    :text="'/pages/profile/personinfo?id='+info.id"
 								:size="size"
 								borderSize=10
-								:logo="info.avatar"
+								:logo="userdata.avatar?userdata.avatar:avatar"
 							    ></yuanqi-qr-code>
 						</view>
 						<view class="arrow">
@@ -138,8 +138,10 @@
 				arrow2,
 				loginType: 1,
 				userinfo:{},
-				size:120,
+				size:50,
 				logo:"",
+				// 用户基本信息
+				userdata:{avatar:"",realName:"",phone:"",deptName:""},
 				info: {
 					name: "雨新斯",
 					tel: "13590001234",
@@ -159,6 +161,10 @@
 					productday: 896,
 					id:"123",
 					avatar:avatar
+				},
+				// 工单信息
+				order:{
+					
 				},
 				// echarts配置
 				option: {
@@ -398,9 +404,9 @@
 				});
 			},
 			// 进入个人中心
-			goToperson() {
+			goToperson(id) {
 				uni.navigateTo({
-					url: '/pages/profile/personinfo'
+					url: `/pages/profile/personinfo?id=${id}`
 				});
 			},
 			// 进入资料库
@@ -429,8 +435,6 @@
 				});
 			},
 		},
-
-
 		components: {
 			tabbar,
 		},
@@ -450,18 +454,24 @@
 			}
 			
 		},
-		onLoad() {
+		async onLoad() {
 		 	this.loginType = uni.getStorageSync("loginType")
 		 this.info.redifyrate = this.turn(this.info.redifyrate);
 		 this.info.inspection = this.turn(this.info.inspection);
-		 console.log(this.info.redifyrate,typeof(this.info.redifyrate));
 		 this.userinfo=uni.getStorageSync("userinfo")
+		 // 获取个人信息
+		 let userdata=await this.api.getuserInfo(this.userinfo.user_id)
+		 this.userdata=userdata
+		 // 获取工单信息
+		 let order=await this.api.getorder(this.userinfo.user_id)
+		 console.log("工单信息",order);
 		 },
-		onShow() {
+		async onShow() {
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
 				animation: false
 			})
+			
 			
 		},
 	};

@@ -2,27 +2,25 @@
 <!-- 资料库详情页面 -->
  <view class="pages_help">
    <view class="wrapper">
-     <view class="content">帮助中心文档内容帮助中心文档内容帮助中心文档内
-容帮助中心文档内容帮助中心文档内容帮助中心文档
-内容帮助中心文档内容帮助中心文档内容帮助中心文
-档内容帮助中心文档内容帮助中心文档内容帮助中心
-文档内容帮助中心文档内容帮助中心文档内容帮助中
-心文档内容帮助中心文档内容帮助中心文档内容帮助
-中心文档内容帮助中心文档内容帮助中心文档内容帮
-助中心文档内容帮助中心文档内容帮助中心文档内容
-帮助中心文档内容帮助中心文档内容帮助中心文档内
-容帮助中心文档内容帮助中心文档内容帮助中心文档
-内容帮助中心文档内容帮助中心文档</view>
+     <view class="content" v-html="content"></view>
    </view>
  </view>
 </template>
 
 <script>
 export default {
- onLoad() {
+	data(){
+		return {
+			content:""
+		}
+	},
+ async onLoad(e) {
   	this.loginType = uni.getStorageSync("loginType")
+	let data=await this.api.getBillDetail({id:e.id})
+	console.log("资料库详情页面",data);
+	this.content=data.informContent
+  },
   
-  }
 }
 </script>
 

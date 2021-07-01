@@ -501,6 +501,66 @@ class api {
 			post("/blade-works/taskbill/billSubmit", data).then(res => relsolve(res))
 		})
 	}
+	// 个人中心资料库列表
+	getlibList(){
+		return new Promise(resolve=>{
+				get("/blade-works/datalib/libList",{},{
+					"Content-Type": "application/json",
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
+				
+			}).then(res=>resolve(res.data))
+		})
+	}
+	// 个人中心资料库详情
+	getBillDetail(data){
+		return new Promise(resolve=>{
+			get("/blade-works/datalib/libDetail",data,{
+				"Content-Type": "application/json",
+				"Blade-Auth": uni.getStorageSync("Blade-Auth")
+			
+		}).then(res=>resolve(res.data))
+	})
+	}
+	// 个人中心帮助中心详情
+	gethelpDetail(data){
+		return new Promise(resolve=>{
+			get("/blade-works/helpdata/helpDetail",data,{
+				"Content-Type": "application/json",
+				"Blade-Auth": uni.getStorageSync("Blade-Auth")
+			
+		}).then(res=>resolve(res.data))
+	})
+	}
+	// 个人中心用户基本信息
+	getuserInfo(data){
+		return new Promise(resolve=>{
+			post("/blade-system/user/userInfo?userId="+data,{},{
+				"Content-Type": "application/json",
+				"Blade-Auth": uni.getStorageSync("Blade-Auth")
+			
+		}).then(res=>resolve(res.data))
+	})
+	}
+	// 个人中心工单信息
+	getorder(data){
+		return new Promise(resolve=>{
+			post("/blade-system/user/singular?userId="+data,{},{
+				"Content-Type": "application/json",
+				"Blade-Auth": uni.getStorageSync("Blade-Auth")
+			
+		}).then(res=>resolve(res.data))
+	})
+	}
+	// 首页轮播
+	getadvertinfo(data){
+		return new Promise(resolve=>{
+			get("/open/advertinfo/listAdsByPos",data,{
+				"Content-Type": "application/json",
+				"Blade-Auth": uni.getStorageSync("Blade-Auth")
+			
+		}).then(res=>resolve(res.data))
+	})
+}
 }
 export {
 	api

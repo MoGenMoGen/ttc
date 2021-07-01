@@ -3,8 +3,8 @@
   <view class="pages_database">
     <view class="container">
       <view class="list">
-        <view class="item" v-for="(item, index) in resource" :key="index" @click="toDetail">
-          <text>{{ item }}</text>
+        <view class="item" v-for="(item, index) in resource" :key="index" @click="toDetail(item.id)">
+          <text>{{ item.informName }}</text>
           <image :src="arrow2" mode="widthFix" />
         </view>
       </view>
@@ -18,27 +18,37 @@ export default {
   data() {
     return {
       resource: [
-        "莫某莫某某资料资料资料名称",
-        "莫某莫某某资料资料资料名称",
-        "莫某莫某某资料资料资料名称",
-        "莫某莫某某资料资料资料名称",
-        "莫某莫某某资料资料资料名称",
-        "莫某莫某某资料资料资料名称",
+        
+        {informName:"莫某莫某某资料资料资料名称"}
       ],
       arrow2,
 	  loginType:1
     };
   },
   methods:{
-	  toDetail(){
+	  toDetail(id){
+		  console.log(`/pages/profile/datadetail?id=${id}`);
 	uni.navigateTo({
-		url:'/pages/profile/datadetail'
+		url:`/pages/profile/datadetail?id=${id}`,
+		// url:"/pages/profile/datadetail",
+		success(){
+		console.log("11")
+		},
+		fail(err){
+			console.log("222",err)
+		}
 	})	  
 	  }
   },
   onLoad() {
   	this.loginType = uni.getStorageSync("loginType")
   
+  },
+  async onShow(){
+	  // 资料库列表
+	  let data =await this.api.getlibList()
+	  console.log("资料库列表",data);
+	  this.resource=data.records;
   }
 };
 </script>

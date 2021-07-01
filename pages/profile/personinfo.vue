@@ -2,26 +2,34 @@
   <!-- 个人信息页面 -->
   <view class="pages_personinfo">
     <view class="container">
-      <view class="avatar"><image :src="info.avatar" mode="aspectFill" /></view>
+      <view class="avatar"><image :src="info.avatar?info.avatar:avatar" mode="aspectFill" /></view>
       <view class="list">
         <view class="item">
           <text class="title">真实姓名</text>
-          <text class="content">{{ info.realname }}</text>
+          <text class="content">{{ info.realName }}</text>
         </view>
         <view class="item">
           <text class="title">联系电话</text>
-          <text class="content">{{ info.tel }}</text>
+          <text class="content">{{ info.phone }}</text>
         </view>
         <view class="item">
           <text class="title">公司名称</text>
-          <text class="content">{{ info.filmnm }}</text>
+          <text class="content">{{ info.deptName }}</text>
         </view>
         <view class="item">
           <text class="title">公司地址</text>
-          <text class="content">{{ info.address }}</text>
+          <text class="content">{{ info.deptAddr }}</text>
         </view>
       </view>
-      <image class="code" :src="info.code" mode="widthFix"></image>
+      <!-- <image class="code" :src="info.code" mode="widthFix"></image> -->
+	   <yuanqi-qr-code
+	   style="margin-top:36upx"
+	       ref="yuanqiQRCode"
+	     :text="'/pages/profile/personinfo?id='+id"
+	   	:size="size"
+	   	borderSize=10
+	   	:logo="info.avatar?info.avatar:avatar"
+	       ></yuanqi-qr-code>
     </view>
   </view>
 </template>
@@ -32,20 +40,28 @@ import code from "static/corcode.png";
 export default {
   data() {
     return {
+		avatar,
+		size:250,
+		id:"",
       info: {
-        avatar,
-        realname: "张张",
-        tel: "1561561654165",
-        filmnm: "光电开关的恐龙国际公司",
-        address: "宁波329公社",
-        code,
+        deptAddr: "",
+		avatar:"",realName:"",phone:"",deptName:""
       },
     };
   },
-  onLoad() {
+  async onLoad(e) {
+	  this.id=e.id;
    	this.loginType = uni.getStorageSync("loginType")
-   
-   }
+   let userdata=await this.api.getuserInfo(e.id)
+   console.log(userdata)
+   this.info=userdata
+   },
+   mounted(){
+   	console.log("mounted");
+   	// 生成二维码
+   	 this.$refs.yuanqiQRCode.make();
+   	}
+   	
 };
 </script>
 

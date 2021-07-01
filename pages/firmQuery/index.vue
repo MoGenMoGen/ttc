@@ -131,7 +131,10 @@
 			// 搜索功能   
 			async handlesearch() {
 				let data=await this.api.getFirmQuerySearch({detail:this.searchinfo});
-				console.log("搜索按钮触发",data);
+				this.total=data.length;
+				let handledata=data.map(item=> ({...item.dept,...{user:item.users}}))
+				this.queryList=handledata;
+				console.log("搜索按钮触发",data,handledata);
 			},
 			// 进入详情
 			GoToDetail(id) {
@@ -144,6 +147,7 @@
 			async getList(params) {
 				console.log("参数",params);
 				let data = await this.api.getFirmQueryList(params)
+				console.log("企业查列表",data);
 				this.queryList = [...this.queryList, ...data.records]
 				this.total = data.total;
 			}

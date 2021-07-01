@@ -195,7 +195,7 @@
 				workcontent,
 				corcode,
 				size:200,
-				swiperList: [bg, bg, bg],
+				swiperList: [],
 				// 对应loginType1,2,3
 				iconBar1: [{
 						title: "自检任务",
@@ -423,11 +423,16 @@
 			tabbar,
 			nomore
 		},
-		onLoad() {
+		async onLoad() {
 			console.log("onload",111111)
 			uni.setStorageSync('tabIndex', 0)
 			this.loginType = uni.getStorageSync("loginType")
+			// 获取轮播图
+			let ad=await this.api.getadvertinfo({posCd:"ADPOS_001",adNums:3})
+			console.log(ad);
+			this.swiperList=ad.map(item=>item.imgUrl)
 			let params2;
+			// 监管侧多一个企业查
 			if (this.loginType == 3) {
 				params2 = {
 					current: 1,
