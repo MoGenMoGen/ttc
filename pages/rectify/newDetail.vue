@@ -89,7 +89,7 @@
 					隐患图片
 				</view>
 				<view class="newListContent">
-					<image :src="detaliList.troublePic" mode=""></image>
+					<image v-for="(item,index) in detaliList.troublePic" :key="index" :src="item" mode=""  @click="enlarge(index)"></image>
 				</view>
 			</view>
 
@@ -114,15 +114,23 @@ export default{
 			uni.switchTab({
 				url:"/pages/rectify/index"
 			})
+		},
+		enlarge(index){
+			uni.previewImage({
+				current:"",
+				urls:this.detaliList.troublePic,
+				indicator:"default"
+			})
 		}
 	},
 	onLoad(e) {
 		this.cd=e.cd
-		console.log(1231231,this.cd);
+		// console.log(1231231,this.cd);
 		this.api.getAddDetail({cd:this.cd}).then(res=>{
-			console.log(res);
 			this.detaliList=res 
+			this.detaliList.troublePic=this.detaliList.troublePic.split(",")
 		})
+		
 		
 	},
 	
@@ -170,10 +178,11 @@ export default{
 
 				.newListContent {
 					width: 456rpx;
-					margin-left: 30rpx;
+					
 					word-wrap: break-word;
 					font-size: 28rpx;
 					image{
+						margin-left: 30rpx;
 						width: 160rpx;
 						height: 160rpx;
 					}

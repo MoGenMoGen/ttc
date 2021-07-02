@@ -148,6 +148,7 @@
 				this.listBody=[]
 				this.getList({
 					state: this.currentIndex + 1,
+					deptId:this.userinfo.dept_id,
 					current:1,
 					size:5
 				})
@@ -189,6 +190,7 @@
 		},
 		onLoad() {
 			this.loginType = uni.getStorageSync("loginType")
+			this.userinfo=uni.getStorageSync("userinfo")
 
 		},
 		onShow() {
@@ -208,7 +210,8 @@
 			}
 			this.getList({
 				...{
-					state: this.currentIndex + 1
+					state: this.currentIndex + 1,
+					deptId:this.userinfo.dept_id,
 				},
 				...this.page
 			})
@@ -225,7 +228,8 @@
 				this.getList({
 					...this.page,
 					...{
-						state: this.currentIndex + 1
+						state: this.currentIndex + 1,
+						deptId:this.userinfo.dept_id,
 					}
 				});
 			}

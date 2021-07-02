@@ -31,7 +31,7 @@
 						<view class="taskContentInList " v-if="loginType==3">
 							<image src="../../static/qiye.png" mode="" />
 							<view class="taskContentInListHead">企业名称</view>
-							<view class="taskContentInListContent">{{ item.performOrgName }}</view>
+							<view class="taskContentInListContent">{{ item.buildOrgName }}</view>
 						</view>
 						<view class="taskContentInList">
 							<image src="../../static/person.png" mode="" />
@@ -50,6 +50,7 @@
 							<view style="color:red" class="taskContentInListHead">逾期天数
 							</view>
 							<view style="color:red" class="taskContentInListContent">
+								{{item.nextDate}}
 							</view>
 						</view>
 						<view v-if="currentIndex == 2" class="taskContentInList">
@@ -78,6 +79,7 @@
 			return {
 				loginType: 1,
 				currentIndex: 0,
+			
 				placeholderIn: "任务编号",
 				navList: [{
 						title: "待执行任务",
@@ -100,7 +102,8 @@
 				this.getList({
 					state: this.currentIndex + 1,
 					current: 1,
-					size: 5
+					size: 5,
+					performOrgId:this.userinfo.dept_id
 				})
 			},
 			change(path) {
@@ -144,12 +147,15 @@
 				size: 5
 			}
 			this.loginType = uni.getStorageSync("loginType")
+			this.userinfo=uni.getStorageSync("userinfo")
 			this.getList({
 				...{
-					state: this.currentIndex + 1
+					state: this.currentIndex + 1,
+					performOrgId:this.userinfo.dept_id
 				},
 				...this.page
 			})
+			console.log("aaaa",this.userinfo)
 		},
 		onLoad() {
 			this.loginType = uni.getStorageSync("loginType")
@@ -164,7 +170,8 @@
 				this.getList({
 					...this.page,
 					...{
-						state: this.currentIndex + 1
+						state: this.currentIndex + 1,
+						performOrgId:this.userinfo.dept_id
 					}
 				})
 			}
@@ -178,7 +185,8 @@
 			this.getList({
 				...this.page,
 				...{
-					state: this.currentIndex + 1
+					state: this.currentIndex + 1,
+					performOrgId:this.userinfo.dept_id
 				}
 			})
 			setTimeout(function() {

@@ -93,7 +93,7 @@
 						隐患图片
 					</view>
 					<view class="bodyListImg">
-						<image :src="bodyList.troublePic" mode=""></image>
+						<image v-for="(item,index) in bodyList.troublePic" :key="index" :src="item" mode="" @click="enlargeOne(index)"></image>
 					</view>
 				</view>
 
@@ -117,7 +117,7 @@
 						整改照片
 					</view>
 					<view class="bodyListImg">
-						<image :src="bodyList.rectifyPic" mode=""></image>
+						<image v-for="(item,index) in bodyList.rectifyPic" :key="index" :src="item" mode="" @click="enlargeTwo(index)"></image>
 					</view>
 				</view>
 				<view class="bodyList">
@@ -164,7 +164,7 @@
 
 			</view>
 		</view>
-			<view class="detailContent" style="margin-top: 20rpx; padding: 20rpx 40rpx;" v-if="currentIndex==2">
+			<!-- <view class="detailContent" style="margin-top: 20rpx; padding: 20rpx 40rpx;" v-if="currentIndex==2">
 			<view class="contentBody" style="margin-top: 0rpx;">
 				<view class="bodyList" style="border-bottom: 0;">
 					<view class="bodyListTitle">
@@ -175,7 +175,7 @@
 					</view>
 				</view>
 			</view>
-		</view>
+		</view> -->
 		<view class="contentText" v-if="currentIndex==0">
 			<view class="TextTitle">
 				确认签收
@@ -375,11 +375,15 @@
 				console.log(1111);
 				let data = await this.api.getRecityDetail({
 					id: this.id
+					
 				})
 				// this.=data.records;
 				console.log(data);
 				this.bodyList = data
 				this.currentIndex = data.state - 1
+				this.bodyList.troublePic=this.bodyList.troublePic.split(",")
+				this.bodyList.rectifyPic=this.bodyList.rectifyPic.split(",")
+				
 			},
 			close: function() {
 				this.showCanvas = false;
@@ -441,6 +445,20 @@
 				day = day > 9 ? day : "0" + day;
 				return `${year}-${month}-${day}`;
 			},
+			enlargeOne(index){
+				uni.previewImage({
+					current:"index",
+					urls:this.bodyList.troublePic,
+					indicator:"default"
+				})
+			},
+			enlargeTwo(index){
+				uni.previewImage({
+					current:"index",
+					urls:this.bodyList.rectifyPic,
+					indicator:"default"
+				})
+			}
 		},
 
 		async onLoad(e) {
@@ -456,6 +474,8 @@
 			 + (str.getMonth() + 1) + "-" + str.getDate();
 			this.confirmDate=str2;
 			this.getList()
+			
+			
 			
 		},
 		
@@ -564,12 +584,12 @@
 					}
 
 					.bodyListImg {
-						width: 160rpx;
-						height: 160rpx;
-
+						width: 456rpx;
+						word-wrap: break-word;
 						image {
-							width: 100%;
-							height: 100%;
+							width: 160rpx;
+							height:160rpx;
+							margin-left: 30rpx;
 						}
 					}
 				}

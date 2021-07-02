@@ -131,12 +131,9 @@
 	export default {
 		
 		data() {
-			const currentDate = this.getDate({
-				format: true,
-			})
 			return {
 				del,
-				nowDate:currentDate,
+				nowDate:"",
 				
 				newList:{
 					
@@ -180,7 +177,7 @@
 				this.nowDate= e.target.value
 			},
 			getDate(type) {
-				const date = new Date().getTime()+48 * 60 * 60 * 1000;
+				const date = new Date(this.newList.rectifyDate).getTime()+48 * 60 * 60 * 1000;
 				let date1 = new Date(date)
 				let year = date1.getFullYear();
 				let month = date1.getMonth() + 1;
@@ -203,6 +200,9 @@
 		onShow() {
 		this.newList=uni.getStorageSync('rectifyList');
 		console.log(1111,this.newList);
+		this.nowDate= this.getDate({
+				format: true,
+			})
 		}
 	}
 </script>

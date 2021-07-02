@@ -1,3 +1,4 @@
+
 <!-- 自检详情页面 -->
 <template>
 	<view class="taskDetails">
@@ -19,10 +20,10 @@
 				<text class="taskContentInListHead">企业名称 </text>
 				<text class="taskContentInListContent">{{ arr.performOrgName }}</text>
 			</view>
-			<view class="taskContentInList" v-if="loginType == 3 && currentIndex==2">
+			<!-- <view class="taskContentInList" v-if="loginType == 3 && currentIndex==2">
 				<text class="taskContentInListHead">施工单位 </text>
 				<text class="taskContentInListContent">{{ arr.Construction }}</text>
-			</view>
+			</view> -->
 
 			<view class="taskContentInList">
 				<text class="taskContentInListHead">执行人 </text>
@@ -35,15 +36,15 @@
 
 			<view class="taskContentInList" v-if="loginType == 3&& currentIndex==2">
 				<text class="taskContentInListHead">复查日期</text>
-				<text class="taskContentInListContent">{{ arr.reviewdate }}</text>
+				<text class="taskContentInListContent">{{ arr.reviewTime }}</text>
 			</view>
 			<view class="taskContentInList" v-if="loginType == 3&& currentIndex==2">
 				<text class="taskContentInListHead">任务状态</text>
-				<text class="taskContentInListContent">{{currentState(arr.state) }}</text>
+				<text class="taskContentInListContent">{{currentState(arr.warningState) }}</text>
 			</view>
 			<view class="taskContentInList" v-if="currentIndex == 2">
 				<text class="taskContentInListHead">完成日期</text>
-				<text class="taskContentInListContent"></text>
+				<text class="taskContentInListContent">{{arr.completeTime}}</text>
 			</view>
 
 			<view class="taskContentInList"
@@ -114,7 +115,7 @@
 			</view>
 			<view class="taskState" v-if="loginType==3&&currentIndex!=2">
 				<text>任务状态</text>
-				<text class="perform">{{currentState(arr.state)}}</text>
+				<text class="perform">{{currentState(arr.warningState)}}</text>
 			</view>
 		</view>
 		<view class="taskBodyTwo" v-if="currentIndex == 2">
@@ -173,15 +174,14 @@
 		},
 		computed:{
 			currentState() {
-				return function(state) {
-					if (state == 1)
-						return "待签收";
-					else if (state == 2)
+				return function(warningState) {
+					if (warningState == 1)
 						return "待执行";
-					else if (state == 3)
+					else if (warningState == 2)
+						return "已逾期";
+					else if (warningState == 3)
 						return "已完成"
-					else if (state == 4)
-						return "已结案"
+					
 				}  
 			}
 		},
