@@ -28,7 +28,7 @@
 	     :text="'/pages/profile/personinfo?id='+id"
 	   	:size="size"
 	   	borderSize=10
-	   	:logo="info.avatar?info.avatar:avatar"
+	   	:logo="info.avatar"
 	       ></yuanqi-qr-code>
     </view>
   </view>
@@ -49,17 +49,23 @@ export default {
       },
     };
   },
-  async onLoad(e) {
+    onLoad(e) {
 	  this.id=e.id;
    	this.loginType = uni.getStorageSync("loginType")
-   let userdata=await this.api.getuserInfo(e.id)
-   console.log(userdata)
-   this.info=userdata
+   this.api.getuserInfo(e.id).then(res=>{
+	   console.log(1111111111);
+	   this.info=res
+	   console.log(this.info.avatar);
+	   this.$refs.yuanqiQRCode.make();
+   })
+   // console.log(userdata)
+   // this.info=userdata
+  
    },
    mounted(){
    	console.log("mounted");
    	// 生成二维码
-   	 this.$refs.yuanqiQRCode.make();
+   	 // this.$refs.yuanqiQRCode.make();
    	}
    	
 };

@@ -6,44 +6,46 @@
 			<view class="list">
 				<view class="item" v-if="loginType==3">
 					<text class="title">提醒类型</text>
-					<text class="content red">{{ info.type }}</text>
+					<text class="content" :class="{ yellow: info.warningState == 0||info.warningState==1, red: info.warningState == 2 }" v-if="info.warningState == 2">已逾期</text>
+					<text class="content" :class="{ yellow: info.warningState==0||info.warningState==1, red: info.warningState==2 }" v-else>待执行</text>
 				</view>
 				<view class="item">
 					<text class="title">提醒内容</text>
-					<text class="content">{{ info.content }}</text>
+					<text class="content">{{ info.title }}</text>
 				</view>
 				<view class="item" v-if="loginType!=1">
 					<text class="title">整改单位</text>
-					<text class="content">{{ info.zgunit }}</text>
+					<text class="content">{{ info.buildOrgName }}</text>
 				</view>
-				<view class="item">
+				<!--< view class="item">
 					<text class="title">施工单位</text>
 					<text class="content">{{ info.sgunit }}</text>
-				</view>
+				</view> -->
 				<view class="item">
 					<text class="title">执行人</text>
-					<text class="content">{{ info.executor }}</text>
+					<text class="content">{{ info.responsibleName }}</text>
 				</view>
 				<view class="item">
 					<text class="title">提交日期</text>
-					<text class="content">{{ info.clock }}</text>
+					<text class="content">{{ info.issueDate }}</text>
 				</view>
 				<view class="item" v-if="loginType==3">
 					<text class="title">逾期天数</text>
-					<text class="content  red">{{ info.overdue }}</text>
+					<text class="content  red">{{ info.nextDate }}</text>
 				</view>
 				<view class="item">
 					<text class="title">提醒日期</text>
-					<text class="content">{{ info.warnDate }}</text>
+					<text class="content">{{ info.warningTime }}</text>
 				</view>
 				<view class="item" v-if="loginType!=3">
 					<text class="title">提醒类型</text>
-					<text class="content red">{{ info.type }}</text>
+					<text class="content" :class="{ yellow: info.warningState == 0||info.warningState==1, red: info.warningState == 2 }" v-if="info.warningState == 2">已逾期</text>
+					<text class="content" :class="{ yellow: info.warningState==0||info.warningState==1, red: info.warningState==2 }" v-else>待执行</text>
 				</view>
-				<view class="item">
+				<!-- <view class="item">
 					<text class="title">任务类型</text>
 					<text class="content red">{{ info.worktype }}</text>
-				</view>
+				</view> -->
 			</view>
 		</view>
 	</view>
@@ -69,9 +71,12 @@
 				loginType: 3
 			};
 		},
-		onLoad() {
+		async onLoad(e) {
 		 	this.loginType = uni.getStorageSync("loginType")
-		 
+			console.log("detail",e);
+			let data=await this.api.getwarningdetail({id:e.id,cd:e.cd})
+			this.info=data
+			console.log("预警详情",data);
 		 },
 	}
 </script>
@@ -108,6 +113,9 @@
 
 					.red {
 						color: #E51937
+					}
+					.yellow{
+							color: #f1c345;
 					}
 
 					.title {

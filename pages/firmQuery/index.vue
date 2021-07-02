@@ -41,7 +41,6 @@
 							    ref="yuanqiQRCode"
 							    :text="'/pages/firmQuery/detail?id='+item.id"
 								:size="size"
-								:logo="logo"
 							    ></yuanqi-qr-code>
 						</view>
 					</view>
@@ -156,6 +155,15 @@
 			// 从缓存中获取loginType,角色信息
 			this.loginType = uni.getStorageSync("loginType")
 			subjectDept=uni.getStorageSync("userinfo").dept_id;
+			
+			this.page = {
+				current: 1,
+				size: 1,
+				subjectDept
+				
+			}
+			this.queryList = [];
+			this.getList(this.page)
 		},
 		mounted(){
 			console.log("mounted1111111111111111111111111111111111111111");
@@ -171,19 +179,13 @@
 			
 		},
 		 onShow() {
-			this.page = {
-				current: 1,
-				size: 3,
-				subjectDept
-				
-			}
-			this.queryList = [];
+			
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
 				animation: false,
 
 			})
-			this.getList(this.page)
+			
 			// 生成二维码
 			// let coderefs=this.$refs.yuanqiQRCode;
 			// console.log("111",coderefs);

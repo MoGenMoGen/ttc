@@ -35,7 +35,8 @@
 		{
 			"path": "pages/firmQuery/index",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh":true
 				// "navigationBarTitleText": "企业查"
 			}
 		},
@@ -55,7 +56,8 @@
 
 			"path": "pages/warning/index",
 			"style": {
-				"navigationBarTitleText": "预警提醒"
+				"navigationBarTitleText": "预警提醒",
+				"enablePullDownRefresh":true
 			}
 		},
 		{

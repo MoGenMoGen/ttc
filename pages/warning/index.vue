@@ -2,6 +2,12 @@
 	<!-- 预警提醒 页面 -->
 	<view class="pages_warning">
 		<view class="container">
+			<view class="warning_tab">
+				<view class="warning_tab_item" v-for="(item,index) in tabList" :key="index"
+					:class="{ active: currentTab == index } " @click="changetab(index)">
+					{{item}}
+				</view>
+			</view>
 			<view class="header">
 				<searchBox :placeholderIn="placeholderIn"></searchBox>
 			</view>
@@ -10,7 +16,7 @@
 
 				<view class="warning_container">
 					<view class="warning_item" v-for="item in  warnList" :key="item.id"
-						@click="goToWarnDetail(item.id)">
+						@click="goToWarnDetail(item.id,item.cd)">
 						<!-- 提醒内容 -->
 						<view class="warning_content">
 							<image :src="workcontent" mode="widthFix" class="warning_icon" />
@@ -21,8 +27,13 @@
 						<view class="warning_type" v-if="loginType != 3">
 							<image :src="type" mode="widthFix" class="warning_icon" />
 							<text>提醒类型</text>
-							<text :class="{ yellow: item.warningState == 0||item.warningState==1, red: item.status == 2 }" v-if="item.status == 2">已逾期提醒</text>
-							<text :class="{ yellow: item.warningState==0||item.warningState==1, red: item.status==2 }" v-else>待执行提醒</text>
+							<text
+								:class="{ yellow: item.warningState == 0||item.warningState==1, red: item.warningState == 2 }"
+								v-if="item.warningState == 2">已逾期提醒</text>
+							<text
+								:class="{ yellow: item.warningState==0||item.warningState==1, red: item.warningState==2 }"
+								v-else>待执行提醒</text>
+						</view>
 						<!-- logintype==3 提交日期 -->
 						<view class="warning_submitDate" v-if="loginType == 3">
 							<image :src="clock" mode="widthFix" class="warning_icon" />
@@ -46,7 +57,6 @@
 			<nomore />
 		</view>
 
-	</view>
 	</view>
 
 </template>
@@ -74,13 +84,15 @@
 	// 提醒内容
 	import workcontent from "static/workcontent.png";
 	// 获取dept_id,传给后台筛选数据
-	var subjectDept = uni.getStorageSync("userinfo").dept_id;
+	var buildOrgId = uni.getStorageSync("userinfo").dept_id;
 	export default {
 
 		data() {
 			// loginType:1.企业侧 2.服务商侧 3.监管机构侧
 			return {
 				loginType: 1, //1：企业 2：服务商 3：监管机构
+				tabList: ["整改单", "自检任务", "巡检任务"],
+				currentTab: 1,
 				//预警提醒列表
 				warnList: [{
 						//提醒类型
@@ -119,7 +131,7 @@
 				page: {
 					current: 1,
 					size: 2,
-					subjectDept
+					buildOrgId
 				}, //分页传参
 			}
 		},
@@ -129,17 +141,23 @@
 		},
 		methods: {
 			// 跳转到预警提醒详情页面
-			goToWarnDetail(id) {
+			goToWarnDetail(id, cd) {
+				console.log("idcd", id, cd);
 				uni.navigateTo({
-					url: `/pages/warning/detail?id=${id}`,
+					url: `/pages/warning/detail?id=${id}&cd=${cd}`,
+
 				});
+			},
+			// 切换tab
+			changetab(index) {
+				this.currentTab = index
 			},
 			// 刷新重新获取数据
 			refresh() {
 				this.page = {
 					current: 1,
 					size: 3,
-					subjectDept
+					buildOrgId
 
 				}
 				this.warnList = [];
@@ -148,6 +166,7 @@
 			// 获取预警提醒列表
 			async getList(parms) {
 				let data = await this.api.getwarningList(parms)
+				data.records.shift()
 				this.warnList = [...this.warnList, ...data.records]
 				this.total = data.total;
 				console.log("预警列表data", this.warnList);
@@ -172,9 +191,9 @@
 		// 下拉重新加载
 		onPullDownRefresh() {
 			this.refresh()
-			setTimeout(function(){
+			setTimeout(function() {
 				uni.stopPullDownRefresh()
-			},1000)
+			}, 1000)
 		},
 		onReachBottom() {
 			console.log('触底');
@@ -198,6 +217,48 @@
 			flex-direction: column;
 			align-items: center;
 			padding: 20upx;
+
+			.warning_tab {
+				width: 100%;
+				box-sizing: border-box;
+				display: flex;
+				justify-content: space-around;
+				padding: 30upx 0;
+
+				.warning_tab_item {
+					font-size: 28rpx;
+					font-family: PingFang SC;
+					font-weight: 400;
+					line-height: 40rpx;
+					color: #909090;
+					opacity: 1;
+				}
+
+				.active {
+					position: relative;
+					height: 44rpx;
+					font-size: 32rpx;
+					font-family: PingFang SC;
+					font-weight: 600;
+					line-height: 44rpx;
+					color: #303030;
+					opacity: 1;
+					transition: 0.3s;   
+				}
+
+				.active::after {
+					position: absolute;
+					bottom: -28rpx;
+					left: 50%;
+					transform: translateX(-50%);
+					content: "";
+					width: 50rpx;
+					height: 6rpx;
+					background: rgba(43, 137, 247, 0.67);
+					opacity: 1;
+					border-radius: 6rpx;
+				}
+			}
 
 			.header {}
 

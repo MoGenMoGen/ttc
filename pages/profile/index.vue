@@ -164,7 +164,19 @@
 				},
 				// 工单信息
 				order:{
-					
+					// 企业一侧
+					taskBillCount: 58, //自检任务
+					rectifyBillCount: 58, //整改单
+					warningCount: 58, //预警提醒
+					// 服务商一侧
+					taskBillCount: 58, //今日整改数
+					monthCount: 158, //当月整改数
+					taskPercent: 0.24, //整改率
+					// 监管机构一侧
+					// taskBillCount: 36, //今日巡检数
+					// monthCount: 12, //当月巡检数
+					// taskPercent: 0.24, //巡检率
+					productday: 896,
 				},
 				// echarts配置
 				option: {
@@ -317,29 +329,29 @@
 					"整改率" :
 					"巡检率";
 			},
-			// info.selfwork info.jrredify info.jrinspect
+			// order.selfwork order.jrredify order.jrinspect
 			dataone() {
 				return this.loginType == 1 ?
-					this.info.selfwork :
-					this.loginType == 2 ?
-					this.info.jrredify :
-					this.info.jrinspect;
+					this.order.taskBillCount :
+					// this.loginType == 2 ?
+					// this.order.taskBillCount :
+					this.order.taskBillCount;
 			},
-			// info.redify info.dyredify info.dyinspect
+			// order.redify order.dyredify order.dyinspect
 			datatwo() {
 				return this.loginType == 1 ?
-					this.info.redify :
-					this.loginType == 2 ?
-					this.info.dyredify :
-					this.info.dyinspect;
+					this.order.rectifyBillCount :
+					// this.loginType == 2 ?
+					// this.order.monthCount :
+					this.order.monthCount;
 			},
-			// info.warn info. redifyrate info.inspection
+			// order.warn order. redifyrate order.inspection
 			datathree() {
 				return this.loginType == 1 ?
-					this.info.warn :
-					this.loginType == 2 ?
-					this.info.redifyrate :
-					this.info.inspection;
+					this.order.warningCount :
+					// this.loginType == 2 ?
+					// this.order.taskPercent :
+					this.order.taskPercent;
 			},
 		},
 		methods: {
@@ -456,8 +468,7 @@
 		},
 		async onLoad() {
 		 	this.loginType = uni.getStorageSync("loginType")
-		 this.info.redifyrate = this.turn(this.info.redifyrate);
-		 this.info.inspection = this.turn(this.info.inspection);
+		
 		 this.userinfo=uni.getStorageSync("userinfo")
 		 // 获取个人信息
 		 let userdata=await this.api.getuserInfo(this.userinfo.user_id)
@@ -465,6 +476,9 @@
 		 // 获取工单信息
 		 let order=await this.api.getorder(this.userinfo.user_id)
 		 console.log("工单信息",order);
+		 this.order=order[0]
+		 this.order.taskPercent = `${this.order.taskPercent}%`
+		 // this.info.inspection = this.turn(this.info.inspection);
 		 },
 		async onShow() {
 			//隐藏默认tabbar显示自定义tabbar

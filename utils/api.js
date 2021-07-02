@@ -34,13 +34,13 @@ function get(url, data, header) {
 						title: '登录失效了，重新登录',
 						duration: 2000,
 						icon: "none",
+					})
+					setTimeout(function() {
+						uni.reLaunch({
+							url: '/pages/login/index'
 						})
-						setTimeout(function(){
-							uni.reLaunch({
-								url: '/pages/login/index'
-							})
-						},2000)
-						
+					}, 2000)
+
 
 				} else if (res.data.code == '200')
 					resolve(res.data);
@@ -207,7 +207,78 @@ function loginpost(url, data, header) {
 	});
 	return promise;
 }
+// 针对修改密码的post提交,code=200代表修改成功，code=400代表修改失败
+function modifypost(url, data, header) {
+	// console.log(url)
+	uni.showLoading({
+		title: "加载中"
+	});
 
+	let BladeAuth = uni.getStorageSync("Blade-Auth")
+	let myheader = {
+		"Blade-Auth": BladeAuth
+	}
+	header = header ? header : {}
+	myheader = {
+		...myheader,
+		...header
+	}
+	let promise = new Promise((resolve, reject) => {
+		uni.request({
+			data: data,
+			header: myheader,
+			method: "post",
+			url: config.serverURL + url,
+			success: function(res) {
+				console.log('post success', res)
+				// 登录失效重新登录
+				if (res.data.code == '401') {
+					uni.showToast({
+						title: '登录失效了，重新登录',
+						duration: 2000,
+						icon: 'none',
+						complete() {
+							uni.reLaunch({
+								url: '/pages/login/index'
+							})
+						}
+					})
+
+				} else if (res.data.code == '200')
+				{
+					uni.showToast({
+						title: res.data.msg,
+						duration: 2000,
+						icon: 'success'
+					})
+					// resolve(res.data);
+				}
+				else {
+					uni.showToast({
+						title: res.data.msg,
+						duration: 2000,
+						icon: 'loading'
+					})
+				}
+				resolve(res.data);
+
+			},
+			fail: function(err) {
+				console.log('post fail')
+				uni.showToast({
+					icon: "none",
+					title: JSON.stringify(err),
+					duration: 2000
+				});
+				reject(err)
+			},
+			complete: function() {
+				uni.hideLoading()
+			}
+		});
+	});
+	return promise;
+}
 class api {
 	//登录
 	login(data) {
@@ -436,14 +507,14 @@ class api {
 
 	}
 	// 企业查搜索
-     getFirmQuerySearch(data){
-		 return new Promise(resolve => {
-		 	get("/blade-system/dept/queryDeptList", data, {
-		 			"Blade-Auth": uni.getStorageSync("Blade-Auth")
-		 		})
-		 		.then(res => resolve(res.data))
-		 })
-	 }	
+	getFirmQuerySearch(data) {
+		return new Promise(resolve => {
+			get("/blade-system/dept/queryDeptList", data, {
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
+				})
+				.then(res => resolve(res.data))
+		})
+	}
 	// 企业查详情
 	getFirmQueryDetail(data) {
 		return new Promise(resolve => {
@@ -464,36 +535,46 @@ class api {
 				.then(res => resolve(res.data))
 		})
 	}
+	//预警提醒详情
+	 getwarningdetail(data) {
+		return new Promise(resolve => {
+			get("/blade-works/rectifybill/warnDetail", data, {
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
+				})
+				.then(res => resolve(res.data))
+		})
+
+	}
 
 
 
 	//分页查询
-	getQueryList(data){
-		return new Promise(resolve=>{
-			get("/blade-works/rectifybill/queryList",data,{
+	getQueryList(data) {
+		return new Promise(resolve => {
+			get("/blade-works/rectifybill/queryList", data, {
 				"Content-Type": "application/json",
 				"Blade-Auth": uni.getStorageSync("Blade-Auth")
 			}).then(res => resolve(res.data))
 		})
 	}
 	//自检、巡检列表获取
-	getBillList(data){
-	return new Promise(resolve=>{
-		get("/blade-works/taskbill/billList",data,{
-			"Content-Type": "application/json",
-			"Blade-Auth": uni.getStorageSync("Blade-Auth")
-		}).then(res => resolve(res.data))
-	})
-	}
-	//自检、巡检列表详情获取
-	getBillDetail(data){
-		return new Promise(resolve=>{
-			get("/blade-works/taskbill/billDetail",data,{
+	getBillList(data) {
+		return new Promise(resolve => {
+			get("/blade-works/taskbill/billList", data, {
 				"Content-Type": "application/json",
 				"Blade-Auth": uni.getStorageSync("Blade-Auth")
-			
-		}).then(res=>resolve(res.data))
-	})
+			}).then(res => resolve(res.data))
+		})
+	}
+	//自检、巡检列表详情获取
+	getBillDetail(data) {
+		return new Promise(resolve => {
+			get("/blade-works/taskbill/billDetail", data, {
+				"Content-Type": "application/json",
+				"Blade-Auth": uni.getStorageSync("Blade-Auth")
+
+			}).then(res => resolve(res.data))
+		})
 	}
 	//自检巡检确认
 	postBillSubmit(data) {
@@ -502,65 +583,77 @@ class api {
 		})
 	}
 	// 个人中心资料库列表
-	getlibList(){
-		return new Promise(resolve=>{
-				get("/blade-works/datalib/libList",{},{
-					"Content-Type": "application/json",
-					"Blade-Auth": uni.getStorageSync("Blade-Auth")
-				
-			}).then(res=>resolve(res.data))
+	getlibList() {
+		return new Promise(resolve => {
+			get("/blade-works/datalib/libList", {}, {
+				"Content-Type": "application/json",
+				"Blade-Auth": uni.getStorageSync("Blade-Auth")
+
+			}).then(res => resolve(res.data))
 		})
 	}
 	// 个人中心资料库详情
-	getBillDetail(data){
-		return new Promise(resolve=>{
-			get("/blade-works/datalib/libDetail",data,{
+	getlibDetail(data) {
+		return new Promise(resolve => {
+			get("/blade-works/datalib/libDetail", data, {
 				"Content-Type": "application/json",
 				"Blade-Auth": uni.getStorageSync("Blade-Auth")
-			
-		}).then(res=>resolve(res.data))
-	})
+
+			}).then(res => resolve(res.data))
+		})
 	}
 	// 个人中心帮助中心详情
-	gethelpDetail(data){
-		return new Promise(resolve=>{
-			get("/blade-works/helpdata/helpDetail",data,{
+	gethelpDetail(data) {
+		return new Promise(resolve => {
+			get("/blade-works/helpdata/helpDetail", data, {
 				"Content-Type": "application/json",
 				"Blade-Auth": uni.getStorageSync("Blade-Auth")
-			
-		}).then(res=>resolve(res.data))
-	})
+
+			}).then(res => resolve(res.data))
+		})
 	}
 	// 个人中心用户基本信息
-	getuserInfo(data){
-		return new Promise(resolve=>{
-			post("/blade-system/user/userInfo?userId="+data,{},{
+	getuserInfo(data) {
+		return new Promise(resolve => {
+			post("/blade-system/user/userInfo?userId=" + data, {}, {
 				"Content-Type": "application/json",
 				"Blade-Auth": uni.getStorageSync("Blade-Auth")
-			
-		}).then(res=>resolve(res.data))
-	})
+
+			}).then(res => resolve(res.data))
+		})
 	}
 	// 个人中心工单信息
-	getorder(data){
-		return new Promise(resolve=>{
-			post("/blade-system/user/singular?userId="+data,{},{
+	getorder(data) {
+		return new Promise(resolve => {
+			post("/blade-system/user/singular?userId=" + data, {}, {
 				"Content-Type": "application/json",
 				"Blade-Auth": uni.getStorageSync("Blade-Auth")
-			
-		}).then(res=>resolve(res.data))
-	})
+
+			}).then(res => resolve(res.data))
+		})
 	}
 	// 首页轮播
-	getadvertinfo(data){
-		return new Promise(resolve=>{
-			get("/open/advertinfo/listAdsByPos",data,{
+	getadvertinfo(data) {
+		return new Promise(resolve => {
+			get("/open/advertinfo/listAdsByPos", data, {
 				"Content-Type": "application/json",
 				"Blade-Auth": uni.getStorageSync("Blade-Auth")
-			
-		}).then(res=>resolve(res.data))
-	})
-}
+
+			}).then(res => resolve(res.data))
+		})
+	}
+	// 修改密码
+	modifypassword(data){
+		return new Promise(resolve => {
+			modifypost("/blade-system/user/updateAppPassword" ,data,  {
+				"Content-Type": "application/json",
+				"Blade-Auth": uni.getStorageSync("Blade-Auth")
+		
+			}).then(res => resolve(res))
+		})
+		
+	}
+	
 }
 export {
 	api

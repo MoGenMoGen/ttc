@@ -16,7 +16,7 @@ export default {
 	},
  async onLoad(e) {
   	this.loginType = uni.getStorageSync("loginType")
-	let data=await this.api.getBillDetail({id:e.id})
+	let data=await this.api.getlibDetail({id:e.id})
 	console.log("资料库详情页面",data);
 	this.content=data.informContent
   },

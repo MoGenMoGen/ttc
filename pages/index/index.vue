@@ -66,7 +66,7 @@
 				</view>
 				<view class="warning_container">
 					<view class="warning_item" v-for="item in  warnList" :key="item.id"
-						@click="goToWarnDetail(item.id)">
+						@click="goToWarnDetail(item.id,item.cd)">
 						<!-- 提醒内容 -->
 						<view class="warning_content">
 							<image :src="workcontent" mode="widthFix" class="warning_icon" />
@@ -77,8 +77,8 @@
 						<view class="warning_type" v-if="loginType != 3">
 							<image :src="type" mode="widthFix" class="warning_icon" />
 							<text>提醒类型</text>
-							<text :class="{ yellow: item.warningState == 0||item.warningState==1, red: item.status == 2 }" v-if="item.status == 2">已逾期提醒</text>
-							<text :class="{ yellow: item.warningState==0||item.warningState==1, red: item.status==2 }" v-else>待执行提醒</text>
+							<text :class="{ yellow: item.warningState == 0||item.warningState==1, red: item.warningState == 2 }" v-if="item.warningState == 2">已逾期提醒</text>
+							<text :class="{ yellow: item.warningState==0||item.warningState==1, red: item.warningState==2 }" v-else>待执行提醒</text>
 						</view>
 						<!-- 提交日期 -->
 						<view class="warning_submitDate" v-if="loginType == 3">
@@ -132,7 +132,6 @@
 								    ref="yuanqiQRCode"
 								   :text="'/pages/firmQuery/detail?id='+item.id"
 									:size="size"
-									logo="/static/avatar.png"
 								    ></yuanqi-qr-code>
 							</view>
 						</view>
@@ -353,9 +352,9 @@
 				this.toPage("/pages/warning/index", false, 0)
 			},
 			// 跳转到预警提醒详情页面
-			goToWarnDetail(id) {
+			goToWarnDetail(id,cd) {
 				uni.navigateTo({
-					url: `/pages/warning/detail?id=${id}`,
+					url: `/pages/warning/detail?id=${id}&cd=${cd}`,
 				});
 			},
 			// 跳转到企业查询主页面
