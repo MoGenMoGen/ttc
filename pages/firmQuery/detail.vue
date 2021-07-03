@@ -46,7 +46,6 @@
 					     ref="yuanqiQRCode"
 					     :text="'/pages/firmQuery/detail?id='+id"
 					 	:size="size"
-					 	logo="/static/avatar.png"
 					     ></yuanqi-qr-code>
 				</view>
 			</view>

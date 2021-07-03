@@ -24,9 +24,9 @@
 			placeholderIn: "",
 		},
 		data() {
-			const currentDate = this.getDate({
-				format: true,
-			});
+			// const currentDate = this.getDate({
+			// 	format: true,
+			// });
 			return {
 				// date: currentDate,
 				date: "",
@@ -64,6 +64,12 @@
 				return this.getDate("end");
 			},
 		},
+		created(){
+			const currentDate = this.getDate({
+				format: true,
+			});
+		}
+	
 	};
 </script>
 

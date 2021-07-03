@@ -103,7 +103,8 @@
 					state: this.currentIndex + 1,
 					current: 1,
 					size: 5,
-					performOrgId:this.userinfo.dept_id
+					performOrgId:this.userinfo.dept_id,
+					types:1
 				})
 			},
 			change(path) {
@@ -151,7 +152,9 @@
 			this.getList({
 				...{
 					state: this.currentIndex + 1,
-					performOrgId:this.userinfo.dept_id
+					performOrgId:this.userinfo.dept_id,
+					types:1
+					
 				},
 				...this.page
 			})
@@ -171,7 +174,8 @@
 					...this.page,
 					...{
 						state: this.currentIndex + 1,
-						performOrgId:this.userinfo.dept_id
+						performOrgId:this.userinfo.dept_id,
+						types:1
 					}
 				})
 			}
@@ -186,7 +190,8 @@
 				...this.page,
 				...{
 					state: this.currentIndex + 1,
-					performOrgId:this.userinfo.dept_id
+					performOrgId:this.userinfo.dept_id,
+					types:1
 				}
 			})
 			setTimeout(function() {

@@ -11,7 +11,8 @@
 				</view>
 				<view class="item">
 					<text class="title">提醒内容</text>
-					<text class="content">{{ info.title }}</text>
+					<text class="content" v-if="currentTab==0">{{ info.requReport }}</text>
+					<text class="content" v-else>{{ info.contReport }}</text>
 				</view>
 				<view class="item" v-if="loginType!=1">
 					<text class="title">整改单位</text>
@@ -55,6 +56,7 @@
 	export default {
 		data() {
 			return {
+				currentTab:0,//用于判断是否是整改单列表传过来的值
 				info: {
 					type: "待执行", //提醒类型
 					//提醒内容
@@ -72,6 +74,7 @@
 			};
 		},
 		async onLoad(e) {
+			this.currentTab=e.currentTab;
 		 	this.loginType = uni.getStorageSync("loginType")
 			console.log("detail",e);
 			let data=await this.api.getwarningdetail({id:e.id,cd:e.cd})

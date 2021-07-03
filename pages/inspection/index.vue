@@ -67,6 +67,7 @@
 			return {
 				loginType: 1,
 				currentIndex: 0,
+				userinfo:uni.getStorageSync("userinfo"),
 				placeholderIn: "任务编号",
 				navList: [{
 						title: "企业待办",
@@ -90,7 +91,9 @@
 				this.getList({
 					state: this.currentIndex + 1,
 					current: 1,
-					size: 5
+					size: 5,
+					types:2,
+					performOrgId:this.userinfo.dept_id,
 				})
 			},
 			change(path) {
@@ -134,7 +137,9 @@
 			}
 			this.getList({
 				...{
-					state: this.currentIndex + 1
+					state: this.currentIndex + 1,
+					types:2,
+					performOrgId:this.userinfo.dept_id,
 				},
 				...this.page
 			})
@@ -151,10 +156,12 @@
 				this.getList({
 					...this.page,
 					...{
-						state: this.currentIndex + 1
+						state: this.currentIndex + 1,
+						types:2,
+						performOrgId:this.userinfo.dept_id,
 					}
 				})
-			}
+			}   
 		},
 		onPullDownRefresh() {
 			this.page = {
@@ -165,7 +172,9 @@
 			this.getList({
 				...this.page,
 				...{
-					state: this.currentIndex + 1
+					state: this.currentIndex + 1,
+					types:2,
+					performOrgId:this.userinfo.dept_id,
 				}
 			})
 			setTimeout(function() {

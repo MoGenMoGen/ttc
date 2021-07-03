@@ -526,10 +526,10 @@ class api {
 
 	}
 
-	// 预警提醒列表
-	getwarningList(data) {
+	// 首页预警信息
+	gethomewarningList(data) {
 		return new Promise(resolve => {
-			get("/blade-works/rectifybill/home", data, {
+			get("/blade-works/warning/home", data, {
 					"Blade-Auth": uni.getStorageSync("Blade-Auth")
 				})
 				.then(res => resolve(res.data))
@@ -538,7 +538,7 @@ class api {
 	//预警提醒详情
 	 getwarningdetail(data) {
 		return new Promise(resolve => {
-			get("/blade-works/rectifybill/warnDetail", data, {
+			get("/blade-works/warning/warnDetail", data, {
 					"Blade-Auth": uni.getStorageSync("Blade-Auth")
 				})
 				.then(res => resolve(res.data))
@@ -625,7 +625,7 @@ class api {
 	// 个人中心工单信息
 	getorder(data) {
 		return new Promise(resolve => {
-			post("/blade-system/user/singular?userId=" + data, {}, {
+			post("/blade-system/user/singular?id=" + data, {}, {
 				"Content-Type": "application/json",
 				"Blade-Auth": uni.getStorageSync("Blade-Auth")
 
@@ -653,6 +653,49 @@ class api {
 		})
 		
 	}
+	// 预警提醒整改单列表
+		getWarningRectifyList(data){
+			return new Promise(resolve => {
+				get("/blade-works/warning/home", data, {
+					"Content-Type": "application/json",
+					"Blade-Auth": uni.getStorageSync("Blade-Auth")
+			
+				}).then(res => resolve(res.data))
+			})
+		}
+		// 预警提醒自检/巡检列表
+			getWarningCheckList(data){
+				return new Promise(resolve => {
+					get("/blade-works/warning/taskList", data, {
+						"Content-Type": "application/json",
+						"Blade-Auth": uni.getStorageSync("Blade-Auth")
+				
+					}).then(res => resolve(res.data))
+				})
+			}
+			
+			// 预警提醒-整改单搜索
+			getWarningSearchRectify(data) {
+				return new Promise(resolve => {
+					get("/blade-works/warning/warningSearchRectify", data, {
+							"Blade-Auth": uni.getStorageSync("Blade-Auth")
+						})
+						.then(res => resolve(res.data))
+				})
+			}
+			
+			// 预警提醒-自检/巡检搜索
+			getWarningSearchTaskBill(data) {
+				return new Promise(resolve => {
+					get("/blade-works/warning/warningSearchTaskBill", data, {
+							"Blade-Auth": uni.getStorageSync("Blade-Auth")
+						})
+						.then(res => resolve(res.data))
+				})
+			}
+			
+			
+		
 	
 }
 export {

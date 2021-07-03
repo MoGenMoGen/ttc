@@ -174,7 +174,7 @@
 	// 企业码
 	import corcode from "static/corcode.png";
 	// dept_id
-	const buildOrgId = uni.getStorageSync("userinfo").dept_id;
+	var buildOrgId ="";
 	export default {
 		data() {
 			// loginType:1.企业侧 2.服务商侧 3.监管机构侧
@@ -371,23 +371,35 @@
 			// 获取首页列表
 			async getList(params1, params2) {
 				// 获取预警提醒列表
-				let data1 = await this.api.getwarningList(params1)
+				let data1 = await this.api.gethomewarningList(params1)
 				console.log("首页预警", data1);
 				// 不同loginType，数组中对象count赋值
 				if (this.loginType == 1) {
-					this.iconBar1[0].count = data1.records[0].taskBillCount;
+					this.iconBar1[0].count = data1.records[0].taskCount;
 					this.iconBar1[1].count = data1.records[0].rectifyCount;
-					this.iconBar1[2].count = data1.total;
+					if(this.iconBar1[0].count=='99+'||this.iconBar1[1].count=='99+')
+					this.iconBar1[2].count="99+"
+					else
+					this.iconBar1[2].count = this.iconBar1[0].count+this.iconBar1[1].count;
 				}
 				if (this.loginType == 2) {
-					// this.iconBar2[0].count=data1.records[data1.records.length-1].taskBillCount;
+					this.iconBar2[1].count = data1.records[0].taskCount;
 					this.iconBar2[2].count = data1.records[0].rectifyCount;
-					this.iconBar2[3].count = data1.total;
+					
+					if(this.iconBar2[1].count=='99+'||this.iconBar2[2].count=='99+')
+					this.iconBar2[3].count="99+"
+					else
+					this.iconBar2[3].count =this.iconBar2[1].count+this.iconBar2[2].count ;
 				}
 				if (this.loginType == 3) {
-					this.iconBar3[1].count = data1.records[0].taskBillCount;
+					this.iconBar3[1].count = data1.records[0].taskCount;   
 					this.iconBar3[2].count = data1.records[0].rectifyCount;
-					this.iconBar3[4].count = data1.total;
+					this.iconBar3[3].count = data1.records[0].taskCountXun;
+					
+					if(this.iconBar3[1].count=='99+'||this.iconBar3[2].count=='99+'||this.iconBar3[3].count=='99+')
+					this.iconBar3[4].count='99+'
+					else
+					this.iconBar3[4].count =this.iconBar3[1].count+ this.iconBar3[2].count+this.iconBar3[3].count;
 				}
 				this.warnList = data1.records
 				this.warnList.shift()
@@ -427,6 +439,8 @@
 			console.log("onload",111111)
 			uni.setStorageSync('tabIndex', 0)
 			this.loginType = uni.getStorageSync("loginType")
+			buildOrgId = uni.getStorageSync("userinfo").dept_id;
+			
 			// 获取轮播图
 			let ad=await this.api.getadvertinfo({posCd:"ADPOS_001",adNums:3})
 			console.log(ad);

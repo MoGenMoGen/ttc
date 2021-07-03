@@ -2,7 +2,7 @@
 	<!-- 我的页面 -->
 	<view class="pages_profile_tab">
 		<view class="profile_container">
-			
+
 			<!-- 个人中心头部背景部分 开始 -->
 			<view class="profile_info_bg">
 				<view class="profile_info" @click="goToperson(userinfo.user_id)">
@@ -22,13 +22,8 @@
 					<view style="display: flex; align-items: center">
 						<view class="code" v-if="loginType == 1">
 							<!-- <image :src="code" mode="widthFix" /> -->
-							<yuanqi-qr-code
-							    ref="yuanqiQRCode"
-							    :text="'/pages/profile/personinfo?id='+info.id"
-								:size="size"
-								borderSize=10
-								:logo="userdata.avatar?userdata.avatar:avatar"
-							    ></yuanqi-qr-code>
+							<yuanqi-qr-code ref="yuanqiQRCode" :text="'/pages/profile/personinfo?id='+info.id"
+								:size="size" borderSize=10 :logo="logo"></yuanqi-qr-code>
 						</view>
 						<view class="arrow">
 							<image :src="arrow" mode="widthFix" style="width: 32upx" />
@@ -108,7 +103,7 @@
 			<!-- 退出 结束 -->
 		</view>
 
-		<tabbar :loginType="loginType" :tabIndex='3' > </tabbar>
+		<tabbar :loginType="loginType" :tabIndex='3'> </tabbar>
 	</view>
 </template>
 
@@ -137,11 +132,16 @@
 				modifyPass,
 				arrow2,
 				loginType: 1,
-				userinfo:{},
-				size:50,
-				logo:"",
+				userinfo: {},
+				size: 50,
+				logo: "userdata.avatar?userdata.avatar:avatar",
 				// 用户基本信息
-				userdata:{avatar:"",realName:"",phone:"",deptName:""},
+				userdata: {
+					avatar: "",
+					realName: "",
+					phone: "",
+					deptName: ""
+				},
 				info: {
 					name: "雨新斯",
 					tel: "13590001234",
@@ -159,23 +159,23 @@
 					dyinspect: 12, //当月巡检数
 					inspection: 0.24, //巡检率
 					productday: 896,
-					id:"123",
-					avatar:avatar
+					id: "123",
+					avatar: avatar
 				},
 				// 工单信息
-				order:{
+				order: {
 					// 企业一侧
 					taskBillCount: 58, //自检任务
 					rectifyBillCount: 58, //整改单
 					warningCount: 58, //预警提醒
 					// 服务商一侧
-					taskBillCount: 58, //今日整改数
+					// taskBillCount: 58, //今日整改数
 					monthCount: 158, //当月整改数
-					taskPercent: 0.24, //整改率
+					rectifyPercent: 24, //整改率
 					// 监管机构一侧
 					// taskBillCount: 36, //今日巡检数
 					// monthCount: 12, //当月巡检数
-					// taskPercent: 0.24, //巡检率
+					taskPercent: 24, //巡检率
 					productday: 896,
 				},
 				// echarts配置
@@ -331,26 +331,20 @@
 			},
 			// order.selfwork order.jrredify order.jrinspect
 			dataone() {
-				return this.loginType == 1 ?
-					this.order.taskBillCount :
-					// this.loginType == 2 ?
-					// this.order.taskBillCount :
-					this.order.taskBillCount;
+				return this.loginType == 2 ?this.order.rectifyBillCount :this.order.taskBillCount
 			},
 			// order.redify order.dyredify order.dyinspect
 			datatwo() {
 				return this.loginType == 1 ?
 					this.order.rectifyBillCount :
-					// this.loginType == 2 ?
-					// this.order.monthCount :
 					this.order.monthCount;
 			},
 			// order.warn order. redifyrate order.inspection
 			datathree() {
 				return this.loginType == 1 ?
 					this.order.warningCount :
-					// this.loginType == 2 ?
-					// this.order.taskPercent :
+					this.loginType == 2 ?
+					this.order.rectifyPercent :
 					this.order.taskPercent;
 			},
 		},
@@ -451,42 +445,44 @@
 			tabbar,
 		},
 		beforeMount() {
-			
+
 		},
-		mounted(){
+		mounted() {
 			console.log("mounted");
 			// 生成二维码
-			let coderefs=[];
-			if(this.$refs.yuanqiQRCode)
-			coderefs=this.$refs.yuanqiQRCode;
-			console.log("111",coderefs);
-			if(coderefs.length>0){
-				for(let i=0;i<coderefs.length;i++)
-			 this.$refs.yuanqiQRCode[i].make();
+			let coderefs = [];
+			if (this.$refs.yuanqiQRCode)
+				coderefs = this.$refs.yuanqiQRCode;
+			console.log("111", coderefs);
+			if (coderefs.length > 0) {
+				for (let i = 0; i < coderefs.length; i++)
+					this.$refs.yuanqiQRCode[i].make();
 			}
-			
+
 		},
 		async onLoad() {
-		 	this.loginType = uni.getStorageSync("loginType")
-		
-		 this.userinfo=uni.getStorageSync("userinfo")
-		 // 获取个人信息
-		 let userdata=await this.api.getuserInfo(this.userinfo.user_id)
-		 this.userdata=userdata
-		 // 获取工单信息
-		 let order=await this.api.getorder(this.userinfo.user_id)
-		 console.log("工单信息",order);
-		 this.order=order[0]
-		 this.order.taskPercent = `${this.order.taskPercent}%`
-		 // this.info.inspection = this.turn(this.info.inspection);
-		 },
+			this.loginType = uni.getStorageSync("loginType")
+
+			this.userinfo = uni.getStorageSync("userinfo")
+			// 获取个人信息
+			let userdata = await this.api.getuserInfo(this.userinfo.user_id)
+			this.userdata = userdata
+			// 获取工单信息
+			let order = await this.api.getorder(this.userinfo.dept_id)
+			console.log("工单信息", order);
+			this.order = order[0]
+			this.order.taskPercent = `${this.order.taskPercent}%`
+			this.order.rectifyPercent = `${this.order.rectifyPercent}%`
+			
+			// this.info.inspection = this.turn(this.info.inspection);
+		},
 		async onShow() {
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
 				animation: false
 			})
-			
-			
+
+
 		},
 	};
 </script>
@@ -538,14 +534,14 @@
 
 			background: #fafafa;
 			width: 100%;
-			
+
 			flex: 1;
 			overflow: auto;
 			-webkit-overflow-scrolling: touch;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			
+
 			.profile_info_bg {
 				padding: 200upx 0;
 				width: 100%;

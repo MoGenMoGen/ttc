@@ -9,18 +9,20 @@
 				</view>
 			</view>
 			<view class="header">
-				<searchBox :placeholderIn="placeholderIn"></searchBox>
+				<searchBox :placeholderIn="placeholderIn" @search="search"></searchBox>
 			</view>
 			<!-- loginType==1|2 内容一致 loginTye=3 内容不同-->
 			<view class="home_warning_list">
 
 				<view class="warning_container">
 					<view class="warning_item" v-for="item in  warnList" :key="item.id"
-						@click="goToWarnDetail(item.id,item.cd)">
+						@click="goToWarnDetail(item.id,item.cd,currentTab)">
 						<!-- 提醒内容 -->
 						<view class="warning_content">
 							<image :src="workcontent" mode="widthFix" class="warning_icon" />
-							<text>提醒内容</text><text>{{ item.title }}</text>
+							<text>提醒内容</text>
+							<text v-if="currentTab==0">{{ item.requReport }}</text>
+							<text v-else>{{ item.contReport }}</text>
 						</view>
 						<!-- 提醒类型 -->
 
@@ -39,7 +41,7 @@
 							<image :src="clock" mode="widthFix" class="warning_icon" />
 							<text>提交日期</text><text>{{ item.issueDate }}</text>
 						</view>
-						<!-- logintype==3，只有监管测有逾期天数-->
+						<!-- logintype==3，只有监管测有逾期天数 -->
 						<!-- 逾期天数 -->
 						<view class="warning_overdue" v-if="loginType == 3">
 							<image :src="overdue" mode="widthFix" class="warning_icon" />
@@ -69,6 +71,7 @@
 	vconsole.log(222)
 </script> -->
 <script>
+	var performOrgId = ""
 	// 头部引入组件
 	import searchBox from "components/searchBox";
 	// 引入触底提示组件
@@ -84,15 +87,15 @@
 	// 提醒内容
 	import workcontent from "static/workcontent.png";
 	// 获取dept_id,传给后台筛选数据
-	var buildOrgId = uni.getStorageSync("userinfo").dept_id;
 	export default {
-
 		data() {
 			// loginType:1.企业侧 2.服务商侧 3.监管机构侧
 			return {
 				loginType: 1, //1：企业 2：服务商 3：监管机构
-				tabList: ["整改单", "自检任务", "巡检任务"],
-				currentTab: 1,
+				tabList: ["整改单", "自检", "巡检"],
+				currentTab: 0,
+				searchflag:false,//是否处于搜索状态
+				firstrectify:false,//是否第一次请求整改单数据
 				//预警提醒列表
 				warnList: [{
 						//提醒类型
@@ -128,11 +131,37 @@
 				overdue,
 				warnDate,
 				workcontent,
-				page: {
+				// 预警列表整改单参数
+				page1: {
 					current: 1,
 					size: 2,
-					buildOrgId
-				}, //分页传参
+					performOrgId
+				},
+				// 预警列表自检巡检参数
+				page2: {
+					current: 1,
+					size: 2,
+					performOrgId,
+					type: 1, //自检1,巡检2
+				},
+				// 预警搜索整改单参数
+				page3: {
+					current: 1,
+					size: 2,
+					requReport:"",//搜索内容
+					// issueDate:""	
+						},
+				// 预警搜索自检/巡检参数
+				page4: {
+					current: 1,
+					size: 2,
+					contReport:"",//搜索内容
+					// issueDate:"",	
+					type: 1, //自检1,巡检2
+				},
+				
+				total:0
+
 			}
 		},
 		components: {
@@ -141,40 +170,141 @@
 		},
 		methods: {
 			// 跳转到预警提醒详情页面
-			goToWarnDetail(id, cd) {
+			goToWarnDetail(id, cd,currentTab) {
 				console.log("idcd", id, cd);
 				uni.navigateTo({
-					url: `/pages/warning/detail?id=${id}&cd=${cd}`,
+					url: `/pages/warning/detail?id=${id}&cd=${cd}&currentTab=${currentTab}`,
 
 				});
+			},
+			//处理搜索事件
+			search(obj){
+				console.log("子组件传值",obj)
+				this.warnList = [];
+				if(this.currentTab==0){
+					this.page3={
+						current: 1,
+						size: 2,
+						requReport:obj.cd,
+						
+					}
+					if(obj.date!='')
+					this.issueDate=obj.date
+					
+				this.handlesearch1(this.page3)
+				}
+				
+				else if(this.currentTab==1){
+					this.page4={
+						current: 1,
+						size: 2,
+						contReport:obj.cd,
+						type:1
+					}
+					if(obj.date!='')
+					this.issueDate=obj.date
+				this.handlesearch2(this.page4)
+				}
+				else{
+					this.page4={
+							current: 1,
+							size: 2,
+							contReport:obj.cd,
+							type:2
+						}
+						if(obj.date!='')
+						this.issueDate=obj.date
+					this.handlesearch2(this.page4)
+				}
+			},
+			// 处理整改搜索请求
+			async handlesearch1(params) {
+				let data=await this.api.getWarningSearchRectify(params);
+				console.log("搜索",data)
+				this.total=data.total;
+				// let handledata=data.map(item=> ({...item.dept,...{user:item.users}}))
+				this.warnList = [...this.warnList, ...data.records]
+				this.searchflag=true;
+				console.log("处理搜索请求",data); 
+				   
+			},
+			// 处理自检/巡检搜索请求
+			async handlesearch2(params) {
+				let data=await this.api.getWarningSearchTaskBill(params);
+				console.log("搜索",data)
+				this.total=data.total;
+				// let handledata=data.map(item=> ({...item.dept,...{user:item.users}}))
+				this.warnList = [...this.warnList, ...data.records]
+				this.searchflag=true;
+				console.log("处理搜索请求",data);    
 			},
 			// 切换tab
 			changetab(index) {
 				this.currentTab = index
+				if(this.currentTab==0)
+				{
+					this.refresh1()
+				}
+				else if(this.currentTab==1)
+				{
+					this.refresh2(1)
+				}
+				else{
+					this.refresh2(2)
+				}
 			},
-			// 刷新重新获取数据
-			refresh() {
-				this.page = {
+			// 刷新重新获取整改单数据
+			refresh1() {
+				console.log("refresh1")
+				this.firstrectify=true;
+				this.page1 = {
 					current: 1,
 					size: 3,
-					buildOrgId
+					buildOrgId:performOrgId
 
 				}
 				this.warnList = [];
-				this.getList(this.page)
+				this.getList1(this.page1)
 			},
-			// 获取预警提醒列表
-			async getList(parms) {
-				let data = await this.api.getwarningList(parms)
+			// 刷新重新获取自检/巡检数据
+			refresh2(type) {
+				this.page2 = {
+					current: 1,
+					size: 3,
+					performOrgId,
+					type
+
+				}
+				this.warnList = [];
+				this.getList2(this.page2)
+			},
+			// 获取预警整改单列表
+			async getList1(params) {
+				console.log("getlist1")
+				let data = await this.api.getWarningRectifyList(params)
+				console.log("未删除",data.records)
+				if(this.firstrectify)//删除第一条数据
 				data.records.shift()
+				console.log("删除第一条",data.records)
 				this.warnList = [...this.warnList, ...data.records]
 				this.total = data.total;
-				console.log("预警列表data", this.warnList);
+				console.log("预警整改单列表data", data);
+				this.firstrectify=false;
+			},
+			// 获取预警自检/巡检列表
+			async getList2(params) {
+				let data = await this.api.getWarningCheckList(params)
+				// data.records.shift()
+				this.warnList = [...this.warnList, ...data.records]
+				this.total = data.total;
+				console.log("预警自检/巡检列表data", data);
 			}
 		},
 		onLoad() {
+			performOrgId = uni.getStorageSync("userinfo").dept_id;
 			this.loginType = uni.getStorageSync("loginType")
-
+			// 获取预警提醒整改单列表
+			this.refresh1()
 		},
 
 		onShow() {
@@ -184,13 +314,19 @@
 					title: "逾期预警提醒",
 				});
 			}
-			// 获取预警提醒提醒列表
-			this.refresh()
+			console.log("onshow")
+			
+			
 
 		},
 		// 下拉重新加载
 		onPullDownRefresh() {
-			this.refresh()
+			if(this.currentTab==0)
+			this.refresh1()
+			else if(this.currentTab==1)//自检
+			this.refresh2(1)
+			else //巡检
+			this.refresh2(2)
 			setTimeout(function() {
 				uni.stopPullDownRefresh()
 			}, 1000)
@@ -200,9 +336,30 @@
 			if (this.total <= this.warnList.length) {
 				console.log(this.total, this.warnList.length, "fffff");
 			} else {
-				console.log(this.total, this.warnList.length, "dddddd");
-				this.page.current += 1;
-				this.getList(this.page);
+				if(this.searchflag)//搜索分页
+				{
+					if(this.currentTab==0)
+					{
+						this.page3.current += 1;
+						this.handlesearch1(this.page3)
+					}
+					else{
+						this.page4.current += 1;
+						this.handlesearch2(this.page4)
+					}
+				}
+				// 列表分页
+				else{
+					if(this.currentTab==0)
+					{
+						this.page1.current += 1;
+						this.getList1(this.page1)
+					}
+					else{
+						this.page2.current += 1;
+						this.getList2(this.page2)
+					}
+				}
 			}
 		},
 	}
@@ -243,7 +400,7 @@
 					line-height: 44rpx;
 					color: #303030;
 					opacity: 1;
-					transition: 0.3s;   
+					transition: 0.3s;
 				}
 
 				.active::after {

@@ -10,10 +10,10 @@
 			<view class="search_bar">
 				<view class="inputbox">
 					<image :src="search" mode="widthFix"></image>
-					<input type="text" placeholder="请输入企业名称、联系人等信息查询" maxlength="15" placeholder-style="color:#909090"
+					<input type="text" placeholder="请输入企业名称查询" maxlength="15" placeholder-style="color:#909090"
 						v-model="searchinfo" />
 				</view>
-				<view class="btn_search" @click="handlesearch">
+				<view class="btn_search" @click="search1">
 					搜索
 				</view>
 			</view>
@@ -65,15 +65,19 @@
 		data() {
 			return {
 				searchinfo: "", //输入的搜索信息
+				searchflag:false,//判断是列表分页还是搜索后的列表分页
 				loginType: 2,
 				search,
 				size:200,
 				logo:"/static/avatar.png",
-				page: {
+				page1: {//列表分页传参
 					current: 1,
 					size: 2,
-					subjectDept
-				}, //分页传参
+				}, 
+				page2: {//搜索分页传参
+					current: 1,
+					size: 2,
+				}, 
 				total: 0, //数据库中数据长度
 				// 企业查询列表
 				queryList: [
@@ -127,16 +131,26 @@
 					},
 				});
 			},
-			// 搜索功能   
-			async handlesearch() {
-				let data=await this.api.getFirmQuerySearch({detail:this.searchinfo});
-				this.total=data.length;
-				let handledata=data.map(item=> ({...item.dept,...{user:item.users}}))
-				this.queryList=handledata;
-				console.log("搜索按钮触发",data,handledata);
+			// 处理点击搜索事件
+			search1(){ 
+				console.log("搜索按钮触发");
+				this.page2={current:1,size:1,deptName:this.searchinfo}
+				this.queryList = [];
+				this.handlesearch(this.page2)
+				
+			},
+			// 处理搜索请求
+			async handlesearch(params) {
+				let data=await this.api.getFirmQuerySearch(params);
+				console.log("搜搜",data)
+				this.total=data.total;
+				// let handledata=data.map(item=> ({...item.dept,...{user:item.users}}))
+				this.queryList = [...this.queryList, ...data.records]
+				this.searchflag=true;
+				console.log("处理搜索请求",data);    
 			},
 			// 进入详情
-			GoToDetail(id) {
+			GoToDetail(id) {     
 				console.log("detail");
 				uni.navigateTo({
 					url: `/pages/firmQuery/detail?id=${id}`
@@ -156,14 +170,15 @@
 			this.loginType = uni.getStorageSync("loginType")
 			subjectDept=uni.getStorageSync("userinfo").dept_id;
 			
-			this.page = {
+			this.searchinfo=""//清空输入框
+			this.page1 = {
 				current: 1,
-				size: 1,
+				size: 5,
 				subjectDept
-				
 			}
+			
 			this.queryList = [];
-			this.getList(this.page)
+			this.getList(this.page1)
 		},
 		mounted(){
 			console.log("mounted1111111111111111111111111111111111111111");
@@ -200,23 +215,34 @@
 		// 触底加载更多数据
 		onReachBottom() {
 			console.log('触底');
-			if (this.total <= this.queryList.length) {
+			
+				if (this.total <= this.queryList.length) {
 				console.log(this.total, this.queryList.length, "fffff");
 			} else {
 				console.log(this.total, this.queryList.length,"dddddd");
-				this.page.current += 1;
-				this.getList(this.page);
+				if(this.searchflag)//搜索分页
+				{
+					this.page2.current += 1;
+					this.handlesearch(this.page2)
+				}
+				else{
+					this.page1.current += 1;
+					this.getList(this.page1);
+				}
+				
 			}
+			
 		},
 		// 下拉重新加载
 		onPullDownRefresh(){
-				this.page = {
+			this.searchinfo=""
+				this.page1 = {
 					current: 1,
-					size: 1,
+					size: 5,
 					subjectDept
 				}
 				this.queryList = [];
-				this.getList(this.page)
+				this.getList(this.page1)
 				setTimeout(function(){
 					uni.stopPullDownRefresh()
 				},1000)
