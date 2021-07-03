@@ -391,6 +391,7 @@
 				}
 				this.warnList = data1.records
 				this.warnList.shift()
+				this.warnList=this.warnList.slice(0,3)
 				// logintype==3获取企业查列表
 				if (this.loginType == 3) {
 					let data2 = await this.api.getFirmQueryList(params2)
