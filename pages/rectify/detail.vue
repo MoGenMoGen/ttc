@@ -328,7 +328,7 @@
 			},
 			
 			finishshowpop() {
-				// this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
 				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				if(this.twice==""){
 					uni.showToast({
@@ -358,7 +358,7 @@
 				})
 			},
 			sureTo(){
-				// this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
 				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				if(this.closingContent==""){
 					uni.showToast({
@@ -498,9 +498,9 @@
 				else if (state == 2)
 					return "待执行";
 				else if (state == 3)
-					return "已完成"
+					return "待结案"
 				else if (state == 4)
-					return "已结案"
+					return "已完成"
 			}
 		}
 	}

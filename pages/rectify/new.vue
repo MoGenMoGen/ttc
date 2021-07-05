@@ -340,7 +340,7 @@
 			this.info.cd=res;
 			console.log("zzzzzzzzzz",res);
 			// 获取整改单位列
-			let unitList = await this.api.getUnitList({deptld:this.info.buildOrgId});
+			let unitList = await this.api.getUnitList({id:this.info.buildOrgId});
 			this.info.AttrSystems = unitList
 			console.log("显示",unitList)
 			
