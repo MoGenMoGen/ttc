@@ -395,6 +395,8 @@
 				this.clear();
 			},
 			confirmTO() {
+				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				if(this.bodyList.receiptSign==""){
 					uni.showToast({
 						title:"请完成签名",

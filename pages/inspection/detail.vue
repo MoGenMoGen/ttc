@@ -193,6 +193,7 @@
 				})
 			},
 			sureTo() {
+				this.arr.taskPic = this.arr.serverimgList.join(",");
 			this.taskChoseArr.rmks=this.textIn
 				if (this.imgList == "") {
 					uni.showToast({

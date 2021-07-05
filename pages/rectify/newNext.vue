@@ -171,9 +171,11 @@
 				this.api.postNewList(this.newList).then(res=>{
 					console.log(res)
 				})
-				uni.navigateTo({
+				uni.reLaunch({
 					url: "./newDetail?cd="+this.newList.cd
 				})
+					
+
 				
 			},
 			getSign(value) {
