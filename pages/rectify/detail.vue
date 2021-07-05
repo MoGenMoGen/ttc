@@ -328,6 +328,8 @@
 			},
 			
 			finishshowpop() {
+				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				if(this.twice==""){
 					uni.showToast({
 						title:"请输入二次下发说明",
@@ -356,6 +358,8 @@
 				})
 			},
 			sureTo(){
+				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				if(this.closingContent==""){
 					uni.showToast({
 						title:"请输入结案内容",
@@ -365,6 +369,7 @@
 				}
 				this.bodyList.closeReport=this.closingContent
 				this.bodyList.closeUserId=this.userinfo.user_id
+				 
 				this.api.postRectifyClose(this.bodyList)
 				
 				uni.navigateBack({

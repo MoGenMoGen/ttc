@@ -156,6 +156,7 @@
 					current:1,
 					size:5
 				})
+				this.page.current=0
 				this.searchFlag=false
 				this.$refs.research.cd=''
 				this.$refs.research.date=''
@@ -184,9 +185,10 @@
 				console.log(data.records);
 			},
 			async handelSearch(params){
-				await this.api.getBillSearch(this.page1).then(res=>{
+				await this.api.getQueryList(this.page1).then(res=>{
 				    this.searchFlag=true
 					this.total=res.total
+					this.listBody=[]
 					this.listBody = [...this.listBody, ...res.records]
 				})
 			},
@@ -216,6 +218,7 @@
 			
 		},
 		onShow() {
+			this.page.current=0
 			uni.hideTabBar({
 				animation: false,
 
@@ -227,7 +230,7 @@
 			}
 			this.listBody = []
 			this.page = {
-				curretn: 1,
+				current: 1,
 				size: 5
 			}
 			this.getList({

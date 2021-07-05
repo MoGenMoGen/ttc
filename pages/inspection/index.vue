@@ -97,6 +97,8 @@
 					performOrgId:this.userinfo.dept_id,
 				
 				})
+				this.page.current=1
+				this.page1.current=1
 				this.searchFlag=false
 				this.$refs.research.cd=''
 				this.$refs.research.date=''
@@ -181,6 +183,8 @@
 		},
 		
 		onReachBottom() {
+			this.page.current=1
+			this.page1.current=1
 			console.log("触底");
 			if (this.total <= this.worksArr.length) {
 				console.log(this.total, this.worksArr.length, "fffff");
@@ -205,6 +209,8 @@
 			}   
 		},
 		onPullDownRefresh() {
+			this.page.current=1
+			this.page1.current=1
 			this.page = {
 				current: 1,
 				size: 5,
