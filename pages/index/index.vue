@@ -70,7 +70,7 @@
 						<!-- 提醒内容 -->
 						<view class="warning_content">
 							<image :src="workcontent" mode="widthFix" class="warning_icon" />
-							<text>提醒内容</text><text>{{ item.title }}</text>
+							<text>提醒内容</text><text>{{ item.requReport }}</text>
 						</view>
 						<!-- 提醒类型 -->
 						<!-- logintype==3,监管侧没有提醒类型 -->

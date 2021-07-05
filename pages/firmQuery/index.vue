@@ -18,7 +18,7 @@
 				</view>
 			</view>
 			<view class="firm_query_container">
-				<view class="firm_query_item" v-for="item in queryList" :key="item.id" @click="GoToDetail(item.id)">
+				<view class="firm_query_item" v-for="(item,index) in queryList" :key="item.id" @click="GoToDetail(item.id)">
 					<view class="item_container">
 						<view class="item_title">公司名称:</view>
 						<view class="item_content">{{item.fullName}}</view>
@@ -36,12 +36,12 @@
 					<view class="item_container">
 						<view class="item_title">企业码:</view>
 						<view class="item_content">
-							<!-- <image :src="corcode" mode="widthFix" /> -->
 							<yuanqi-qr-code 
 							    ref="yuanqiQRCode"
 							    :text="'/pages/firmQuery/detail?id='+item.id"
 								:size="size"
 							    ></yuanqi-qr-code>
+								<!-- :color="color(index)" -->
 						</view>
 					</view>
 				</view>
@@ -57,13 +57,13 @@
 	import tabbar from "components/tabbar";
 	// 引入触底提示组件
 	import nomore from "components/nomore";
-	import corcode from "static/corcode.png";
 	import search from "static/search.png";
 	// 获取dept_id,传给后台筛选数据
 	var subjectDept=uni.getStorageSync("userinfo").dept_id;
 	export default {
 		data() {
 			return {
+				
 				searchinfo: "", //输入的搜索信息
 				searchflag:false,//判断是列表分页还是搜索后的列表分页
 				loginType: 2,
@@ -72,50 +72,34 @@
 				logo:"/static/avatar.png",
 				page1: {//列表分页传参
 					current: 1,
-					size: 2,
+					size: 10,
 				}, 
 				page2: {//搜索分页传参
 					current: 1,
-					size: 2,
+					size: 10,
 				}, 
 				total: 0, //数据库中数据长度
 				// 企业查询列表
 				queryList: [
-					// {
-					// 	//公司名称
-					// 	name: "广知科技有限公司",
-					// 	//联系人
-					// 	contact: "张章",
-					// 	tel: "13900110000", //联系电话
-					// 	corcode: corcode, //企业码
-					// 	id: 0
-					// },
-					// {
-					// 	//公司名称
-					// 	name: "广知科技有限公司",
-					// 	//联系人
-					// 	contact: "张章",
-					// 	tel: "13900110000", //联系电话
-					// 	corcode: corcode, //企业码
-					// 	id: 1
-					// },
-					// {
-					// 	//公司名称
-					// 	name: "广知科技有限公司",
-					// 	//联系人
-					// 	contact: "张章",
-					// 	tel: "13900110000", //联系电话
-					// 	corcode: corcode, //企业码
-					// 	id: 2
-					// },
 				],
-				corcode: corcode, //企业码
 			}
 		},
 		components: {
 			tabbar,
 			nomore,
 
+		},
+		computed:{
+			// 二维码前景色
+			color(){
+				return function(index) {
+				if(index%2==0)
+				return "#F1C345"
+				if(index%3==0)
+				return "#2B801C"
+				return "#DB2222"
+				}
+			}
 		},
 		
 		methods: {
@@ -134,7 +118,7 @@
 			// 处理点击搜索事件
 			search1(){ 
 				console.log("搜索按钮触发");
-				this.page2={current:1,size:1,deptName:this.searchinfo}
+				this.page2={current:1,size:10,deptName:this.searchinfo}
 				this.queryList = [];
 				this.handlesearch(this.page2)
 				
@@ -170,15 +154,7 @@
 			this.loginType = uni.getStorageSync("loginType")
 			subjectDept=uni.getStorageSync("userinfo").dept_id;
 			
-			this.searchinfo=""//清空输入框
-			this.page1 = {
-				current: 1,
-				size: 5,
-				subjectDept
-			}
 			
-			this.queryList = [];
-			this.getList(this.page1)
 		},
 		mounted(){
 			console.log("mounted1111111111111111111111111111111111111111");
@@ -194,20 +170,23 @@
 			
 		},
 		 onShow() {
-			
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
 				animation: false,
 
 			})
+			this.searchinfo=""//清空输入框
+			this.searchflag=false;
+			this.page1 = {
+				current: 1,
+				size: 10,
+				subjectDept
+			}
 			
-			// 生成二维码
-			// let coderefs=this.$refs.yuanqiQRCode;
-			// console.log("111",coderefs);
-			// if(!coderefs){
-			// 	for(let i=0;i<coderefs.length;i++)
-			//  this.$refs.yuanqiQRCode[i].make();
-			// }
+			this.queryList = [];
+			this.getList(this.page1)
+			
+			
 			
 
 
@@ -235,17 +214,21 @@
 		},
 		// 下拉重新加载
 		onPullDownRefresh(){
-			this.searchinfo=""
-				this.page1 = {
-					current: 1,
-					size: 5,
-					subjectDept
-				}
-				this.queryList = [];
+			this.queryList = [];
+			if(this.searchflag)
+			{
+				this.page2.current=1;
+				this.handlesearch(this.page2)
+			}
+			else{
+				this.page1.current = 1
 				this.getList(this.page1)
-				setTimeout(function(){
-					uni.stopPullDownRefresh()
-				},1000)
+			}
+			setTimeout(function(){
+				uni.stopPullDownRefresh()
+			},1000)
+			
+				
 			
 		}
 	}

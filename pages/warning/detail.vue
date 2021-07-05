@@ -74,7 +74,13 @@
 			};
 		},
 		async onLoad(e) {
-			this.currentTab=e.currentTab;
+			if(e.currentTab)
+			{
+				this.currentTab=e.currentTab;
+			}
+			else{
+				this.currentTab=0;   
+			}
 		 	this.loginType = uni.getStorageSync("loginType")
 			console.log("detail",e);
 			let data=await this.api.getwarningdetail({id:e.id,cd:e.cd})

@@ -25,7 +25,8 @@
 			</view>
 			<!-- <image class="code" :src="info.code" mode="widthFix"></image> -->
 			<yuanqi-qr-code style="margin-top:36upx" ref="yuanqiQRCode" :text="'/pages/profile/personinfo?id='+id"
-				:size="size" borderSize=10 :logo="logo"></yuanqi-qr-code>
+				:size="size" :logo="logo"></yuanqi-qr-code>
+				
 		</view>
 	</view>
 </template>
@@ -88,16 +89,16 @@
 <style lang="scss" scoped>
 	.pages_personinfo {
 		width: 100%;
-		height: calc(100vh - 88upx);
+		height: 100vh;
 		background: #fafafa;
 		box-sizing: border-box;
 		display: flex;
 		justify-content: center;
-		padding-top: 20upx;
+		padding: 20upx;
 
 		.container {
-			height: calc(100vh - 88upx - 100upx);
-			width: 710upx;
+			// height: calc(100vh - 88upx - 100upx);
+			width: 100%;
 			background: #fff;
 			display: flex;
 			flex-direction: column;

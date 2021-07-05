@@ -56,7 +56,17 @@
 					}
 				}
 				if (flag) {
-					this.info.id = uni.getStorageSync("user_id")
+					// 前端先校验两次输入的新密码是否一致
+					if(this.info.newPassword!=this.info.newPassword1)
+					{
+						uni.showToast({
+							title:"确认密码不一致",
+							icon:"loading",
+							duration:2000
+						})
+					}
+					else{
+						this.info.id = uni.getStorageSync("user_id")
 					let data = await this.api.modifypassword(this.info)
 					console.log("修改密码", data);
 					if(data.success)
@@ -67,6 +77,8 @@
 							})
 						}, 2000)
 					}
+					}
+					
 					
 				}
 

@@ -101,6 +101,7 @@
 			<!-- 退出 开始 -->
 			<view class="exit" @click="exit">退出</view>
 			<!-- 退出 结束 -->
+		
 		</view>
 
 		<tabbar :loginType="loginType" :tabIndex='3'> </tabbar>
@@ -134,7 +135,7 @@
 				loginType: 1,
 				userinfo: {},
 				size: 50,
-				logo: "userdata.avatar?userdata.avatar:avatar",
+				logo: "avatar",
 				// 用户基本信息
 				userdata: {
 					avatar: "",
@@ -189,10 +190,11 @@
 						}
 					},
 					grid: {
-						top: 0,
-						bottom: 2
+						top: 10,
+						bottom: 10
 					},
-					xAxis: [{
+					xAxis: [
+						{
 							type: 'category',
 							show: false,
 							axisTick: {
@@ -243,9 +245,10 @@
 					],
 					yAxis: [{
 						type: 'value',
-						show: false
+						show: true
 					}],
-					series: [{
+					series: [
+						{
 							name: '2015 降水量',
 							type: 'line',
 							xAxisIndex: 1,
@@ -271,11 +274,12 @@
 								},
 								opacity: 0.2
 							},
-							data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+							data: [2.6, 5.9, 9.0, 26.4, 28.7, 20.7, 17.6, 12, 48.7, 18.8, 6.0, 2.3]
 						},
 						{
 							name: '2016 降水量',
 							type: 'line',
+							// xAxisIndex: 1,
 							smooth: true,
 							emphasis: {
 								focus: 'series'
@@ -450,14 +454,14 @@
 		mounted() {
 			console.log("mounted");
 			// 生成二维码
-			let coderefs = [];
-			if (this.$refs.yuanqiQRCode)
-				coderefs = this.$refs.yuanqiQRCode;
-			console.log("111", coderefs);
-			if (coderefs.length > 0) {
-				for (let i = 0; i < coderefs.length; i++)
-					this.$refs.yuanqiQRCode[i].make();
-			}
+			// let coderefs = [];
+			// if (this.$refs.yuanqiQRCode)
+			// 	coderefs = this.$refs.yuanqiQRCode;
+			// console.log("111", coderefs);
+			// if (coderefs.length > 0) {
+			// 	for (let i = 0; i < coderefs.length; i++)
+			// 		this.$refs.yuanqiQRCode[i].make();
+			// }
 
 		},
 		async onLoad() {
@@ -465,12 +469,20 @@
 
 			this.userinfo = uni.getStorageSync("userinfo")
 			// 获取个人信息
-			let userdata = await this.api.getuserInfo(this.userinfo.user_id)
-			this.userdata = userdata
+			this.api.getuserInfo(this.userinfo.user_id).then(res=>{
+				this.userdata=res
+				this.logo=this.userdata.avatar
+				
+				this.$nextTick(function(){
+					if(this.loginType==1)
+					this.$refs.yuanqiQRCode.make();
+				})
+			})
 			// 获取工单信息
 			let order = await this.api.getorder(this.userinfo.dept_id)
 			console.log("工单信息", order);
 			this.order = order[0]
+			console.log("adfdsafe",this.order.taskPercent,typeof(this.order.taskPercent));
 			this.order.taskPercent = `${this.order.taskPercent}%`
 			this.order.rectifyPercent = `${this.order.rectifyPercent}%`
 			
