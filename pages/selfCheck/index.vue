@@ -14,7 +14,7 @@
 						:class="{ active: currentIndex == index }" @click="changeNav(index)">{{ item.title }}
 					</view>
 				</view>
-				<searchBox :placeholderIn="placeholderIn"></searchBox>
+				<searchBox :placeholderIn="placeholderIn" @search="search" ref="research"></searchBox>
 				<view class="taskContent">
 					<view class="taskContentIn" v-for="(item, index) in worksArr" :key="index"
 						@click="taskContentTo(item.id)">
@@ -79,7 +79,7 @@
 			return {
 				loginType: 1,
 				currentIndex: 0,
-			
+				searchFlag:false,
 				placeholderIn: "任务编号",
 				navList: [{
 						title: "待执行任务",
@@ -106,6 +106,9 @@
 					performOrgId:this.userinfo.dept_id,
 					types:1
 				})
+				this.searchFlag=false
+				this.$refs.research.cd=''
+				this.$refs.research.date=''
 			},
 			change(path) {
 				uni.reLaunch({
@@ -123,6 +126,28 @@
 				this.worksArr = [...this.worksArr, ...data.records]
 				this.total = data.total;
 				console.log(data.records);
+			},
+			async handelSearch(params){
+				await this.api.getBillSearch(this.page1).then(res=>{
+				    this.searchFlag=true
+					this.total=res.total
+					this.worksArr = [...this.worksArr, ...res.records]
+				})
+			},
+			search(data){
+				this.page1={
+					state:this.currentIndex+1,
+					current:1,
+					size:5,
+					cd:data.cd,
+					types:1
+				}
+				this.worksArr=[]
+				this.model=data
+				if(data.date!=""){
+					this.page1.issueDate=data.date
+				}
+				this.handelSearch(this.page1)
 			},
 			backTo(){
 				console.log(1111);
@@ -147,8 +172,7 @@
 				current: 1, 
 				size: 5
 			}
-			this.loginType = uni.getStorageSync("loginType")
-			this.userinfo=uni.getStorageSync("userinfo")
+	
 			this.getList({
 				...{
 					state: this.currentIndex + 1,
@@ -158,18 +182,50 @@
 				},
 				...this.page
 			})
+			this.searchFlag=false
+			this.$refs.research.cd=''
+			this.$refs.research.date=''
 			console.log("aaaa",this.userinfo)
 		},
 		onLoad() {
 			this.loginType = uni.getStorageSync("loginType")
+			this.userinfo=uni.getStorageSync("userinfo")
 		},
 		onReachBottom() {
 			console.log("触底");
 			if (this.total <= this.worksArr.length) {
 				console.log(this.total, this.worksArr.length, "fffff");
 			} else {
-				console.log(this.total, this.worksArr.length);
-				this.page.current += 1;
+				if(this.searchFlag){
+					this.page1.current+=1
+					this.handelSearch(this.page1)
+				}
+				else
+				{
+					this.page.current += 1;
+					this.getList({
+						...this.page,
+						...{
+							state: this.currentIndex + 1,
+							performOrgId:this.userinfo.dept_id,
+							types:1
+						}
+					})
+				}
+			
+			}
+		},
+		onPullDownRefresh() {
+			this.page = {
+				current: 1,
+				size: 5,
+			}
+			this.worksArr = [];
+			if(this.searchFlag){
+				this.handelSearch(this.page1)
+			}
+			else
+			{
 				this.getList({
 					...this.page,
 					...{
@@ -179,21 +235,7 @@
 					}
 				})
 			}
-		},
-		onPullDownRefresh() {
-			this.page = {
-				current: 1,
-				size: 5,
-			}
-			this.worksArr = [];
-			this.getList({
-				...this.page,
-				...{
-					state: this.currentIndex + 1,
-					performOrgId:this.userinfo.dept_id,
-					types:1
-				}
-			})
+			
 			setTimeout(function() {
 				uni.stopPullDownRefresh()
 			}, 1000)

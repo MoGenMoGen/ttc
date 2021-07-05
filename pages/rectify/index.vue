@@ -18,7 +18,7 @@
 			</view>
 
 
-			<searchBox :placeholderIn="placeholderIn" @search="search"></searchBox>
+			<searchBox :placeholderIn="placeholderIn" @search="search" ref="research"></searchBox>
 			<view class="rectifyBody">
 				<view class="rectifyList" v-for="(item,index) in listBody" :key="index" @click="changePage(item.id)">
 					<view class="rectifyListIn">
@@ -105,6 +105,10 @@
 				placeholderIn: "任务编号、任务内容",
 				loginType: 2,
 				currentIndex: 1,
+				searchFlag:false,
+				page1:{
+					
+				},
 				page: {
 					current: 1,
 					size: 5
@@ -152,6 +156,9 @@
 					current:1,
 					size:5
 				})
+				this.searchFlag=false
+				this.$refs.research.cd=''
+				this.$refs.research.date=''
 			},
 			change(path) {
 				uni.reLaunch({
@@ -176,22 +183,37 @@
 				this.total = data.total;
 				console.log(data.records);
 			},
-			async search(data){
-				console.log({...data,state:this.currentIndex + 1});
-				this.api.getQueryList({...data,state:this.currentIndex + 1}).then(res => {
-					console.log(res);
-					
-					this.listBody=res.records;
-					console.log("www",this.listBody);
-				});
+			async handelSearch(params){
+				await this.api.getBillSearch(this.page1).then(res=>{
+				    this.searchFlag=true
+					this.total=res.total
+					this.listBody = [...this.listBody, ...res.records]
+				})
+			},
+			 search(data){
+				// console.log({...data,state:this.currentIndex + 1});
+				this.page1={
+					state:this.currentIndex + 1,
+					current: 1,
+					size: 5,
+					cd:data.cd
+				}
+				this.model=data
+				console.log('进来了',this.model)
+				if(data.date!=""){
 				
+					this.page1.issueDate=data.date
+				}
+				this.handelSearch(this.page1)
+			
 				
 			}
 		},
 		onLoad() {
 			this.loginType = uni.getStorageSync("loginType")
 			this.userinfo=uni.getStorageSync("userinfo")
-
+		
+			
 		},
 		onShow() {
 			uni.hideTabBar({
@@ -215,6 +237,9 @@
 				},
 				...this.page
 			})
+			this.searchFlag=false
+			this.$refs.research.cd=''
+			this.$refs.research.date=''
 
 		},
 		// 触底加载更多数据
@@ -222,18 +247,52 @@
 			console.log('触底');
 			if (this.total <= this.listBody.length) {
 				console.log(this.total, this.listBody.length, "fffff");
-			} else {
-				console.log(this.total, this.listBody.length);
-				this.page.current += 1;
+			}
+			else{
+				if(this.searchFlag){
+					this.page1.current+=1
+					this.handelSearch(this.page1)
+				}
+				else
+				{
+					this.page.current += 1;
+					this.getList({
+						...this.page,
+						...{
+							state: this.currentIndex + 1,
+							deptId:this.userinfo.dept_id,
+						}
+					});
+				}
+			}
+		},
+		//下拉刷新
+		onPullDownRefresh() {
+			this.listBody=[]
+			this.page = {
+				current: 1,
+				size: 5,
+			}
+		
+			if(this.searchFlag){
+				this.handelSearch(this.page1)
+			}
+			else
+			{
 				this.getList({
 					...this.page,
 					...{
 						state: this.currentIndex + 1,
 						deptId:this.userinfo.dept_id,
+						// types:1
 					}
-				});
+				})
 			}
-		},
+		
+			setTimeout(function() {
+				uni.stopPullDownRefresh()
+			}, 1000)
+		}
 		
 
 

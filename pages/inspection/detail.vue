@@ -63,7 +63,7 @@
 							<radio-group @change="radioChange(index,$event)">
 								<label v-for="(item1,index1) in item.taskItemOption" :key="item1.id" class="radioInput">
 									<radio :value="item1.id" style="transform: scale(0.60)" />
-									<text>{{item1.cont}}</text>
+									<text style="font-size: 28rpx;">{{item1.cont}}</text>
 								</label>
 							</radio-group>
 
@@ -80,7 +80,7 @@
 						<view>
 							<checkbox-group @change="checkboxChange(index,$event)">
 								<label v-for="(item1,index1) in item.taskItemOption" :key="item1.id" class="radioInput">
-									<checkbox :value="item1.id" /><text>{{item1.cont}}</text>
+									<checkbox :value="item1.id" /><text style="font-size: 28rpx;">{{item1.cont}}</text>
 								</label>
 							</checkbox-group>
 						</view>
@@ -89,45 +89,45 @@
 			</view>
 			<view class="photograpBox">
 				<view class="title">拍照上传 </view>
-				<view class="photo">
+				<view class="photo" v-if="loginType == 2">
 
 
-					<view class="photograp" v-if="loginType == 1">
+					<view class="photograp" >
 						<image src="../../static/takephoto.png" mode="" @click="toPhoto()" />
 					</view>
 
 					<view class="choseImg" v-for="(item, index) in imgList" :key="index">
-						<image :src="item" mode="" class="imgs" v-if="loginType == 1" />
-						<image v-if="loginType == 1" class="deleteImg" :src="del" mode="" @click="deleimg(index)" />
+						<image :src="item" mode="" class="imgs" v-if="loginType == 2" />
+						<image v-if="loginType == 2" class="deleteImg" :src="del" mode="" @click="deleimg(index)" />
 					</view>
 				</view>
 			</view>
 			<view class="note">
 				<view class="noteTitle">备注</view>
-				<textarea v-if="loginType==1" class="textIn" name="" id="" cols="30" rows="10" placeholder="多行输入"
+				<textarea v-if="loginType==2" v-model="textIn" class="textIn" name="" id="" cols="30" rows="10" placeholder="多行输入"
 					placeholder-class="textInPlaceholder"></textarea>
 			</view>
 
-			<view class="taskState">
+			<view class="taskState" v-if="loginType!=2">
 				<text>任务状态</text>
-				<text class="perform">待执行</text>
+				<text class="perform">{{ currentState(arr.warningState)}}</text>
 			</view>
 			<view class="bottomBtn" v-if="loginType==2">
 				<button class="cancel" @click="backTo">取消</button>
-				<button class="confirm" @click="backTo">确认完成</button>
+				<button class="confirm" @click="sureTo">确认完成</button>
 			</view>
 		</view>
 		<view class="taskBodyTwo" v-if="currentIndex == 2">
 			<view class="taskIn">
-				<view class="taskInList" v-for="(item, index) in taskChoseArr" :key="index">
+				<view class="taskInList" v-for="(item, index) in  arr.taskItemList " :key="index">
 					<text>{{ index +1}}、 </text>
-					<text>{{ item.name }}</text>
-					<view class="taskInCase">{{ item.case }}</view>
+					<text>{{ item.taskBillItem.name  }}</text>
+					<view class="taskInCase" v-for="(item1,index1) in item.taskItemOption"><text v-if="item1.state==1">{{item1.cont}}</text></view>
 				</view>
 			</view>
 			<view class="choosedImg">
 				<view class="imgContainer">
-					<image src="../../static/takephoto.png" mode="" />
+					<image v-for="(item,index) in arr.taskPic" :key="index" :src="item" mode="" @click="enlarge(index)"/>
 				</view>
 			</view>
 		</view>
@@ -142,15 +142,21 @@
 				currentIndex: 1,
 				loginType: 2,
 				del,
+				textIn:"",
 				activeRadio: "",
 				check: "10",
 				checkTwo: "20",
 				radioGroup: ["有", "无"],
 				imgList: [],
 				arr: {},
+				taskItemOption:[],
 				taskChoseArr: [
 
 				],
+				taskItemList:[],
+				list:{
+					
+				}
 			};
 		},
 
@@ -172,12 +178,56 @@
 
 			},
 			deleimg(index) {
-				this.imgList.splice(index);
-				this.imgList.splice(index, 1)
-				this.arr.taskPic = this.arr.serverimgList.join(",");
+			this.arr.serverimgList.splice(index, 1)
+			this.imgList.splice(index, 1)
+			this.arr.taskPic = this.arr.serverimgList.join(",");
 			},
 			backTo() {
 				uni.navigateBack()
+			},
+			enlarge(index){
+				uni.previewImage({
+					current:"",
+					urls:this.arr.taskPic,
+					indicator:"default"
+				})
+			},
+			sureTo() {
+			this.taskChoseArr.rmks=this.textIn
+				if (this.imgList == "") {
+					uni.showToast({
+						title: "请选择照片",
+						icon: "none"
+					})
+					return false
+				} else if (this.taskChoseArr.rmks == "") {
+					uni.showToast({
+						title: "请输入备注",
+						icon: "none"
+					})
+					return false
+				}
+				else if(this.taskChoseArr.length != this.arr.taskItemList.length)
+				{
+					uni.showToast({
+						title:"存在选项未选",
+						icon:"none"
+					})
+					return false
+				}
+				this.list.id=this.id
+				this.list.taskPic=this.arr.taskPic
+				this.list.rmks=this.textIn
+				this.taskChoseArr.forEach(item=>{
+					this.taskItemOption=this.taskItemOption.concat(item.optionId)
+				})
+				this.list.taskItemOption=this.taskItemOption
+				console.log("aa",this.taskItemOption);
+				console.log(this.list);
+				this.api.postBillSubmit(this.list)
+				uni.navigateBack({
+			
+				})
 			},
 			radioChange: function(index, evt) {
 				let data = {
@@ -222,16 +272,15 @@
 		},
 		computed: {
 			currentState() {
-				return function(state) {
-					if (state == 1)
-						return "待签收";
-					else if (state == 2)
-						return "待执行";
-					else if (state == 3)
-						return "已完成"
-					else if (state == 4)
-						return "已结案"
-				}
+			return function(warningState) {
+				if (warningState == 1)
+					return "待执行";
+				else if (warningState == 2)
+					return "已逾期";
+				else if (warningState == 3)
+					return "已完成"
+				
+			}  
 			}
 		},
 		onLoad(e) {
@@ -355,20 +404,25 @@
 
 	.title {
 		padding: 40rpx 30rpx;
-		font-size: 32rpx;
+		font-size: 28rpx;
 		font-family: PingFang SC;
 		font-weight: 400;
 		line-height: 32rpx;
 		color: #000000;
 		opacity: 1;
 	}
-
+ .photo {
+ 	margin-top: 60rpx;
+ 	display: flex;
+ 	flex-wrap: wrap;
+ 	width: 100%;
+ 
+ }
 	.photograp {
 		width: 160rpx;
 		height: 160rpx;
-		position: absolute;
-		top: 148rpx;
-		left: 30rpx;
+		margin-left: 20rpx;
+		margin-bottom: 20rpx;
 	}
 
 	.photograp image {
@@ -377,16 +431,15 @@
 	}
 
 	.choseImg {
-		position: absolute;
+		
 		width: 160rpx;
 		height: 160rpx;
-		top: 148rpx;
-		left: 210rpx;
+		position: relative;
+		
 	}
 
 	.choseImg .imgs {
 
-		position: absolute;
 		width: 100%;
 		height: 100%;
 	}
@@ -507,7 +560,7 @@
 
 	.choosedImg {
 		width: 710rpx;
-		height: 208rpx;
+		
 		background: #ffffff;
 		box-shadow: 0rpx 4rpx 10rpx rgba(0, 0, 0, 0.04);
 		opacity: 1;
@@ -517,15 +570,16 @@
 	}
 
 	.imgContainer {
-		width: 160rpx;
-		height: 160rpx;
+		width:600rpx;
 		background: rgba(0, 0, 0, 0);
 		opacity: 1;
+		word-wrap: break-word;
 	}
 
 	.imgContainer image {
-		width: 100%;
-		height: 100%;
+		margin-left: 30rpx;
+		width: 160rpx;
+		height: 160rpx;
 	}
 
 	.taskState {

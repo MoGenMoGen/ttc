@@ -693,6 +693,15 @@ class api {
 						.then(res => resolve(res.data))
 				})
 			}
+			getBillSearch(data){
+				return new Promise(resolve => {
+					get("/blade-works/taskbill/billSearch", data, {
+						    "Content-Type":"application/json",
+							"Blade-Auth": uni.getStorageSync("Blade-Auth")
+						})
+						.then(res => resolve(res.data))
+						})
+			}
 			
 			
 		

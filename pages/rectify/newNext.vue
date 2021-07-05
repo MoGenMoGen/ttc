@@ -113,7 +113,7 @@
 				
 				<view class="photo">
 					<view class="choseImg" v-for="(item, index) in newList.imgList" :key="index">
-						<image :src="item" mode="" class="imgs"></image>
+						<image :src="item" mode="" class="imgs" @click="enlarge(index)"></image>
 					</view>
 				</view>
 			</view>
@@ -151,6 +151,13 @@
 						console.log(err);
 					},
 				}); 
+			},
+			enlarge(index){
+				uni.previewImage({
+					current:"",
+					urls:this.newList.imgList,
+					indicator:"default"
+				})
 			},
 			deleimg(index) {
 				this.newList.imgList.splice(index,1);

@@ -8,7 +8,7 @@
 					:class="{ active: currentIndex == index }" @click="changeNav(index)">{{ item.title }}
 				</view>
 			</view>
-			<searchBox :placeholderIn="placeholderIn"></searchBox>
+			<searchBox :placeholderIn="placeholderIn" @search="search" ref="research" ></searchBox>
 			<view class="taskContent">
 				<view class="taskContentIn" v-for="(item, index) in worksArr" :key="index" @click="taskContentTo(item.id)">
 					<view class="taskContentInList">
@@ -67,6 +67,7 @@
 			return {
 				loginType: 1,
 				currentIndex: 0,
+				searchFlag:false,
 				userinfo:uni.getStorageSync("userinfo"),
 				placeholderIn: "任务编号",
 				navList: [{
@@ -94,7 +95,11 @@
 					size: 5,
 					types:2,
 					performOrgId:this.userinfo.dept_id,
+				
 				})
+				this.searchFlag=false
+				this.$refs.research.cd=''
+				this.$refs.research.date=''
 			},
 			change(path) {
 				uni.reLaunch({
@@ -113,6 +118,30 @@
 				this.worksArr = [...this.worksArr, ...data.records]
 				this.total = data.total;
 				console.log(data.records);
+			},
+			
+			 search(data){
+				this.page1={
+					state:this.currentIndex+1,
+					current:1,
+					size:5,
+					cd:data.cd,
+					types:2
+				}
+				this.worksArr=[]
+				this.model=data
+				if(data.date!=""){
+					this.page1.issueDate=data.date
+				}
+				this.handelSearch(this.page1)
+				
+			},
+			async handelSearch(params){
+				await this.api.getBillSearch(this.page1).then(res=>{
+				    this.searchFlag=true
+					this.total=res.total
+					this.worksArr = [...this.worksArr, ...res.records]
+				})
 			},
 		},
 		components: {
@@ -139,37 +168,40 @@
 			this.getList({
 				...{
 					state: this.currentIndex + 1,
-<<<<<<< Updated upstream
 					types:2,
 					performOrgId:this.userinfo.dept_id,
-=======
-					performOrgId:this.userinfo.dept_id
->>>>>>> Stashed changes
+
 				},
 				...this.page
 			})
 			
-			
+			this.searchFlag=false
+			this.$refs.research.cd=''
+			this.$refs.research.date=''
 		},
+		
 		onReachBottom() {
 			console.log("触底");
 			if (this.total <= this.worksArr.length) {
 				console.log(this.total, this.worksArr.length, "fffff");
 			} else {
-				console.log(this.total, this.worksArr.length);
-				this.page.current += 1;
-				this.getList({
-					...this.page,
-					...{
-						state: this.currentIndex + 1,
-<<<<<<< Updated upstream
-						types:2,
-						performOrgId:this.userinfo.dept_id,
-=======
-						performOrgId:this.userinfo.dept_id
->>>>>>> Stashed changes
-					}
-				})
+				if(this.searchFlag){
+					this.page1.current+=1
+					this.handelSearch(this.page1)
+				}
+				else
+				{
+					this.page.current += 1;
+					this.getList({
+						...this.page,
+						...{
+							state: this.currentIndex + 1,
+							types:2,
+							performOrgId:this.userinfo.dept_id,
+						}
+					})
+				}
+				
 			}   
 		},
 		onPullDownRefresh() {
@@ -178,18 +210,22 @@
 				size: 5,
 			}
 			this.worksArr = [];
-			this.getList({
-				...this.page,
-				...{
-					state: this.currentIndex + 1,
-<<<<<<< Updated upstream
-					types:2,
-					performOrgId:this.userinfo.dept_id,
-=======
-					performOrgId:this.userinfo.dept_id
->>>>>>> Stashed changes
-				}
-			})
+			if(this.searchFlag){
+				this.handelSearch(this.page1)
+			}
+			else
+			{
+				this.getList({
+					...this.page,
+					...{
+						state: this.currentIndex + 1,
+						types:2,
+						performOrgId:this.userinfo.dept_id,
+				
+					}
+				})
+			}
+		
 			setTimeout(function() {
 				uni.stopPullDownRefresh()
 			}, 1000)

@@ -84,7 +84,7 @@
 						<view>
 							<checkbox-group @change="checkboxChange(index,$event)">
 								<label v-for="(item1,index1) in item.taskItemOption" :key="item1.id" class="radioInput">
-									<checkbox :value="item1.id" /><text>{{item1.cont}}</text>
+									<checkbox :value="item1.id" /><text style="font-size:28rpx ;">{{item1.cont}}</text>
 								</label>
 							</checkbox-group>
 						</view>
@@ -130,7 +130,7 @@
 			</view>
 			<view class="choosedImg">
 				<view class="imgContainer" >
-					<image v-for="(item,index) in arr.taskPic" :key="index" :src="item" mode="" />
+					<image v-for="(item,index) in arr.taskPic" :key="index" :src="item" mode="" @click="enlarge(index)"/>
 				</view>
 			</view>
 		</view>
@@ -160,7 +160,7 @@
 						name: "无",
 					},
 				],
-
+				taskItemList:[],
 				arr: {
 
 				},
@@ -201,6 +201,13 @@
 				this.arr.serverimgList = path1;
 				this.arr.taskPic = this.arr.serverimgList.join(",");
 
+			},
+			enlarge(index){
+				uni.previewImage({
+					current:"",
+					urls:this.arr.taskPic,
+					indicator:"default"
+				})
 			},
 			deleimg(index) {
 				this.arr.serverimgList.splice(index, 1)
