@@ -328,7 +328,7 @@
 			},
 			
 			finishshowpop() {
-				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+				// this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
 				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				if(this.twice==""){
 					uni.showToast({
@@ -358,7 +358,7 @@
 				})
 			},
 			sureTo(){
-				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+				// this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
 				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				if(this.closingContent==""){
 					uni.showToast({
@@ -415,6 +415,9 @@
 				this.signs = ""
 			},
 			reportSure() {
+				console.log("111",this.bodyList.rectifyPic,"222",this.bodyList.troublePic);
+				// this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				if(this.report==""){
 					uni.showToast({
 						title:"请输入整改上报内容",

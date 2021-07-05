@@ -219,7 +219,7 @@
 				uni.navigateBack()
 			},
 			sureTo() {
-			
+				// this.arr.taskPic=this.arr.serverimgList.join(",");
 				if (this.imgList == "") {
 					uni.showToast({
 						title: "请选择照片",
