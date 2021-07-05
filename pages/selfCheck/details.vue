@@ -92,7 +92,7 @@
 				</view>
 			</view>
 			<view class="photograpBox" v-if="currentIndex!=2">
-				<view class="title">拍照上传 </view>
+				<view class="title" style="font-size: 28rpx;">拍照上传 </view>
 				<view class="photo">
 					<view class="photograp" v-if="loginType == 1">
 						<image src="../../static/takephoto.png" mode="" @click="toPhoto()" />

@@ -38,7 +38,7 @@
 						<view style="color:red" class="taskContentInListHead">逾期天数
 						</view>
 						<view style="color:red" class="taskContentInListContent">
-             
+						{{item.nextDate}}
            </view>
 					</view>
 					<view v-if="currentIndex == 2" class="taskContentInList">
@@ -122,6 +122,7 @@
 		},
 		onLoad() {
 			this.loginType = uni.getStorageSync("loginType")
+			this.userinfo=uni.getStorageSync("userinfo")
 		
 		},
 		onShow() {
@@ -138,8 +139,12 @@
 			this.getList({
 				...{
 					state: this.currentIndex + 1,
+<<<<<<< Updated upstream
 					types:2,
 					performOrgId:this.userinfo.dept_id,
+=======
+					performOrgId:this.userinfo.dept_id
+>>>>>>> Stashed changes
 				},
 				...this.page
 			})
@@ -157,8 +162,12 @@
 					...this.page,
 					...{
 						state: this.currentIndex + 1,
+<<<<<<< Updated upstream
 						types:2,
 						performOrgId:this.userinfo.dept_id,
+=======
+						performOrgId:this.userinfo.dept_id
+>>>>>>> Stashed changes
 					}
 				})
 			}   
@@ -173,8 +182,12 @@
 				...this.page,
 				...{
 					state: this.currentIndex + 1,
+<<<<<<< Updated upstream
 					types:2,
 					performOrgId:this.userinfo.dept_id,
+=======
+					performOrgId:this.userinfo.dept_id
+>>>>>>> Stashed changes
 				}
 			})
 			setTimeout(function() {

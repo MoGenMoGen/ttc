@@ -10,7 +10,7 @@
 				<text class="taskContentInListHead">任务内容</text>
 				<text class="taskContentInListContent">{{ arr.contReport }}</text>
 			</view>
-			<view class="taskContentInListTwo">
+		<!-- 	<view class="taskContentInListTwo">
 				<text class="taskContentInListHead">整改单位</text>
 				<text class="taskContentInListContent">{{ arr.reform }}</text>
 			</view>
@@ -18,7 +18,7 @@
 				<text class="taskContentInListHead">施工单位 </text>
 				<text class="taskContentInListContent">{{ arr.Construction }}</text>
 			</view>
-
+ -->
 			<view class="taskContentInList">
 				<text class="taskContentInListHead">执行人 </text>
 				<text class="taskContentInListContent">{{ arr.issueUserName }}</text>
@@ -30,15 +30,15 @@
 
 			<view class="taskContentInList">
 				<text class="taskContentInListHead">复查日期</text>
-				<text class="taskContentInListContent">{{ arr.reviewdate }}</text>
+				<text class="taskContentInListContent">{{ arr.reviewTime }}</text>
 			</view>
 			<view class="taskContentInList">
 				<text class="taskContentInListHead">任务状态</text>
-				<text class="taskContentInListContent">{{ currentState(arr.state) }}</text>
+				<text class="taskContentInListContent">{{ currentState(arr.warningState) }}</text>
 			</view>
 			<view class="taskContentInList" v-if="currentIndex == 2">
 				<text class="taskContentInListHead">完成日期</text>
-				<text class="taskContentInListContent"></text>
+				<text class="taskContentInListContent">{{arr.completeTime}}</text>
 			</view>
 
 			<view class="taskContentInList" v-if="
