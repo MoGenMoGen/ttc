@@ -413,7 +413,8 @@
 		opacity: 1;
 		border-radius: 12rpx;
 		margin: 20rpx;
-		padding: 34rpx 30rpx;
+		padding: 34rpx 0rpx;
+		box-sizing: border-box;
 	}
 
 	.taskContentIn image {
@@ -423,7 +424,7 @@
 
 	.taskContentInList {
 		margin-top: 25rpx;
-		margin-left: 36rpx;
+		margin-left: 20rpx;
 		display: flex;
 
 		align-items: top;

@@ -1,13 +1,14 @@
 <template>
     <view class='contents'>
-        <canvas class='firstCanvas' canvas-id="firstCanvas" @touchmove='move' @touchstart='start($event)' @touchend='end'
+        <canvas  v-if="!signImage" class='firstCanvas' canvas-id="firstCanvas" @touchmove='move' @touchstart='start($event)' @touchend='end'
          @touchcancel='cancel' @longtap='tap' disable-scroll='true' @error='error'>
         </canvas>
+		<image :src="signImage" mode="" v-if="signImage" ></image>
         <view class="caozuo">
             <view class="chongqian" @tap='clearClick'>
                 重签
             </view>
-            <view class="over" @tap="overSign">
+            <view class="over" @tap="overSign" v-if="!signImage">
                 完成签名
             </view>
         </view>
@@ -39,13 +40,19 @@
 
         methods: {
             overSign: function() {
+				
 					_that=this
                 if (this.isEnd) {
                     uni.canvasToTempFilePath({
                         canvasId: 'firstCanvas',
 
                         success: function(res) {
-                            //打印图片路径
+                            //打印图片路径74
+							
+							uni.showToast({
+								title:"签名成功",
+								icon:"none"
+							})
                             console.log(res.tempFilePath)
                             console.log('完成签名')
                             //设置图片
@@ -133,6 +140,8 @@
             clearClick: function() {
                 // 设置为未签名
                 this.isEnd = false
+				this.signImage=''
+				this.$parent.bodyList.receiptSign=""
                 //清除画布
                 this.content.clearRect(0, 0, canvasw, canvash)
                 this.content.draw(true)
@@ -171,9 +180,13 @@
         background-color: #DDDDDD;
         width: 100%;
         margin: 0 30rpx 0 0;
-        height: 400rpx;
+        height: 400rpx;  
     }
-
+    image{
+		width: 100%;
+		margin: 0 30rpx 0 0;
+		height: 400rpx;
+	}
     .contents {
         padding-top: 20upx;
         padding-bottom: 100upx;

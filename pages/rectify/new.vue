@@ -208,8 +208,8 @@
 				
 			},
 			deleimg(index) {
-				this.info.splice(index, 1);
-
+				this.info.imgList.splice(index, 1)
+				this.info.troublePic = this.info.imgList.join(",");
 			},
 			changePageTo() {
 				if(this.info.title==""){

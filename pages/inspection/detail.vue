@@ -24,14 +24,14 @@
 				<text class="taskContentInListContent">{{ arr.issueUserName }}</text>
 			</view>
 			<view class="taskContentInList">
-				<text class="taskContentInListHead">提交日期 </text>
+				<text class="taskContentInListHead">截止日期 </text>
 				<text class="taskContentInListContent">{{ arr.completeDate }}</text>
 			</view>
 
-			<view class="taskContentInList">
+			<!-- <view class="taskContentInList">
 				<text class="taskContentInListHead">复查日期</text>
 				<text class="taskContentInListContent">{{ arr.reviewTime }}</text>
-			</view>
+			</view> -->
 			<view class="taskContentInList">
 				<text class="taskContentInListHead">任务状态</text>
 				<text class="taskContentInListContent">{{ currentState(arr.warningState) }}</text>
@@ -130,6 +130,14 @@
 					<image v-for="(item,index) in arr.taskPic" :key="index" :src="item" mode="" @click="enlarge(index)"/>
 				</view>
 			</view>
+			<view class="note">
+				<view class="noteTitle" style="font-size: 28rpx;">
+					备注
+				</view>
+				<view class="noteContainer" style="font-size: 28rpx;">
+					{{arr.rmks}}
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -150,9 +158,7 @@
 				imgList: [],
 				arr: {},
 				taskItemOption:[],
-				taskChoseArr: [
-
-				],
+				taskChoseArr: [],
 				taskItemList:[],
 				list:{
 					
@@ -187,21 +193,21 @@
 			},
 			enlarge(index){
 				uni.previewImage({
-					current:"",
+					current:this.arr.taskPic[index],
 					urls:this.arr.taskPic,
 					indicator:"default"
 				})
 			},
 			sureTo() {
 				// this.arr.taskPic = this.arr.serverimgList.join(",");
-			this.taskChoseArr.rmks=this.textIn
+			this.list.rmks=this.textIn
 				if (this.imgList == "") {
 					uni.showToast({
 						title: "请选择照片",
 						icon: "none"
 					})
 					return false
-				} else if (this.taskChoseArr.rmks == "") {
+				} else if (this.list.rmks == "") {
 					uni.showToast({
 						title: "请输入备注",
 						icon: "none"
@@ -218,7 +224,6 @@
 				}
 				this.list.id=this.id
 				this.list.taskPic=this.arr.taskPic
-				this.list.rmks=this.textIn
 				this.taskChoseArr.forEach(item=>{
 					this.taskItemOption=this.taskItemOption.concat(item.optionId)
 				})

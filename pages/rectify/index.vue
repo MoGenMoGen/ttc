@@ -156,7 +156,7 @@
 					current:1,
 					size:5
 				})
-				this.page.current=0
+				this.page.current=1
 				this.searchFlag=false
 				this.$refs.research.cd=''
 				this.$refs.research.date=''
@@ -218,7 +218,7 @@
 			
 		},
 		onShow() {
-			this.page.current=0
+			
 			uni.hideTabBar({
 				animation: false,
 

@@ -176,12 +176,12 @@
 				</view>
 			</view>
 		</view> -->
-		<view class="contentText" v-if="currentIndex==0">
+		<view class="contentText" v-if="currentIndex==0&&loginType==1">
 			<view class="TextTitle">
 				确认签收
 			</view>
 			 <view class="signBox" style="width: 100%;">
-				<sign @success="getSign" @signImage="signImage"></sign>
+				<sign @signImage="signImage"></sign>
 			</view>
 			<!-- <textarea v-model="signs" placeholder="在此签名" class="textareaIn" placeholder-class="placeholderIn" />
 			<view class="textBtn">
@@ -221,7 +221,7 @@
 			<button type="default" class="confirm" v-if="currentIndex==0" @click="confirmTO">确认</button>
 			<button type="default" class="confirm" v-if="currentIndex==1" @click="reportSure ">上报确认</button>
 		</view>
-		<view class="status" v-if="(currentIndex==2&&loginType==1)||(loginType==3)||(loginType==2&&currentIndex==1)">
+		<view class="status" v-if="(currentIndex==2&&loginType==1)||(loginType==3)||(loginType==2&&(currentIndex==1||currentIndex==0))">
 			<view class="title">
 				整改状态
 			</view>
@@ -312,8 +312,9 @@
 	
 			},
 			deleimg(index) {
-				this.imgList.splice(index, 1);
-				console.log("dele");
+			// this.bodyList.serverimgList.splice(index, 1)
+			this.imgList.splice(index, 1)
+			this.bodyList.rectifyPic = this.imgList.join(",");
 			},
 			pop() {
 				this.popshow = true
@@ -328,8 +329,7 @@
 			},
 			
 			finishshowpop() {
-				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
-				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
+				
 				if(this.twice==""){
 					uni.showToast({
 						title:"请输入二次下发说明",
@@ -337,6 +337,8 @@
 					})
 					return false
 				}
+				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				this.bodyList.reissueReport=this.twice;
 				this.bodyList.requReport=this.twice
 				this.api.postRectifyClose(this.bodyList)
@@ -358,8 +360,7 @@
 				})
 			},
 			sureTo(){
-				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
-				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
+			
 				if(this.closingContent==""){
 					uni.showToast({
 						title:"请输入结案内容",
@@ -367,6 +368,8 @@
 					})
 					return false
 				}
+				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				this.bodyList.closeReport=this.closingContent
 				this.bodyList.closeUserId=this.userinfo.user_id
 				 
@@ -395,8 +398,7 @@
 				this.clear();
 			},
 			confirmTO() {
-				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
-				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
+				
 				if(this.bodyList.receiptSign==""){
 					uni.showToast({
 						title:"请完成签名",
@@ -404,6 +406,8 @@
 					})
 					return false
 				}
+				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				this.api.postRectifyAccept(this.bodyList)
 
 				uni.navigateBack({})
@@ -416,8 +420,8 @@
 			},
 			reportSure() {
 				console.log("111",this.bodyList.rectifyPic,"222",this.bodyList.troublePic);
-				// this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
-				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
+				
+				// this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				if(this.report==""){
 					uni.showToast({
 						title:"请输入整改上报内容",
@@ -432,6 +436,8 @@
 					})
 					return false
 				}
+				// this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				this.bodyList.rectifyReport = this.report
 				this.bodyList.reportUserId=this.userinfo.user_id
 				this.api.postRectifyReport(this.bodyList)
@@ -457,14 +463,14 @@
 			},
 			enlargeOne(index){
 				uni.previewImage({
-					current:"index",
+					current:this.bodyList.troublePic[index],
 					urls:this.bodyList.troublePic,
 					indicator:"default"
 				})
 			},
 			enlargeTwo(index){
 				uni.previewImage({
-					current:"index",
+					current:this.bodyList.rectifyPic[index],
 					urls:this.bodyList.rectifyPic,
 					indicator:"default"
 				})

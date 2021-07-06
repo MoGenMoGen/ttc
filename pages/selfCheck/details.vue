@@ -204,7 +204,7 @@
 			},
 			enlarge(index){
 				uni.previewImage({
-					current:"",
+					current:this.arr.taskPic[index],
 					urls:this.arr.taskPic,
 					indicator:"default"
 				})
