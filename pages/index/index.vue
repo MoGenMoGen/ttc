@@ -150,7 +150,6 @@
 	// 引入触底提示组件
 	import nomore from "components/nomore";
 	import tabbar from "components/tabbar";
-	import bg from "static/bg.png";
 	// 企业查询
 	import iconFirmQuery from "static/iconFirmQuery.png";
 	// 企业自检
@@ -171,8 +170,6 @@
 	import warnDate from "static/warnDate.png";
 	// 提醒内容   
 	import workcontent from "static/workcontent.png";
-	// 企业码
-	import corcode from "static/corcode.png";
 	// dept_id
 	var buildOrgId ="";
 	export default {
@@ -181,7 +178,6 @@
 			return {
 				current: 1, //tab下标
 				loginType: 1, //1：企业 2：服务商 3：监管机构
-				bg,
 				iconFirmQuery,
 				iconSelfCheck,
 				iconRedify,
@@ -192,7 +188,6 @@
 				overdue,
 				warnDate,
 				workcontent,
-				corcode,
 				size:200,
 				swiperList: [],
 				// 对应loginType1,2,3
@@ -437,6 +432,10 @@
 		},
 		async onLoad() {
 			console.log("onload",111111)
+			uni.hideTabBar({
+				animation: false,
+			
+			})
 			uni.setStorageSync('tabIndex', 0)
 			this.loginType = uni.getStorageSync("loginType")
 			buildOrgId = uni.getStorageSync("userinfo").dept_id;
@@ -485,7 +484,6 @@
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
 				animation: false,
-
 			})
 
 			// 没有token,重新登录

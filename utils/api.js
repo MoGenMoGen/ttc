@@ -333,10 +333,10 @@ class api {
 	}
 	//图片选择
 	chooseImages(type, max) {
-		uni.setStorage({
-			key: "ifClose",
-			data: 'no'
-		})
+		// uni.setStorage({
+		// 	key: "ifClose",
+		// 	data: 'no'
+		// })
 		let promise = new Promise((resolve, reject) => {
 			let that = this
 			uni.chooseImage({
@@ -344,7 +344,6 @@ class api {
 				sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
 				sourceType: type || ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
 				success: function(res) {
-
 					uni.showLoading({
 						title: '上传中...',
 					})
@@ -381,8 +380,11 @@ class api {
 					"Blade-Auth": uni.getStorageSync("Blade-Auth")
 				},
 				success: function(res) {
+					uni.showLoading({
+						title: '上传成功',
+					})
 					console.log('================')
-					console.log(res)
+					console.log(1111111111,res)
 					let img = JSON.parse(res.data).data.link;
 
 					resolve(img)
@@ -390,7 +392,7 @@ class api {
 				fail: function(res) {
 
 					uni.showModal({
-						title: '错误提示',
+						title: '上传失败',
 						content: res.msg,
 						showCancel: false,
 						success: function(res) {}
@@ -583,9 +585,9 @@ class api {
 		})
 	}
 	// 个人中心资料库列表
-	getlibList() {
+	getlibList(data) {
 		return new Promise(resolve => {
-			get("/blade-works/datalib/libList", {}, {
+			get("/blade-works/datalib/libList", data, {
 				"Content-Type": "application/json",
 				"Blade-Auth": uni.getStorageSync("Blade-Auth")
 

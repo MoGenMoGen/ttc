@@ -46,7 +46,7 @@ export default {
   },
   async onShow(){
 	  // 资料库列表
-	  let data =await this.api.getlibList()
+	  let data =await this.api.getlibList({deptId:uni.getStorageSync("userinfo").dept_id})
 	  console.log("资料库列表",data);
 	  this.resource=data.records;
   }

@@ -7,7 +7,7 @@
 			<view class="profile_info_bg">
 				<view class="profile_info" @click="goToperson(userinfo.user_id)">
 					<view style="display: flex">
-						<view class="avatar">
+						<view class="avatar" @click.stop="changeAvatar">
 							<image :src="userdata.avatar?userdata.avatar:avatar" mode="aspectFill" />
 						</view>
 						<view class="info_detail">
@@ -112,7 +112,6 @@
 	import tabbar from "components/tabbar";
 	// 头像
 	import avatar from "static/avatar.png";
-	import code from "static/corcode.png";
 	import arrow from "static/arrow.png";
 	import arrow2 from "static/arrow2.png";
 	// 资源库
@@ -126,7 +125,6 @@
 			return {
 				current: 0, //tab下标
 				avatar,
-				code,
 				arrow,
 				database,
 				help,
@@ -437,6 +435,13 @@
 					url: '/pages/profile/modifyPass'
 				});
 			},
+			// 更换头像
+		async changeAvatar(){
+			let avatar=await this.api.chooseImages('', 1)
+			this.api.upLoad(avatar[0]).then((res)=> {
+				this.userdata.avatar = res
+			})
+		},
 			// 退出
 			exit() {
 				uni.clearStorageSync("Blade-Auth")
@@ -473,9 +478,11 @@
 				this.userdata=res
 				this.logo=this.userdata.avatar
 				
-				this.$nextTick(function(){
+				this.$nextTick(function(){   
 					if(this.loginType==1)
 					this.$refs.yuanqiQRCode.make();
+					else
+					return false;            
 				})
 			})
 			// 获取工单信息

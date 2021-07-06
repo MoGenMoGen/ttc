@@ -18,7 +18,8 @@
 				</view>
 			</view>
 			<view class="firm_query_container">
-				<view class="firm_query_item" v-for="(item,index) in queryList" :key="item.id" @click="GoToDetail(item.id)">
+				<view class="firm_query_item" v-for="(item,index) in queryList" :key="item.id"
+					@click="GoToDetail(item.id)">
 					<view class="item_container">
 						<view class="item_title">公司名称:</view>
 						<view class="item_content">{{item.fullName}}</view>
@@ -36,17 +37,13 @@
 					<view class="item_container">
 						<view class="item_title">企业码:</view>
 						<view class="item_content">
-							<yuanqi-qr-code 
-							    ref="yuanqiQRCode"
-							    :text="'/pages/firmQuery/detail?id='+item.id"
-								:size="size"
-							    ></yuanqi-qr-code>
-								<!-- :color="color(index)" -->
+							<yuanqi-qr-code ref="yuanqiQRCode" :text="'/pages/firmQuery/detail?id='+item.id"
+								:size="size" :color="color(item.completeState)"></yuanqi-qr-code>
 						</view>
 					</view>
 				</view>
 			</view>
-			
+
 			<nomore />
 		</view>
 		<tabbar :loginType="loginType" :tabIndex='2'> </tabbar>
@@ -59,29 +56,28 @@
 	import nomore from "components/nomore";
 	import search from "static/search.png";
 	// 获取dept_id,传给后台筛选数据
-	var subjectDept=uni.getStorageSync("userinfo").dept_id;
+	var subjectDept = uni.getStorageSync("userinfo").dept_id;
 	export default {
 		data() {
 			return {
-				
+
 				searchinfo: "", //输入的搜索信息
-				searchflag:false,//判断是列表分页还是搜索后的列表分页
+				searchflag: false, //判断是列表分页还是搜索后的列表分页
 				loginType: 2,
 				search,
-				size:200,
-				logo:"/static/avatar.png",
-				page1: {//列表分页传参
+				size: 200,
+				logo: "/static/avatar.png",
+				page1: { //列表分页传参
 					current: 1,
 					size: 10,
-				}, 
-				page2: {//搜索分页传参
+				},
+				page2: { //搜索分页传参
 					current: 1,
 					size: 10,
-				}, 
+				},
 				total: 0, //数据库中数据长度
 				// 企业查询列表
-				queryList: [
-				],
+				queryList: [],
 			}
 		},
 		components: {
@@ -89,19 +85,19 @@
 			nomore,
 
 		},
-		computed:{
+		computed: {
 			// 二维码前景色
-			color(){
-				return function(index) {
-				if(index%2==0)
-				return "#F1C345"
-				if(index%3==0)
-				return "#2B801C"
-				return "#DB2222"
+			color() {
+				return function(state) {
+					if (state == 2)
+						return "#F1C345"
+					else if (state == 1)
+						return "#2B801C"
+					return "#DB2222"
 				}
 			}
 		},
-		
+
 		methods: {
 			// 切换tab 
 			tabChange(path) {
@@ -116,25 +112,29 @@
 				});
 			},
 			// 处理点击搜索事件
-			search1(){ 
+			search1() {
 				console.log("搜索按钮触发");
-				this.page2={current:1,size:10,deptName:this.searchinfo}
+				this.page2 = {
+					current: 1,
+					size: 10,
+					deptName: this.searchinfo
+				}
 				this.queryList = [];
 				this.handlesearch(this.page2)
-				
+
 			},
 			// 处理搜索请求
 			async handlesearch(params) {
-				let data=await this.api.getFirmQuerySearch(params);
-				console.log("搜搜",data)
-				this.total=data.total;
+				let data = await this.api.getFirmQuerySearch(params);
+				console.log("搜搜", data)
+				this.total = data.total;
 				// let handledata=data.map(item=> ({...item.dept,...{user:item.users}}))
 				this.queryList = [...this.queryList, ...data.records]
-				this.searchflag=true;
-				console.log("处理搜索请求",data);    
+				this.searchflag = true;
+				console.log("处理搜索请求", data);
 			},
 			// 进入详情
-			GoToDetail(id) {     
+			GoToDetail(id) {
 				console.log("detail");
 				uni.navigateTo({
 					url: `/pages/firmQuery/detail?id=${id}`
@@ -142,9 +142,9 @@
 			},
 			// 获取企业查询列表
 			async getList(params) {
-				console.log("参数",params);
+				console.log("参数", params);
 				let data = await this.api.getFirmQueryList(params)
-				console.log("企业查列表",data);
+				console.log("企业查列表", data);
 				this.queryList = [...this.queryList, ...data.records]
 				this.total = data.total;
 			}
@@ -152,84 +152,83 @@
 		onLoad() {
 			// 从缓存中获取loginType,角色信息
 			this.loginType = uni.getStorageSync("loginType")
-			subjectDept=uni.getStorageSync("userinfo").dept_id;
-			
-			
-		},
-		mounted(){
-			console.log("mounted1111111111111111111111111111111111111111");
-			// 生成二维码
-			let coderefs=[];
-			if(this.$refs.yuanqiQRCode)
-			coderefs=this.$refs.yuanqiQRCode;
-			console.log("111",coderefs);
-			if(coderefs.length>0){
-				for(let i=0;i<coderefs.length;i++)
-			 this.$refs.yuanqiQRCode[i].make();
-			}
-			
-		},
-		 onShow() {
-			//隐藏默认tabbar显示自定义tabbar
-			uni.hideTabBar({
-				animation: false,
-
-			})
-			this.searchinfo=""//清空输入框
-			this.searchflag=false;
+			subjectDept = uni.getStorageSync("userinfo").dept_id;
 			this.page1 = {
 				current: 1,
 				size: 10,
 				subjectDept
 			}
-			
+
 			this.queryList = [];
 			this.getList(this.page1)
-			
-			
-			
+
+		},
+		mounted() {
+			console.log("mounted1111111111111111111111111111111111111111",this.$refs.yuanqiQRCode);
+			// 生成二维码
+			let coderefs = [];
+			if (this.$refs.yuanqiQRCode)
+				coderefs = this.$refs.yuanqiQRCode;
+			console.log("111", coderefs);
+			this.$nextTick(function() {
+				if (coderefs.length > 0) {
+					for (let i = 0; i < coderefs.length; i++)
+						this.$refs.yuanqiQRCode[i].make()
+				}
+			})
+
+		},
+		onShow() {
+			//隐藏默认tabbar显示自定义tabbar
+			uni.hideTabBar({
+				animation: false,
+
+			})
+			this.searchinfo = "" //清空输入框
+			this.searchflag = false;
+
+
+
+
 
 
 		},
 		// 触底加载更多数据
 		onReachBottom() {
 			console.log('触底');
-			
-				if (this.total <= this.queryList.length) {
+
+			if (this.total <= this.queryList.length) {
 				console.log(this.total, this.queryList.length, "fffff");
 			} else {
-				console.log(this.total, this.queryList.length,"dddddd");
-				if(this.searchflag)//搜索分页
+				console.log(this.total, this.queryList.length, "dddddd");
+				if (this.searchflag) //搜索分页
 				{
 					this.page2.current += 1;
 					this.handlesearch(this.page2)
-				}
-				else{
+				} else {
 					this.page1.current += 1;
 					this.getList(this.page1);
 				}
-				
+
 			}
-			
+
 		},
 		// 下拉重新加载
-		onPullDownRefresh(){
+		onPullDownRefresh() {
 			this.queryList = [];
-			if(this.searchflag)
-			{
-				this.page2.current=1;
+			if (this.searchflag) {
+				this.page2.current = 1;
 				this.handlesearch(this.page2)
-			}
-			else{
+			} else {
 				this.page1.current = 1
 				this.getList(this.page1)
 			}
-			setTimeout(function(){
+			setTimeout(function() {
 				uni.stopPullDownRefresh()
-			},1000)
-			
-				
-			
+			}, 1000)
+
+
+
 		}
 	}
 </script>
@@ -252,7 +251,7 @@
 			top: 0;
 			font-size: 34rpx;
 			color: #000000;
-			padding-top:var(--status-bar-height);
+			padding-top: var(--status-bar-height);
 			z-index: 1000;
 		}
 
