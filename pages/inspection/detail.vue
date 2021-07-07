@@ -134,7 +134,7 @@
 				<view class="noteTitle" style="font-size: 28rpx;">
 					备注
 				</view>
-				<view class="noteContainer" style="font-size: 28rpx;">
+				<view class="noteContainer" style="font-size: 28rpx; margin-top: 15rpx;" >
 					{{arr.rmks}}
 				</view>
 			</view>

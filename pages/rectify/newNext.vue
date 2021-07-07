@@ -154,7 +154,7 @@
 			},
 			enlarge(index){
 				uni.previewImage({
-					current:"",
+					current:this.newList.imgList[index],
 					urls:this.newList.imgList,
 					indicator:"default"
 				})
