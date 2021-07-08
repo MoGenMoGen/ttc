@@ -64,7 +64,7 @@
 			<!-- echart曲线图 结束  -->
 			<!-- loginType==3 安全生产 开始-->
 			<view class="procition" v-if="loginType == 3">
-				<text>已安全生产</text><text>{{ info.productday }}天</text>
+				<text>已安全生产</text><text>{{ userdata.saveDate }}天</text>
 			</view>
 			<!-- loginType==3 安全生产 结束-->
 			<!-- 功能列表 开始 -->
@@ -101,7 +101,7 @@
 			<!-- 退出 开始 -->
 			<view class="exit" @click="exit">退出</view>
 			<!-- 退出 结束 -->
-		
+
 		</view>
 
 		<tabbar :loginType="loginType" :tabIndex='3'> </tabbar>
@@ -187,14 +187,16 @@
 							type: 'cross'
 						}
 					},
-					grid: {
-						top: 10,
-						bottom: 10
+					legend: {
+						data: ['月已完成整改单数', '月已完成巡检数']
 					},
-					xAxis: [
-						{
+					grid: {
+						top: 60,
+						bottom: 30
+					},
+					xAxis: [{
 							type: 'category',
-							show: false,
+							show: true,
 							axisTick: {
 								alignWithLabel: true
 							},
@@ -207,7 +209,7 @@
 							axisPointer: {
 								label: {
 									formatter: function(params) {
-										return '降水量  ' + params.value +
+										return '月已完成整改单数  ' + params.value +
 											(params.seriesData.length ? '：' + params.seriesData[0].data : '');
 									}
 								}
@@ -231,7 +233,7 @@
 							axisPointer: {
 								label: {
 									formatter: function(params) {
-										return '降水量  ' + params.value +
+										return '月已完成巡检数  ' + params.value +
 											(params.seriesData.length ? '：' + params.seriesData[0].data : '');
 									}
 								}
@@ -245,14 +247,14 @@
 						type: 'value',
 						show: true
 					}],
-					series: [
-						{
-							name: '2015 降水量',
+					series: [{
+							name: '月已完成整改单数',
 							type: 'line',
 							xAxisIndex: 1,
 							smooth: true,
 							emphasis: {
-								focus: 'series'
+								focus: 'series',
+								blurScope: 'coordinateSystem'
 							},
 							areaStyle: {
 								color: {
@@ -272,15 +274,16 @@
 								},
 								opacity: 0.2
 							},
-							data: [2.6, 5.9, 9.0, 26.4, 28.7, 20.7, 17.6, 12, 48.7, 18.8, 6.0, 2.3]
+							data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 						},
 						{
-							name: '2016 降水量',
+							name: '月已完成巡检数',
 							type: 'line',
-							// xAxisIndex: 1,
+							xAxisIndex: 1,
 							smooth: true,
 							emphasis: {
-								focus: 'series'
+								focus: 'series',
+								blurScope: 'coordinateSystem'
 							},
 							areaStyle: {
 								color: {
@@ -300,7 +303,8 @@
 								},
 								opacity: 0.2
 							},
-							data: [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 181.6, 46.6, 55.4, 18.4, 10.3, 0.7]
+							data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+							// data: [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 181.6, 46.6, 55.4, 18.4, 10.3, 0.7]
 						}
 					]
 				}
@@ -333,7 +337,7 @@
 			},
 			// order.selfwork order.jrredify order.jrinspect
 			dataone() {
-				return this.loginType == 2 ?this.order.rectifyBillCount :this.order.taskBillCount
+				return this.loginType == 2 ? this.order.rectifyBillCount : this.order.taskBillCount
 			},
 			// order.redify order.dyredify order.dyinspect
 			datatwo() {
@@ -436,12 +440,31 @@
 				});
 			},
 			// 更换头像
-		async changeAvatar(){
-			let avatar=await this.api.chooseImages('', 1)
-			this.api.upLoad(avatar[0]).then((res)=> {
-				this.userdata.avatar = res
-			})
-		},
+			async changeAvatar() {
+				// 图片上传接口
+				let avatar = await this.api.chooseImages('', 1)
+				console.log(1111111);
+				let res = await this.api.upLoad(avatar[0])
+				// 调用更换头像接口
+				await this.api.changeavatar({
+					avatar: res,
+					id: this.userinfo.user_id
+				})
+				// 再次调取userinfo接口，重新赋值
+				this.api.getuserInfo(this.userinfo.user_id).then(res1 => {
+					this.userdata = res1
+					this.logo = this.userdata.avatar
+
+
+
+					this.$nextTick(function() {
+						if (this.loginType == 1)
+							this.$refs.yuanqiQRCode.make();
+						else
+							return false;
+					})
+				})
+			},
 			// 退出
 			exit() {
 				uni.clearStorageSync("Blade-Auth")
@@ -474,25 +497,46 @@
 
 			this.userinfo = uni.getStorageSync("userinfo")
 			// 获取个人信息
-			this.api.getuserInfo(this.userinfo.user_id).then(res=>{
-				this.userdata=res
-				this.logo=this.userdata.avatar
-				
-				this.$nextTick(function(){   
-					if(this.loginType==1)
-					this.$refs.yuanqiQRCode.make();
+			this.api.getuserInfo(this.userinfo.user_id).then(res => {
+				this.userdata = res
+				this.logo = this.userdata.avatar
+
+				// 折线图
+				// x轴时间
+				this.option.xAxis[0].data = this.userdata.dateList;
+				this.option.xAxis[1].data = this.userdata.dateList;
+				// 月整改单完成
+				//找出日期对应的数据下标
+				let baseindex;
+				this.userdata.baseList.forEach((item, index) => {
+					baseindex = this.option.xAxis[0].data.indexOf(item.month)
+					this.option.series[0].data[baseindex] = item.num
+				})
+
+				// 月巡检单完成
+				//找出日期对应的数据下标
+				let taskindex;
+				this.userdata.taskList.forEach((item, index) => {
+					taskindex = this.option.xAxis[1].data.indexOf(item.month)
+					console.log("taskindex",taskindex,item)
+					this.option.series[1].data[taskindex] = item.num
+				})
+
+				this.$nextTick(function() {
+					if (this.loginType == 1)
+						this.$refs.yuanqiQRCode.make();
 					else
-					return false;            
+						return false;
 				})
 			})
 			// 获取工单信息
 			let order = await this.api.getorder(this.userinfo.dept_id)
 			console.log("工单信息", order);
 			this.order = order[0]
-			console.log("adfdsafe",this.order.taskPercent,typeof(this.order.taskPercent));
+			console.log("adfdsafe", this.order.taskPercent, typeof(this.order.taskPercent));
 			this.order.taskPercent = `${this.order.taskPercent}%`
 			this.order.rectifyPercent = `${this.order.rectifyPercent}%`
-			
+
 			// this.info.inspection = this.turn(this.info.inspection);
 		},
 		async onShow() {
@@ -680,7 +724,7 @@
 					.echarts {
 						margin-top: 20upx;
 						width: 100%;
-						height: 270upx;
+						height: 470upx;
 					}
 				}
 			}

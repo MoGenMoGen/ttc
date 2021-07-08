@@ -704,6 +704,18 @@ class api {
 						.then(res => resolve(res.data))
 						})
 			}
+			// 更换用户头像
+			changeavatar(data){
+				return new Promise(resolve => {
+					get("/blade-system/user/updateAvatar", data, {
+						    "Content-Type":"application/json",
+							"Blade-Auth": uni.getStorageSync("Blade-Auth")
+						})
+						.then(res => resolve(res.data))
+						})
+				
+			}
+			
 			
 			
 		

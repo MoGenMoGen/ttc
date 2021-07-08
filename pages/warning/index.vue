@@ -3,10 +3,13 @@
 	<view class="pages_warning">
 		<view class="container">
 			<view class="warning_tab">
-				<view class="warning_tab_item" v-for="(item,index) in tabList" :key="index"
-					:class="{ active: currentTab == index } " @click="changetab(index)">
-					{{item}}
-				</view>
+				<block v-for="(item,index) in tabList" :key="index">
+					<view v-if="item" class="warning_tab_item" :class="{ active: currentTab == index } "
+						@click="changetab(index)">
+						{{item}}
+					</view>
+				</block>
+
 			</view>
 			<view class="header">
 				<searchBox :placeholderIn="placeholderIn" @search="search" ref="searchbox"></searchBox>
@@ -282,7 +285,7 @@
 				let data = await this.api.getWarningRectifyList(params)
 				console.log("未删除", data.records)
 				// if (this.firstrectify) //删除第一条数据
-					data.records.shift()
+				data.records.shift()
 				console.log("删除第一条", data.records)
 				this.warnList = [...this.warnList, ...data.records]
 				this.total = data.total;
@@ -301,6 +304,10 @@
 		onLoad() {
 			performOrgId = uni.getStorageSync("userinfo").dept_id;
 			this.loginType = uni.getStorageSync("loginType")
+			if (this.loginType == 1)
+				delete this.tabList[2]
+			else if (this.loginType == 2)
+				delete this.tabList[1]
 			// 清空搜索框
 			// this.$refs.searchbox.date = "";
 			// this.$refs.searchbox.cd = "";

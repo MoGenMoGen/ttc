@@ -391,10 +391,11 @@
 					this.iconBar3[2].count = data1.records[0].rectifyCount;
 					this.iconBar3[3].count = data1.records[0].taskCountXun;
 					
-					if(this.iconBar3[1].count=='99+'||this.iconBar3[2].count=='99+'||this.iconBar3[3].count=='99+')
-					this.iconBar3[4].count='99+'
-					else
-					this.iconBar3[4].count =this.iconBar3[1].count+ this.iconBar3[2].count+this.iconBar3[3].count;
+					// if(this.iconBar3[1].count=='99+'||this.iconBar3[2].count=='99+'||this.iconBar3[3].count=='99+')
+					// this.iconBar3[4].count='99+'
+					// else
+					// this.iconBar3[4].count =this.iconBar3[1].count+ this.iconBar3[2].count+this.iconBar3[3].count;
+				this.iconBar3[4].count=data1.records[0].Count
 				}
 				this.warnList = data1.records
 				this.warnList.shift()
