@@ -283,10 +283,10 @@
 			async getList1(params) {
 				console.log("getlist1")
 				let data = await this.api.getWarningRectifyList(params)
-				console.log("未删除", data.records)
+				// console.log("未删除", data.records)
 				// if (this.firstrectify) //删除第一条数据
-				data.records.shift()
-				console.log("删除第一条", data.records)
+				// data.records.shift()
+				// console.log("删除第一条", data.records)
 				this.warnList = [...this.warnList, ...data.records]
 				this.total = data.total;
 				console.log("预警整改单列表data", data);

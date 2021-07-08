@@ -365,47 +365,21 @@
 			},
 			// 获取首页列表
 			async getList(params1, params2) {
+				
+				
 				// 获取预警提醒列表
-				let data1 = await this.api.gethomewarningList(params1)
-				console.log("首页预警", data1);
-				// 不同loginType，数组中对象count赋值
-				if (this.loginType == 1) {
-					this.iconBar1[0].count = data1.records[0].taskCount;
-					this.iconBar1[1].count = data1.records[0].rectifyCount;
-					if(this.iconBar1[0].count=='99+'||this.iconBar1[1].count=='99+')
-					this.iconBar1[2].count="99+"
-					else
-					this.iconBar1[2].count = this.iconBar1[0].count+this.iconBar1[1].count;
-				}
-				if (this.loginType == 2) {
-					this.iconBar2[1].count = data1.records[0].taskCount;
-					this.iconBar2[2].count = data1.records[0].rectifyCount;
-					
-					if(this.iconBar2[1].count=='99+'||this.iconBar2[2].count=='99+')
-					this.iconBar2[3].count="99+"
-					else
-					this.iconBar2[3].count =this.iconBar2[1].count+this.iconBar2[2].count ;
-				}
-				if (this.loginType == 3) {
-					this.iconBar3[1].count = data1.records[0].taskCount;   
-					this.iconBar3[2].count = data1.records[0].rectifyCount;
-					this.iconBar3[3].count = data1.records[0].taskCountXun;
-					
-					// if(this.iconBar3[1].count=='99+'||this.iconBar3[2].count=='99+'||this.iconBar3[3].count=='99+')
-					// this.iconBar3[4].count='99+'
-					// else
-					// this.iconBar3[4].count =this.iconBar3[1].count+ this.iconBar3[2].count+this.iconBar3[3].count;
-				this.iconBar3[4].count=data1.records[0].Count
-				}
-				this.warnList = data1.records
-				this.warnList.shift()
+				let data2 = await this.api.gethomewarningList(params1)
+				console.log("首页预警", data2);
+				
+				this.warnList = data2.records
+				// this.warnList.shift()
 				this.warnList=this.warnList.slice(0,3)
 				// logintype==3获取企业查列表
 				if (this.loginType == 3) {
-					let data2 = await this.api.getFirmQueryList(params2)
+					let data3 = await this.api.getFirmQueryList(params2)
 					
-					console.log("首页企业查", data2);
-					this.queryList=data2.records
+					console.log("首页企业查", data3);
+					this.queryList=data3.records
 				}
 
 			},
@@ -480,12 +454,46 @@
 			}
 			
 		},
-		onShow() {
+		async onShow() {
 			console.log("onshow");
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({
 				animation: false,
 			})
+			
+			// 获取messagenum
+			let data1=await this.api.getMessageNum({buildOrgId})
+			
+			// 不同loginType，数组中对象count赋值
+			if (this.loginType == 1) {
+				this.iconBar1[0].count = data1.taskCount;
+				this.iconBar1[1].count = data1.rectifyCount;
+				if(this.iconBar1[0].count=='99+'||this.iconBar1[1].count=='99+')
+				this.iconBar1[2].count="99+"
+				else
+				this.iconBar1[2].count = this.iconBar1[0].count+this.iconBar1[1].count;
+			}
+			if (this.loginType == 2) {
+				this.iconBar2[1].count = data1.taskCount;
+				this.iconBar2[2].count = data1.rectifyCount;
+				this.iconBar2[3].count=data1.Count
+				// if(this.iconBar2[1].count=='99+'||this.iconBar2[2].count=='99+')
+				// this.iconBar2[3].count="99+"
+				// else
+				// this.iconBar2[3].count =this.iconBar2[1].count+this.iconBar2[2].count ;
+			}
+			if (this.loginType == 3) {
+				this.iconBar3[1].count = data1.taskCount;   
+				this.iconBar3[2].count = data1.rectifyCount;
+				this.iconBar3[3].count = data1.taskCountXun;
+				
+				// if(this.iconBar3[1].count=='99+'||this.iconBar3[2].count=='99+'||this.iconBar3[3].count=='99+')
+				// this.iconBar3[4].count='99+'
+				// else
+				// this.iconBar3[4].count =this.iconBar3[1].count+ this.iconBar3[2].count+this.iconBar3[3].count;
+			this.iconBar3[4].count=data1.Count
+			}
+			
 
 			// 没有token,重新登录
 			// if (!uni.getStorageSync("Blade-Auth")) {

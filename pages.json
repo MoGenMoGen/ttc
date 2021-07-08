@@ -1,9 +1,5 @@
 {
-
-
 	"pages": [
-
-		
 		{
 			"path": "pages/login/index",
 			"style": {

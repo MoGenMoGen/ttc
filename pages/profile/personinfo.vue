@@ -42,7 +42,7 @@
 				id: "",
 				info: {
 					deptAddr: "",
-					avatar: "",
+					avatar,
 					realName: "",
 					phone: "",
 					deptName: ""

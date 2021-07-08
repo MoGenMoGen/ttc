@@ -715,6 +715,17 @@ class api {
 						})
 				
 			}
+			// 首页获取消息条数
+			getMessageNum(data){
+				return new Promise(resolve => {
+					get("/blade-works/warning/homeCount", data, {
+						    "Content-Type":"application/json",
+							"Blade-Auth": uni.getStorageSync("Blade-Auth")
+						})
+						.then(res => resolve(res.data))
+						})
+				
+			}
 			
 			
 			
