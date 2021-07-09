@@ -82,7 +82,7 @@
 					</picker>
 				</view>
 			</view>
-			<view class="newList" style="display: flex; flex-direction: column;">
+		<!-- 	<view class="newList" style="display: flex; flex-direction: column;">
 				<view class="newListTitle">
 					复查情况
 				</view>
@@ -102,7 +102,7 @@
 				</view>
 
 
-			</view>
+			</view> -->
 
 
 

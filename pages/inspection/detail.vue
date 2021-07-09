@@ -24,11 +24,16 @@
 				<text class="taskContentInListContent">{{ arr.issueUserName }}</text>
 			</view>
 			<view class="taskContentInList">
+				<text class="taskContentInListHead">下发日期 </text>
+				<text class="taskContentInListContent">{{ arr.issueDate }}</text>
+			</view>
+			
+			<view class="taskContentInList">
 				<text class="taskContentInListHead">截止日期 </text>
 				<text class="taskContentInListContent">{{ arr.completeDate }}</text>
 			</view>
-
-			<!-- <view class="taskContentInList">
+<!-- 
+			<view class="taskContentInList">
 				<text class="taskContentInListHead">复查日期</text>
 				<text class="taskContentInListContent">{{ arr.reviewTime }}</text>
 			</view> -->

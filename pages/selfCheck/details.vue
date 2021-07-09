@@ -30,7 +30,11 @@
 				<text class="taskContentInListContent">{{ arr.issueUserName }}</text>
 			</view>
 			<view class="taskContentInList">
-				<text class="taskContentInListHead">提交日期 </text>
+				<text class="taskContentInListHead">下发日期</text>
+				<text class="taskContentInListContent">{{ arr.issueDate }}</text>
+			</view>
+			<view class="taskContentInList">
+				<text class="taskContentInListHead">截至日期 </text>
 				<text class="taskContentInListContent">{{ arr.completeDate }}</text>
 			</view>
 
@@ -133,6 +137,14 @@
 					<image v-for="(item,index) in arr.taskPic" :key="index" :src="item" mode="" @click="enlarge(index)"/>
 				</view>
 			</view>
+			<view class="note">
+				<view class="noteTitle" style="font-size: 28rpx;">
+					备注
+				</view>
+				<view class="noteContainer" style="font-size: 28rpx; margin-top: 15rpx;" >
+					{{arr.rmks}} 
+				</view>
+			</view>
 		</view>
 	</view>
 
@@ -220,13 +232,16 @@
 			},
 			sureTo() {
 				// this.arr.taskPic=this.arr.serverimgList.join(",");
+				this.list.rmks=this.textIn
 				if (this.imgList == "") {
 					uni.showToast({
 						title: "请选择照片",
 						icon: "none"
 					})
 					return false
-				} else if (this.taskChoseArr.rmks == "") {
+				} 
+			
+				else if (this.list.rmks== "") {
 					uni.showToast({
 						title: "请输入备注",
 						icon: "none"
@@ -243,7 +258,7 @@
 				}
 				this.list.id=this.id
 				this.list.taskPic=this.arr.taskPic
-				this.list.rmks=this.textIn
+				
 				this.taskChoseArr.forEach(item=>{
 					this.taskItemOption=this.taskItemOption.concat(item.optionId)
 				})

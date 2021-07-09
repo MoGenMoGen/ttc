@@ -30,9 +30,19 @@
 					</view>
 					<view class="taskContentInList">
 						<image src="../../static/clock.png" mode="" />
-						<view class="taskContentInListHead">提交日期 </view>
+						<view class="taskContentInListHead">下发日期</view>
+						<view class="taskContentInListContent">{{ item.issueDate }}</view>
+					</view>
+					<view class="taskContentInList">
+						<image src="../../static/clock.png" mode="" />
+						<view class="taskContentInListHead">截至日期 </view>
 						<view class="taskContentInListContent">{{ item.completeDate }}</view>
 					</view>
+				<!-- 	<view class="taskContentInList">
+						<image src="../../static/clock.png" mode="" />
+						<view class="taskContentInListHead">复查日期 </view>
+						<view class="taskContentInListContent">{{ item.reviewTime }}</view>
+					</view> -->
 					<view v-if="currentIndex == 1" class="taskContentInList">
 						<image src="../../static/withinTime.png" mode="" />
 						<view style="color:red" class="taskContentInListHead">逾期天数
@@ -151,9 +161,19 @@
 			nomore,
 		},
 		onLoad() {
-			this.loginType = uni.getStorageSync("loginType")
-			this.userinfo=uni.getStorageSync("userinfo")
-		},
+		   this.loginType = uni.getStorageSync("loginType")
+		   this.userinfo=uni.getStorageSync("userinfo")
+		   
+		  if(uni.getStorageSync("inspectioncurrent"))
+		  {
+		   this.currentIndex=uni.getStorageSync("inspectioncurrent")
+		   uni.removeStorageSync("inspectioncurrent")
+		  }
+		  else{
+		   this.currentIndex=0
+		  }
+		  
+		  },
 		onShow() {
 			//隐藏默认tabbar显示自定义tabbar
 			uni.hideTabBar({

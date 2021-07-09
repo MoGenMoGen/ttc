@@ -98,7 +98,7 @@
 						<image src="/static/takephoto.png" mode="" @click="toPhoto()" />
 					</view>
 					<view class="choseImg" v-for="(item, index) in info.imgList" :key="index">
-						<image :src="item" mode="" class="imgs"></image>
+						<image :src="item" mode="" class="imgs" @click="enlarge(index)"></image>
 						<image :src="del" mode="" class="deleteImg" @click="deleimg(index)"></image>
 					</view>
 				</view>
@@ -183,6 +183,13 @@
 
 
 
+			},
+			enlarge(index){
+				uni.previewImage({
+					current:this.info.imgList[index],
+					urls:this.info.imgList,
+					indicator:"default"
+				})
 			},
 			async bindPickerChange(e) {
 				this.index2 = e.mp.detail.value;

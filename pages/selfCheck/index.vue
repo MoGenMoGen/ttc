@@ -42,7 +42,12 @@
 						</view>
 						<view class="taskContentInList">
 							<image src="../../static/clock.png" mode="" />
-							<view class="taskContentInListHead">提交日期 </view>
+							<view class="taskContentInListHead">下发日期 </view>
+							<view class="taskContentInListContent">{{ item.issueDate }}</view>
+						</view>
+						<view class="taskContentInList">
+							<image src="../../static/clock.png" mode="" />
+							<view class="taskContentInListHead">截止日期 </view>
 							<view class="taskContentInListContent">{{ item.completeDate }}</view>
 						</view>
 						<view v-if="currentIndex == 1" class="taskContentInList">
@@ -169,6 +174,16 @@
 				animation: false,
 
 			})
+			
+			if(uni.getStorageSync("selfcurrent"))
+			   {
+			    this.currentIndex=uni.getStorageSync("selfcurrent")
+			    uni.removeStorageSync("selfcurrent")
+			   }
+			   else{
+			    this.currentIndex=0
+			   }
+			
 			this.worksArr = []
 			this.page = {
 				current: 1, 
