@@ -259,9 +259,7 @@
 <style lang="scss" scoped>
 	.pages_selfCheck {
 		background-color: #fafafa;
-		display: flex;
-		flex-direction: column;
-		height: 100vh;
+		
 
 	}
 
@@ -276,7 +274,6 @@
 	}
 
 	.selfCheckContainer {
-		flex: 1;
 		overflow: auto;
 		background-color: #fff;
 	}

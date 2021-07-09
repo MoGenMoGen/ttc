@@ -34,7 +34,7 @@
 				<text class="taskContentInListContent">{{ arr.issueDate }}</text>
 			</view>
 			<view class="taskContentInList">
-				<text class="taskContentInListHead">截至日期 </text>
+				<text class="taskContentInListHead">截止日期 </text>
 				<text class="taskContentInListContent">{{ arr.completeDate }}</text>
 			</view>
 

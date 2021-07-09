@@ -164,15 +164,15 @@
 				// 工单信息
 				order: {
 					// 企业一侧
-					taskBillCount: 58, //自检任务
-					rectifyBillCount: 58, //整改单
+					taskComplete: 58, //自检任务
+					rectifyComplete: 58, //整改单
 					warningCount: 58, //预警提醒
 					// 服务商一侧
-					// taskBillCount: 58, //今日整改数
+					 rectifyBillCount: 58, //今日整改数
 					monthCount: 158, //当月整改数
 					rectifyPercent: 24, //整改率
 					// 监管机构一侧
-					// taskBillCount: 36, //今日巡检数
+					taskBillCount: 36, //今日巡检数
 					// monthCount: 12, //当月巡检数
 					taskPercent: 24, //巡检率
 					productday: 896,
@@ -337,12 +337,17 @@
 			},
 			// order.selfwork order.jrredify order.jrinspect
 			dataone() {
-				return this.loginType == 2 ? this.order.rectifyBillCount : this.order.taskBillCount
+				if(this.loginType==1)
+				return this.order.taskComplete
+				else if(this.loginType==2)
+				return this.order.rectifyBillCount
+				else if(this.loginType==3)
+				return this.order.taskBillCount
 			},
 			// order.redify order.dyredify order.dyinspect
 			datatwo() {
 				return this.loginType == 1 ?
-					this.order.rectifyBillCount :
+					this.order.rectifyComplete :
 					this.order.monthCount;
 			},
 			// order.warn order. redifyrate order.inspection
@@ -550,6 +555,13 @@
 						return false;
 				})
 			})
+			
+		},
+		async onShow() {
+			//隐藏默认tabbar显示自定义tabbar
+			uni.hideTabBar({
+				animation: false
+			})
 			// 获取工单信息
 			let order = await this.api.getorder(this.userinfo.dept_id)
 			console.log("工单信息", order);
@@ -557,14 +569,8 @@
 			console.log("adfdsafe", this.order.taskPercent, typeof(this.order.taskPercent));
 			this.order.taskPercent = `${this.order.taskPercent}%`
 			this.order.rectifyPercent = `${this.order.rectifyPercent}%`
-
+			
 			// this.info.inspection = this.turn(this.info.inspection);
-		},
-		async onShow() {
-			//隐藏默认tabbar显示自定义tabbar
-			uni.hideTabBar({
-				animation: false
-			})
 
 
 		},
