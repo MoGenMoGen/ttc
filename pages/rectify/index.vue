@@ -211,10 +211,12 @@
 				
 			}
 		},
-		onLoad() {
+		onLoad(e) {
+		
 			this.loginType = uni.getStorageSync("loginType")
 			this.userinfo=uni.getStorageSync("userinfo")
-		
+			
+			
 			
 		},
 		onShow() {
@@ -223,11 +225,21 @@
 				animation: false,
 
 			})
-			if (this.loginType == 1) {
-				this.currentIndex = 0
-			} else {
-				this.currentIndex = 1
+			if(uni.getStorageSync("rectifycurrent"))
+			{
+				this.currentIndex=uni.getStorageSync("rectifycurrent")
+				uni.removeStorageSync("rectifycurrent")
 			}
+			else{
+				if (this.loginType == 1) {
+					this.currentIndex = 0
+				} else {
+					this.currentIndex = 1
+				}
+			}
+			
+			
+			
 			this.listBody = []
 			this.page = {
 				current: 1,

@@ -380,40 +380,58 @@
 					uni.reLaunch({
 						url: "/pages/selfCheck/index",
 					});
-				} else if (this.loginType == 2)
-					uni.navigateTo({
-						url: "/pages/inspection/index",
+				} else if (this.loginType == 2) {
+					uni.setStorageSync("tabIndex", 2);
+					uni.setStorageSync("rectifycurrent",3)
+					uni.switchTab({
+						url: "/pages/rectify/index?currentIndex=3",
 					});
-				else
+				} else if(this.loginType == 3)
 					uni.navigateTo({
-						url: "/pages/selfCheck/index",
-					});
+						url: "/pages/inspection/index?currentIndex=3",
+					})
+
 			},
 			// 处理任务2
 			handlework2() {
 				if (this.loginType == 1) {
 					uni.setStorageSync("tabIndex", 2);
-					uni.reLaunch({
-						url: "/pages/rectify/index",
+					uni.setStorageSync("rectifycurrent",3)
+					uni.switchTab({
+						url: "/pages/rectify/index?currentIndex=",
+						
 					});
 				} else if (this.loginType == 2) {
-					uni.setStorageSync("tabIndex", 1);
-					uni.reLaunch({
-						url: "/pages/rectify/index",
+					uni.setStorageSync("tabIndex", 2);
+					uni.setStorageSync("rectifycurrent",3)
+					uni.switchTab({
+						url: "/pages/rectify/index?currentIndex=3",
 					});
-				} else {
-					uni.setStorageSync("tabIndex", 1);
-					uni.reLaunch({
-						url: "/pages/rectify/index",
-					});
+				} else if(this.loginType == 3){
+					uni.navigateTo({
+						url: "/pages/inspection/index?currentIndex=3",
+					})
 				}
 			},
 			// 处理任务3
 			handlework3() {
-				console.log(1111);
-				uni.navigateTo({
-					url: "/pages/warning/index",
-				});
+				if (this.loginType == 1) {
+					uni.navigateTo({
+						url: "/pages/warning/index",
+					});
+				}
+				 // else if (this.loginType == 2) {
+				// 	uni.setStorageSync("tabIndex", 2);
+				// 	uni.switchTab({
+				// 		url: "/pages/rectify/index",
+				// 	});
+				// } else {
+				// 	uni.navigateTo({
+				// 		url: "/pages/inspection/index",
+				// 	})
+				// }
+
+
 			},
 			// 进入个人中心
 			goToperson(id) {
@@ -518,7 +536,7 @@
 				let taskindex;
 				this.userdata.taskList.forEach((item, index) => {
 					taskindex = this.option.xAxis[1].data.indexOf(item.month)
-					console.log("taskindex",taskindex,item)
+					console.log("taskindex", taskindex, item)
 					this.option.series[1].data[taskindex] = item.num
 				})
 
