@@ -153,7 +153,6 @@
 		onLoad() {
 			this.loginType = uni.getStorageSync("loginType")
 			this.userinfo=uni.getStorageSync("userinfo")
-		
 		},
 		onShow() {
 			//隐藏默认tabbar显示自定义tabbar

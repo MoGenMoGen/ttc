@@ -377,6 +377,7 @@
 			handlework1() {
 				if (this.loginType == 1) {
 					uni.setStorageSync("tabIndex", 1);
+					uni.setStorageSync("selfcurrent",2)
 					uni.reLaunch({
 						url: "/pages/selfCheck/index",
 					});
@@ -384,11 +385,12 @@
 					uni.setStorageSync("tabIndex", 2);
 					uni.setStorageSync("rectifycurrent",3)
 					uni.switchTab({
-						url: "/pages/rectify/index?currentIndex=3",
+						url: "/pages/rectify/index",
 					});
 				} else if(this.loginType == 3)
+				uni.setStorageSync("inspectioncurrent",2)
 					uni.navigateTo({
-						url: "/pages/inspection/index?currentIndex=3",
+						url: "/pages/inspection/index",
 					})
 
 			},
@@ -398,18 +400,19 @@
 					uni.setStorageSync("tabIndex", 2);
 					uni.setStorageSync("rectifycurrent",3)
 					uni.switchTab({
-						url: "/pages/rectify/index?currentIndex=",
+						url: "/pages/rectify/index",
 						
 					});
 				} else if (this.loginType == 2) {
 					uni.setStorageSync("tabIndex", 2);
 					uni.setStorageSync("rectifycurrent",3)
 					uni.switchTab({
-						url: "/pages/rectify/index?currentIndex=3",
+						url: "/pages/rectify/index",
 					});
 				} else if(this.loginType == 3){
+					uni.setStorageSync("inspectioncurrent",2)
 					uni.navigateTo({
-						url: "/pages/inspection/index?currentIndex=3",
+						url: "/pages/inspection/index",
 					})
 				}
 			},
