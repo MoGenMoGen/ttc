@@ -726,7 +726,16 @@ class api {
 						})
 				
 			}
-			
+			// app版本更新
+			getAppUpdate(data){
+				return new Promise(resolve => {
+					get("/blade-uniapp/uniapp/appUpdate", data, {
+						    "Content-Type":"application/json",
+						})
+						.then(res => resolve(res.data))
+						})
+				
+			}
 			
 			
 		
