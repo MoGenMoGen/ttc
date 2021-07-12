@@ -24,9 +24,9 @@
 
 				<view class="item">
 					<!-- loginType==2 -->
-					<text class="title" v-if="loginType==2">自检任务</text>
+					<!-- <text class="title" v-if="loginType==2">自检任务</text> -->
 					<!-- loginType==3 -->
-					<text class="title border" @click="handleSelfCheck" v-else>自检任务</text>
+					<text class="title border" @click="handleSelfCheck">自检任务</text>
 					<text class="content red">{{ info.taskBillCount }}</text>
 				</view>
 				<view class="item">
@@ -88,8 +88,8 @@
 		methods: {
 			// 处理自检任务
 			handleSelfCheck() {
-				uni.navigateTo({
-					url: "/pages/selfCheck/index"
+				uni.reLaunch({
+					url: "/pages/selfCheck/index?name=firmdetail"
 				})
 
 			},

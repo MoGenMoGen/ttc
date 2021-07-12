@@ -77,8 +77,12 @@
 						<view class="warning_type" v-if="loginType != 3">
 							<image :src="type" mode="widthFix" class="warning_icon" />
 							<text>提醒类型</text>
-							<text :class="{ yellow: item.warningState == 0||item.warningState==1, red: item.warningState == 2 }" v-if="item.warningState == 2">已逾期提醒</text>
-							<text :class="{ yellow: item.warningState==0||item.warningState==1, red: item.warningState==2 }" v-else>待执行提醒</text>
+							<text
+								:class="{ yellow: item.warningState == 0||item.warningState==1, red: item.warningState == 2 }"
+								v-if="item.warningState == 2">已逾期提醒</text>
+							<text
+								:class="{ yellow: item.warningState==0||item.warningState==1, red: item.warningState==2 }"
+								v-else>待执行提醒</text>
 						</view>
 						<!-- 提交日期 -->
 						<view class="warning_submitDate" v-if="loginType == 3">
@@ -128,11 +132,8 @@
 						<view class="item_container">
 							<view class="item_title">企业码:</view>
 							<view class="item_content">
-								<yuanqi-qr-code
-								    ref="yuanqiQRCode"
-								   :text="'/pages/firmQuery/detail?id='+item.id"
-									:size="size"
-								    ></yuanqi-qr-code>
+								<yuanqi-qr-code ref="yuanqiQRCode" :text="'/pages/firmQuery/detail?id='+item.id"
+									:size="size" :color="color(item.completeState)"></yuanqi-qr-code>
 							</view>
 						</view>
 					</view>
@@ -171,7 +172,7 @@
 	// 提醒内容   
 	import workcontent from "static/workcontent.png";
 	// dept_id
-	var buildOrgId ="";
+	var buildOrgId = "";
 	export default {
 		data() {
 			// loginType:1.企业侧 2.服务商侧 3.监管机构侧
@@ -188,7 +189,7 @@
 				overdue,
 				warnDate,
 				workcontent,
-				size:200,
+				size: 200,
 				swiperList: [],
 				// 对应loginType1,2,3
 				iconBar1: [{
@@ -347,7 +348,7 @@
 				this.toPage("/pages/warning/index", false, 0)
 			},
 			// 跳转到预警提醒详情页面
-			goToWarnDetail(id,cd) {
+			goToWarnDetail(id, cd) {
 				uni.navigateTo({
 					url: `/pages/warning/detail?id=${id}&cd=${cd}`,
 				});
@@ -365,40 +366,55 @@
 			},
 			// 获取首页列表
 			async getList(params1, params2) {
-				
-				
+
+
 				// 获取预警提醒列表
 				let data2 = await this.api.gethomewarningList(params1)
 				console.log("首页预警", data2);
-				
+
 				this.warnList = data2.records
 				// this.warnList.shift()
-				this.warnList=this.warnList.slice(0,3)
+				this.warnList = this.warnList.slice(0, 3)
 				// logintype==3获取企业查列表
 				if (this.loginType == 3) {
 					let data3 = await this.api.getFirmQueryList(params2)
-					
+
 					console.log("首页企业查", data3);
-					this.queryList=data3.records
+					this.queryList = data3.records
 				}
 
 			},
 			// 扫描二维码
-			scaning(){
+			scaning() {
 				uni.scanCode({
-					success:function(res){
-						console.log('二维码扫描成功 ',res.result);
+					success: function(res) {
+						console.log('二维码扫描成功 ', res.result);
 						uni.navigateTo({
-							url:res.result
+							url: res.result
 						})
 					},
-					fail:function(){   
+					fail: function() {
 						console.log('二维码扫描失败');
 					},
-					complete:function(){
+					complete: function() {
 						console.log('二维码扫描完成');
 					}
 				})
+			}
+		},
+		
+		computed: {
+			// 二维码前景色
+			color() {
+				return function(state) {
+					if (state == 2)
+						return "#F1C345"
+					else if (state == 1)
+						return "#2B801C"
+					else if (state == 3)
+						return "#DB2222"
+					else return "#000000"
+				}
 			}
 		},
 		components: {
@@ -406,19 +422,22 @@
 			nomore
 		},
 		async onLoad() {
-			console.log("onload",111111)
+			console.log("onload", 111111)
 			uni.hideTabBar({
 				animation: false,
-			
+
 			})
 			uni.setStorageSync('tabIndex', 0)
 			this.loginType = uni.getStorageSync("loginType")
 			buildOrgId = uni.getStorageSync("userinfo").dept_id;
-			
+
 			// 获取轮播图
-			let ad=await this.api.getadvertinfo({posCd:"ADPOS_001",adNums:3})
+			let ad = await this.api.getadvertinfo({
+				posCd: "ADPOS_001",
+				adNums: 3
+			})
 			console.log(ad);
-			this.swiperList=ad.map(item=>item.imgUrl)
+			this.swiperList = ad.map(item => item.imgUrl)
 			let params2;
 			// 监管侧多一个企业查
 			if (this.loginType == 3) {
@@ -439,20 +458,19 @@
 			}, params2)
 
 		},
-		mounted(){
+		mounted() {
 			console.log("mounted");
 			// 生成二维码
-			let coderefs=[];
-			if(this.$refs.yuanqiQRCode)
-			{
-				coderefs=this.$refs.yuanqiQRCode;
+			let coderefs = [];
+			if (this.$refs.yuanqiQRCode) {
+				coderefs = this.$refs.yuanqiQRCode;
 			}
-			console.log("111",coderefs);
-			if(coderefs.length>0){
-				for(let i=0;i<coderefs.length;i++)
-			 this.$refs.yuanqiQRCode[i].make();
+			console.log("111", coderefs);
+			if (coderefs.length > 0) {
+				for (let i = 0; i < coderefs.length; i++)
+					this.$refs.yuanqiQRCode[i].make();
 			}
-			
+
 		},
 		async onShow() {
 			console.log("onshow");
@@ -460,40 +478,42 @@
 			uni.hideTabBar({
 				animation: false,
 			})
-			
+
 			// 获取messagenum
-			let data1=await this.api.getMessageNum({buildOrgId})
-			
+			let data1 = await this.api.getMessageNum({
+				buildOrgId
+			})
+
 			// 不同loginType，数组中对象count赋值
 			if (this.loginType == 1) {
 				this.iconBar1[0].count = data1.taskCount;
 				this.iconBar1[1].count = data1.rectifyCount;
-				if(this.iconBar1[0].count=='99+'||this.iconBar1[1].count=='99+')
-				this.iconBar1[2].count="99+"
+				if (this.iconBar1[0].count == '99+' || this.iconBar1[1].count == '99+')
+					this.iconBar1[2].count = "99+"
 				else
-				this.iconBar1[2].count = this.iconBar1[0].count+this.iconBar1[1].count;
+					this.iconBar1[2].count = this.iconBar1[0].count + this.iconBar1[1].count;
 			}
 			if (this.loginType == 2) {
 				this.iconBar2[1].count = data1.taskCount;
 				this.iconBar2[2].count = data1.rectifyCount;
-				this.iconBar2[3].count=data1.Count
+				this.iconBar2[3].count = data1.Count
 				// if(this.iconBar2[1].count=='99+'||this.iconBar2[2].count=='99+')
 				// this.iconBar2[3].count="99+"
 				// else
 				// this.iconBar2[3].count =this.iconBar2[1].count+this.iconBar2[2].count ;
 			}
 			if (this.loginType == 3) {
-				this.iconBar3[1].count = data1.taskCount;   
+				this.iconBar3[1].count = data1.taskCount;
 				this.iconBar3[2].count = data1.rectifyCount;
 				this.iconBar3[3].count = data1.taskCountXun;
-				
+
 				// if(this.iconBar3[1].count=='99+'||this.iconBar3[2].count=='99+'||this.iconBar3[3].count=='99+')
 				// this.iconBar3[4].count='99+'
 				// else
 				// this.iconBar3[4].count =this.iconBar3[1].count+ this.iconBar3[2].count+this.iconBar3[3].count;
-			this.iconBar3[4].count=data1.Count
+				this.iconBar3[4].count = data1.Count
 			}
-			
+
 
 			// 没有token,重新登录
 			// if (!uni.getStorageSync("Blade-Auth")) {
@@ -539,18 +559,20 @@
 			z-index: 1000;
 			display: flex;
 			align-items: center;
+
 			// justify-content: center;
-			text{
+			text {
 				color: #000000;
 				height: 88upx;
 				line-height: 88upx;
 				font-size: 34upx;
 				text-align: center;
-				width:550upx ;
+				width: 550upx;
 			}
-			image{
-				margin-left:50upx;
-				width:50upx;
+
+			image {
+				margin-left: 50upx;
+				width: 50upx;
 			}
 		}
 

@@ -93,7 +93,9 @@
 						return "#F1C345"
 					else if (state == 1)
 						return "#2B801C"
-					return "#DB2222"
+					else if (state == 3)
+						return "#DB2222"
+					else return "#000000"
 				}
 			}
 		},
@@ -164,7 +166,7 @@
 
 		},
 		mounted() {
-			console.log("mounted1111111111111111111111111111111111111111",this.$refs.yuanqiQRCode);
+			console.log("mounted1111111111111111111111111111111111111111", this.$refs.yuanqiQRCode);
 			// 生成二维码
 			let coderefs = [];
 			if (this.$refs.yuanqiQRCode)
