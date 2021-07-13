@@ -83,6 +83,7 @@
 		data() {
 			return {
 				loginType: 1,
+				backName:"",
 				currentIndex: 0,
 				searchFlag:false,
 				placeholderIn: "任务编号",
@@ -158,8 +159,13 @@
 			},
 			backTo(){
 				console.log(1111);
-				uni.switchTab({
-					url:"../index/index"
+				let url="../index/index"
+				if(this.backName=="firmdetail")
+				{
+					url="../firmQuery/detail"
+				}
+				uni.reLaunch({
+					url
 				})
 			}
 		},
@@ -204,9 +210,13 @@
 			this.$refs.research.date=''
 			console.log("aaaa",this.userinfo)
 		},
-		onLoad() {
+		onLoad(e) {
 			this.loginType = uni.getStorageSync("loginType")
 			this.userinfo=uni.getStorageSync("userinfo")
+			if(e.name=="firmdetail")
+			{
+				this.backName="firmdetail"
+			}
 		},
 		onReachBottom() {
 			console.log("触底");

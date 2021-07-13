@@ -63,7 +63,7 @@
 						<text>{{ index + 1 }}、 </text>
 						<text>{{ item.taskBillItem.name }}</text>
 					</view>
-					<view class="choose">
+					<view class="choose" style="display:flex;">
 						<view>
 							<radio-group @change="radioChange(index,$event)">
 								<label v-for="(item1,index1) in item.taskItemOption" :key="item1.id" class="radioInput">
@@ -72,6 +72,16 @@
 								</label>
 							</radio-group>
 
+						</view>
+					</view>
+					<view class="photo" style="margin-top: 20rpx;">
+						<view class="photograp" > 
+							<image src="../../static/takephoto.png" mode="" @click="toPhoto(index)" />
+						</view>
+											
+						<view class="choseImg" v-for="(item2, index2) in imgList[index].taskPic" :key="index2" style="margin-left: 25rpx;">
+							<image :src="item2" mode="" class="imgs"/>
+							<image class="deleteImg" :src="del" mode="" @click="deleimg(index2,index)" />
 						</view>
 					</view>
 				</view>
@@ -88,11 +98,21 @@
 									<checkbox :value="item1.id" /><text style="font-size: 28rpx;">{{item1.cont}}</text>
 								</label>
 							</checkbox-group>
+							<view class="photo">
+								<view class="photograp" > 
+									<image src="../../static/takephoto.png" mode="" @click="toPhoto(index)" />
+								</view>
+													
+								<view class="choseImg" v-for="(item2, index2) in imgList[index].taskPic" :key="index2">
+									<image :src="item2" mode="" class="imgs"/>
+									<image class="deleteImg" :src="del" mode="" @click="deleimg(index2,index)" />
+								</view>
+							</view>
 						</view>
 					</view>
 				</view>
 			</view>
-			<view class="photograpBox">
+			<!-- <view class="photograpBox">
 				<view class="title">拍照上传 </view>
 				<view class="photo" v-if="loginType == 2">
 
@@ -106,7 +126,7 @@
 						<image v-if="loginType == 2" class="deleteImg" :src="del" mode="" @click="deleimg(index)" />
 					</view>
 				</view>
-			</view>
+			</view> -->
 			<view class="note">
 				<view class="noteTitle">备注</view>
 				<textarea v-if="loginType==2" v-model="textIn" class="textIn" name="" id="" cols="30" rows="10" placeholder="多行输入"
@@ -130,11 +150,11 @@
 					<view class="taskInCase" v-for="(item1,index1) in item.taskItemOption"><text v-if="item1.state==1">{{item1.cont}}</text></view>
 				</view>
 			</view>
-			<view class="choosedImg">
+		<!-- 	<view class="choosedImg">
 				<view class="imgContainer">
 					<image v-for="(item,index) in arr.taskPic" :key="index" :src="item" mode="" @click="enlarge(index)"/>
 				</view>
-			</view>
+			</view> -->
 			<view class="note">
 				<view class="noteTitle" style="font-size: 28rpx;">
 					备注
@@ -154,7 +174,9 @@
 			return {
 				currentIndex: 1,
 				loginType: 2,
+				picflag:false,
 				del,
+				id:"",
 				textIn:"",
 				activeRadio: "",
 				check: "10",
@@ -172,13 +194,16 @@
 		},
 
 		methods: {
-			async toPhoto() {
-				this.imgList = [...this.imgList, ...await this.api.chooseImages('', 9)];
-				let path = this.imgList;
-				console.log("wew", this.imgList)
-
+			async toPhoto(index) {
+				console.log("111222",index);
+				console.table({orignlist:this.imgList[index].taskPic});
+				this.imgList[index].taskPic = [...this.imgList[index].taskPic, ...await this.api.chooseImages('', 9)];
+				console.log("ssss",this.imgList[index]);
+				// console.log("wwwwww",await this.api.chooseImages('', 9));
+				let path = this.imgList[index].taskPic;
+				// console.log("wew", this.imgList[index].taskPic)
 				let path1 = [];
-				this.arr.taskPic = '';
+				// this.arr.taskPic = '';
 				for (let i = 0; i < path.length; i++) {
 					console.log(i, "dwsfsf54645646");
 					let res = await this.api.upLoad(path[i]);
@@ -187,11 +212,16 @@
 				this.arr.serverimgList = path1;
 				this.arr.taskPic = this.arr.serverimgList.join(",");
 
-			},
-			deleimg(index) {
-			this.arr.serverimgList.splice(index, 1)
-			this.imgList.splice(index, 1)
-			this.arr.taskPic = this.arr.serverimgList.join(",");
+			}, 
+			deleimg(index2,index) {
+			// this.arr.serverimgList.splice(index, 1)
+			
+			// this.arr.taskPic = this.arr.serverimgList.join(",");
+			console.log({index2,index});
+			this.imgList[index].taskPic.splice(index2, 1)
+			this.imgList.push()
+				console.log(this.imgList[index])
+			
 			},
 			backTo() {
 				uni.navigateBack()
@@ -206,13 +236,28 @@
 			sureTo() {
 				// this.arr.taskPic = this.arr.serverimgList.join(",");
 			this.list.rmks=this.textIn
-				if (this.imgList == "") {
+			console.log(this.list.imgList);
+				for(let i=0;i<this.this.arr.taskItemList.length;i++){
+					if(this.imgList[i].taskPic.length==0)
+					{
+						this.picflag=false
+						break
+					}
+					else
+					{
+						this.picflag=true
+					}
+				}
+					
+				if(this.picflag==false){
 					uni.showToast({
-						title: "请选择照片",
+						title: "请拍照",
 						icon: "none"
 					})
 					return false
-				} else if (this.list.rmks == "") {
+				}
+				 
+				 else if (this.list.rmks == "") {
 					uni.showToast({
 						title: "请输入备注",
 						icon: "none"
@@ -227,18 +272,29 @@
 					})
 					return false
 				}
-				this.list.id=this.id
-				this.list.taskPic=this.arr.taskPic
 				this.taskChoseArr.forEach(item=>{
 					this.taskItemOption=this.taskItemOption.concat(item.optionId)
 				})
-				this.list.taskItemOption=this.taskItemOption
-				console.log("aa",this.taskItemOption);
+				// this.list.taskItemOption=this.taskItemOption
+				
+				
+				for(let i=0;i<this.arr.taskItemList.length;i++){
+					console.log(89898989);
+					console.log("qqw",this.arr.taskItemList[i].taskBillItem.id);
+					console.log("qqw",this.list.taskItemOption[i].id);
+					this.list.taskItemOption[i].id=this.taskItemOption[i]
+					this.list.taskItemOption[i].billId=this.id
+					this.list.taskItemOption[i].billItemId=this.arr.taskItemList[i].taskBillItem.id
+					this.list.taskItemOption[i].taskPic=this.imgList[i].taskPic.join(",")
+				}
+				// this.list.imgList=this.imgList
+				// this.list.id=this.id
+				// this.list.taskPic=this.arr.taskPic
 				console.log(this.list);
 				this.api.postBillSubmit(this.list)
-				uni.navigateBack({
+			// 	uni.navigateBack({
 			
-				})
+			// 	})
 			},
 			radioChange: function(index, evt) {
 				let data = {
@@ -246,7 +302,7 @@
 					optionId: evt.detail.value
 				}
 				if (this.taskChoseArr.length === 0) {
-					this.taskChoseArr.push(data)
+					this.taskChoseArr.push(data) 
 				} else {
 					console.log(this.taskChoseArr.filter(item => item.itemId == data.itemId));
 					if (this.taskChoseArr.filter(item => item.itemId == data.itemId).length == 1) {
@@ -294,19 +350,31 @@
 			}  
 			}
 		},
-		onLoad(e) {
+		async onLoad(e) {
+		
 			this.id = e.id
 			this.currentIndex = e.currentIndex;
 			// 从缓存中获取loginType,角色信息
 			this.loginType = uni.getStorageSync("loginType")
-		},
-		async onShow() {
 			this.arr = await this.api.getBillDetail({
 				id: this.id
 			})
-			this.arr.taskPic = this.arr.taskPic.split(",")
-
+			this.list.taskItemOption=[]
+			for(let i=0; i<this.arr.taskItemList.length;i++){
+				this.imgList[i]={
+					taskPic:[]
+				}
+				
+				this.list.taskItemOption[i]={
+					
+				}
+			}
 		},
+		// async onShow() {
+			
+		// 	this.arr.taskPic = this.arr.taskPic.split(",")
+
+		// },
 		components: {},
 	};
 </script>

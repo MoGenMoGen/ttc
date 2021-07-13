@@ -581,7 +581,8 @@ class api {
 	//自检巡检确认
 	postBillSubmit(data) {
 		return new Promise(resolve => {
-			post("/blade-works/taskbill/billSubmit", data).then(res => relsolve(res))
+			post("/blade-works/taskbill/billSubmit", data,{"Content-Type": "application/json",
+				"Blade-Auth": uni.getStorageSync("Blade-Auth")}).then(res => relsolve(res))
 		})
 	}
 	// 个人中心资料库列表
