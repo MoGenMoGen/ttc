@@ -212,7 +212,6 @@
 			}
 		},
 		onLoad(e) {
-		
 			this.loginType = uni.getStorageSync("loginType")
 			this.userinfo=uni.getStorageSync("userinfo")
 			
