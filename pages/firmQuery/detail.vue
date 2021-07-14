@@ -89,7 +89,7 @@
 			// 处理自检任务
 			handleSelfCheck() {
 				uni.reLaunch({
-					url: `/pages/selfCheck/index?name=firmdetail&id=${this.id}`
+					url: `/pages/selfCheck/index?id=${this.id}`
 				})
 
 			},

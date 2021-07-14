@@ -164,10 +164,12 @@
 		"list": [{
 			"pagePath": "pages/index/index",
 			"text": "首页"
-		}, {
+		},
+		{
 			"pagePath": "pages/selfCheck/index",
 			"text": "11"
-		}, {
+		}, 
+		{
 			"pagePath": "pages/firmQuery/index",
 			"text": "11"
 		}, {

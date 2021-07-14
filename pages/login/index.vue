@@ -173,8 +173,8 @@ export default {
 
         image {
           width: 40rpx;
-          margin-left: 16rpx;
-          margin-right: 38rpx;
+          margin-left: 8rpx;
+          margin-right: 28rpx;
         }
 
         input {
