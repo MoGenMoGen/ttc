@@ -72,6 +72,15 @@
 						{{bodyList.requReport}}
 					</view>
 				</view>
+				<view class="bodyList" v-if="bodyList.reissueReport">
+					<view class="bodyListTitle">
+						二次下发说明
+					</view>
+					<view class="bodyListContent">
+						{{bodyList.reissueReport}}
+					</view>
+				</view>
+				
 				<view class="bodyList">
 					<view class="bodyListTitle">
 						复查人
@@ -102,7 +111,7 @@
 		</view>
 
 
-		<view class="detailContent" style="margin-top: 20rpx;" v-if="currentIndex==2||currentIndex==3">
+		<view class="detailContent" style="margin-top: 20rpx;" v-if="currentIndex==1||currentIndex==2">
 			<view class="contentBody" style="margin-top: 0rpx;">
 				<view class="bodyList">
 					<view class="bodyListTitle">
@@ -128,7 +137,7 @@
 						{{bodyList.reportDate}}
 					</view>
 				</view>
-				<view class="bodyList" style="border-bottom: 0;" v-if="currentIndex==2&&loginType==1">
+				<view class="bodyList" style="border-bottom: 0;" v-if="currentIndex==1&&loginType==1">
 					<view class="bodyListTitle">
 						上报人
 					</view>
@@ -136,7 +145,7 @@
 						{{bodyList.reportUserName}}
 					</view>
 				</view>
-				<view class="bodyList" v-if="currentIndex==3">
+				<view class="bodyList" v-if="currentIndex==2">
 					<view class="bodyListTitle">
 						结案人
 					</view>
@@ -144,7 +153,7 @@
 						{{bodyList.closeUserName}}
 					</view>
 				</view>
-				<view class="bodyList" v-if="loginType==2&&currentIndex==2">
+				<view class="bodyList" v-if="loginType==2&&currentIndex==1">
 					<view class="bodyListTitle">
 						确认人
 					</view>
@@ -152,7 +161,7 @@
 						{{bodyList.reviewName}}
 					</view>
 				</view>
-				<view class="bodyList" v-if="currentIndex==3||(loginType==2&&currentIndex==2)"
+				<view class="bodyList" v-if="currentIndex==2||(loginType==2&&currentIndex==1)"
 					style="border-bottom: 0;">
 					<view class="bodyListTitle">
 						确认时间
@@ -176,32 +185,31 @@
 				</view>
 			</view>
 		</view> -->
-		<view class="contentText" v-if="currentIndex==0&&loginType==1">
+	<!-- 	<view class="contentText" v-if="currentIndex==0&&loginType==1">
 			<view class="TextTitle">
 				确认签收
 			</view>
 			 <view class="signBox" style="width: 100%;">
 				<sign @signImage="signImage"></sign>
-			</view>
+			</view> -->
 			<!-- <textarea v-model="signs" placeholder="在此签名" class="textareaIn" placeholder-class="placeholderIn" />
 			<view class="textBtn">
 				<button class="btn1" type="default" @click="Resign">重签</button>
 				<button class="btn2" type="default" @click="preservation">保存</button>
 			</view> -->
-		</view>
-		<view class="contentText" v-if="currentIndex==1&&loginType==1">
+		<view class="contentText" v-if="currentIndex==0&&loginType==1">
 			<view class="TextTitle">
 				整改上报
 			</view>
 			<textarea v-model="report" placeholder="多行输入" class="textareaInTwo" placeholder-class="placeholderIn" />
 		</view>
-		<view class="contentText" v-if="currentIndex==2&&loginType==2">
+		<view class="contentText" v-if="currentIndex==1&&loginType==2">
 			<view class="TextTitle">
 				结案内容
 			</view>
 			<textarea v-model="closingContent" placeholder="多行输入" class="textareaInTwo" placeholder-class="placeholderIn" />
 		</view>
-		<view class="photograpBox" v-if="currentIndex==1&&loginType==1">
+		<view class="photograpBox" v-if="currentIndex==0&&loginType==1">
 			<view class="title">拍照上传 </view>
 			<view class="photo">
 
@@ -216,12 +224,12 @@
 				</view>
 			</view>
 		</view>
-		<view class="lastBtn" v-if="loginType==1&&currentIndex!=2">
-			<button type="default" class="cancel" v-if="currentIndex==0||currentIndex==1" @click="cancelTo">取消</button>
-			<button type="default" class="confirm" v-if="currentIndex==0" @click="confirmTO">确认</button>
-			<button type="default" class="confirm" v-if="currentIndex==1" @click="reportSure ">上报确认</button>
+		<view class="lastBtn" v-if="loginType==1&&currentIndex!=1">
+			<button type="default" class="cancel" v-if="currentIndex==0" @click="cancelTo">取消</button>
+			<!-- <button type="default" class="confirm" v-if="currentIndex==0" @click="confirmTO">确认</button> -->
+			<button type="default" class="confirm" v-if="currentIndex==0" @click="reportSure ">上报确认</button>
 		</view>
-		<view class="status" v-if="(currentIndex==2&&loginType==1)||(loginType==3)||(loginType==2&&(currentIndex==1||currentIndex==0))">
+		<view class="status" v-if="(currentIndex==1&&loginType==1)||(loginType==3)||(loginType==2&&currentIndex==0)">
 			<view class="title">
 				整改状态
 			</view>
@@ -229,20 +237,18 @@
 				{{currentState}}
 			</view>
 		</view>
-		<view class="lastBtnTwo" v-if="currentIndex==2&&loginType==2">
+		<view class="lastBtnTwo" v-if="currentIndex==1&&loginType==2">
 			<button type="default" class="cancel" @click="backTo">取消</button>
 			<button type="default" class="confirm" @click="sureTo">确认结案</button>
 			<button type="default" class="again" @click="pop">再次下发</button>
 		</view>
-		<view class="mask" v-if="popshow" catchtouchmove="true">
-
-		</view>
+		<view class="mask" v-if="popshow" catchtouchmove="true"></view>
 		<view class="popBox" v-if="popshow" catchtouchmove="true">
 			<view class="title">
 				再次下发说明
 			</view>
 			<view class="text">
-				<textarea class="textIn"v-model="twice" placeholder="请输入二次下发说明"
+				<textarea class="textIn" v-model="twice" placeholder="请输入二次下发说明"
 					placeholder-style="font-size: 28rpx;color: #D0CED8" />
 			</view>
 			<view class="btn">
@@ -340,7 +346,7 @@
 				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
 				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
 				this.bodyList.reissueReport=this.twice;
-				this.bodyList.requReport=this.twice
+				// this.bodyList.requReport=this.twice
 				this.api.postRectifyClose(this.bodyList)
 				this.popshow = false;
 				uni.navigateBack({
@@ -388,7 +394,7 @@
 				// this.=data.records;
 				console.log(data);
 				this.bodyList = data
-				this.currentIndex = data.state - 1
+				this.currentIndex = data.state - 2
 				this.bodyList.troublePic=this.bodyList.troublePic.split(",")
 				this.bodyList.rectifyPic=this.bodyList.rectifyPic.split(",")
 				

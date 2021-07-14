@@ -45,7 +45,7 @@
                 if (this.isEnd) {
                     uni.canvasToTempFilePath({
                         canvasId: 'firstCanvas',
-
+						fileType:'jpg',
                         success: function(res) {
                             //打印图片路径74
 							

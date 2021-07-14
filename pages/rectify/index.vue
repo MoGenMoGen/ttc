@@ -10,7 +10,7 @@
 		</view>
 		<view class="rectifyContainer">
 			<view class="rectifyBar">
-				<view class="rectifyTop" v-if="(loginType!=1&&index>0)||loginType==1" v-for="(item,index) in listBar"
+				<view class="rectifyTop" v-for="(item,index) in listBar"
 					:key="index" :class="{ active: currentIndex == index } " @click="changeNav(index)">
 					{{item}}
 				</view>
@@ -20,15 +20,15 @@
 
 			<searchBox :placeholderIn="placeholderIn" @search="search" ref="research"></searchBox>
 			<view class="rectifyBody">
-				<view class="rectifyList" v-for="(item,index) in listBody" :key="index" @click="changePage(item.id)">
+				<view class="rectifyList" v-for="(item,index) in listBody" :key="index" @click="changePage(item.id)" v-if="deptId==''||deptId==listBody.deptId">
 					<view class="rectifyListIn">
 						<image src="../../static/worktype.png" mode=""></image>
-						<view class="rectifyListTitle">
+						<view class="rectifyListTitle"> 
 							整改单号
 						</view>
 						<view class="rectifyListContent">
 							{{item.cd}}
-						</view>
+						</view> 
 					</view>
 					<view class="rectifyListIn">
 						<image src="../../static/workcontent.png" mode=""></image>
@@ -48,7 +48,7 @@
 							{{item.issueDate}}
 						</view>
 					</view>
-					<view class="rectifyListIn" v-if="(currentIndex==0||currentIndex==1)&&loginType==1">
+					<view class="rectifyListIn" v-if="currentIndex==0&&loginType==1">
 						<image src="../../static/currentstate.png" mode=""></image>
 						<view class="rectifyListTitle">
 							当前状态
@@ -57,7 +57,7 @@
 							{{currentState(item.state)}}
 						</view>
 					</view>
-					<view class="rectifyListIn" v-if="currentIndex==2&&loginType!=2">
+					<view class="rectifyListIn" v-if="currentIndex==1&&loginType!=2">
 						<image src="../../static/currentstate.png" mode=""></image>
 						<view class="rectifyListTitle">
 							签收日期
@@ -66,7 +66,7 @@
 							{{item.receiptDate}}
 						</view>
 					</view>
-					<view class="rectifyListIn" v-if="currentIndex==3">
+					<view class="rectifyListIn" v-if="currentIndex==2">
 						<image src="../../static/currentstate.png" mode=""></image>
 						<view class="rectifyListTitle">
 							完成日期
@@ -75,7 +75,7 @@
 							{{item.closeDate}}
 						</view>
 					</view>
-					<view class="rectifyListIn" v-if="currentIndex==2&&loginType==2">
+					<view class="rectifyListIn" v-if="currentIndex==1&&loginType==2">
 						<image src="../../static/currentstate.png" mode=""></image>
 						<view class="rectifyListTitle">
 							当前状态
@@ -104,8 +104,9 @@
 			return {
 				placeholderIn: "任务编号、任务内容",
 				loginType: 2,
-				currentIndex: 1,
+				currentIndex: 0,
 				searchFlag:false,
+				deptId:"",
 				page1:{
 					
 				},
@@ -113,7 +114,7 @@
 					current: 1,
 					size: 5
 				},
-				listBar: ["待签收", "待执行", "待结案", "已完成"],
+				listBar: ["待执行", "待结案", "已完成"],
 				listBody: [
 					
 				]
@@ -151,7 +152,7 @@
 				this.currentIndex = index;
 				this.listBody=[]
 				this.getList({
-					state: this.currentIndex + 1,
+					state: this.currentIndex + 2,
 					deptId:this.userinfo.dept_id,
 					current:1,
 					size:5
@@ -214,6 +215,9 @@
 		onLoad(e) {
 			this.loginType = uni.getStorageSync("loginType")
 			this.userinfo=uni.getStorageSync("userinfo")
+			if(e.id){
+				this.deptId=e.id
+			}
 			
 			
 			
@@ -229,16 +233,6 @@
 				this.currentIndex=uni.getStorageSync("rectifycurrent")
 				uni.removeStorageSync("rectifycurrent")
 			}
-			else{
-				if (this.loginType == 1) {
-					this.currentIndex = 0
-				} else {
-					this.currentIndex = 1
-				}
-			}
-			
-			
-			
 			this.listBody = []
 			this.page = {
 				current: 1,
@@ -246,7 +240,7 @@
 			}
 			this.getList({
 				...{
-					state: this.currentIndex + 1,
+					state: this.currentIndex + 2,
 					deptId:this.userinfo.dept_id,
 				},
 				...this.page
@@ -273,7 +267,7 @@
 					this.getList({
 						...this.page,
 						...{
-							state: this.currentIndex + 1,
+							state: this.currentIndex + 2,
 							deptId:this.userinfo.dept_id,
 						}
 					});
@@ -296,7 +290,7 @@
 				this.getList({
 					...this.page,
 					...{
-						state: this.currentIndex + 1,
+						state: this.currentIndex + 2,
 						deptId:this.userinfo.dept_id,
 						// types:1
 					}

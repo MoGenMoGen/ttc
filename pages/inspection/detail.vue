@@ -80,7 +80,7 @@
 						</view>
 											
 						<view class="choseImg" v-for="(item2, index2) in imgList[index].taskPic" :key="index2" style="margin-left: 25rpx;">
-							<image :src="item2" mode="" class="imgs"/>
+							<image :src="item2" mode="" class="imgs" @click="enlarge(index,index2)"/>
 							<image class="deleteImg" :src="del" mode="" @click="deleimg(index2,index)" />
 						</view>
 					</view>
@@ -98,16 +98,17 @@
 									<checkbox :value="item1.id" /><text style="font-size: 28rpx;">{{item1.cont}}</text>
 								</label>
 							</checkbox-group>
-							<view class="photo">
-								<view class="photograp" > 
-									<image src="../../static/takephoto.png" mode="" @click="toPhoto(index)" />
-								</view>
-													
-								<view class="choseImg" v-for="(item2, index2) in imgList[index].taskPic" :key="index2">
-									<image :src="item2" mode="" class="imgs"/>
-									<image class="deleteImg" :src="del" mode="" @click="deleimg(index2,index)" />
-								</view>
-							</view>
+							
+						</view>
+					</view>
+					<view class="photo">
+						<view class="photograp" > 
+							<image src="../../static/takephoto.png" mode="" @click="toPhoto(index)" />
+						</view>
+											
+						<view class="choseImg" v-for="(item2, index2) in imgList[index].taskPic" :key="index2">
+							<image :src="item2" mode="" class="imgs" @click="enlarge(index,index2)"/>
+							<image class="deleteImg" :src="del" mode="" @click="deleimg(index2,index)" />
 						</view>
 					</view>
 				</view>
@@ -148,6 +149,9 @@
 					<text>{{ index +1}}、 </text>
 					<text>{{ item.taskBillItem.name  }}</text>
 					<view class="taskInCase" v-for="(item1,index1) in item.taskItemOption"><text v-if="item1.state==1">{{item1.cont}}</text></view>
+					<view class="photo" v-for="(item2,index2) in item.taskBillItem.taskPic" :key="index2" style="margin-top: 0rpx;">
+						<image :src="item2" mode="" style="height: 160rpx; width: 160rpx;" @click="enlargeTwo(index,index2)"></image>
+					</view>
 				</view>
 			</view>
 		<!-- 	<view class="choosedImg">
@@ -226,10 +230,17 @@
 			backTo() {
 				uni.navigateBack()
 			},
-			enlarge(index){
+			enlarge(index,index2) {
 				uni.previewImage({
-					current:this.arr.taskPic[index],
-					urls:this.arr.taskPic,
+					current: this.imgList[index].taskPic[index2],
+					urls:this.imgList[index].taskPic,
+					indicator: "default"
+				})
+			},
+			enlargeTwo(index,index2){
+				uni.previewImage({
+					current:this.arr.taskItemList[index].taskBillItem.taskPic[index2],
+					urls:this.arr.taskItemList[index].taskBillItem.taskPic,
 					indicator:"default"
 				})
 			},
@@ -292,9 +303,9 @@
 				// this.list.taskPic=this.arr.taskPic
 				console.log(this.list);
 				this.api.postBillSubmit(this.list)
-			// 	uni.navigateBack({
+				uni.navigateBack({
 			
-			// 	})
+				})
 			},
 			radioChange: function(index, evt) {
 				let data = {
@@ -359,8 +370,11 @@
 			this.arr = await this.api.getBillDetail({
 				id: this.id
 			})
+			
 			this.list.taskItemOption=[]
-			for(let i=0; i<this.arr.taskItemList.length;i++){
+			
+			
+			for(var i=0; i<this.arr.taskItemList.length;i++){
 				this.imgList[i]={
 					taskPic:[]
 				}
@@ -368,13 +382,13 @@
 				this.list.taskItemOption[i]={
 					
 				}
+				this.arr.taskItemList[i].taskBillItem.taskPic=this.arr.taskItemList[i].taskBillItem.taskPic.split(",")
 			}
+			console.log("77777",this.arr.taskItemList[i].taskBillItem.taskPic);
 		},
-		// async onShow() {
+		async onShow() {
 			
-		// 	this.arr.taskPic = this.arr.taskPic.split(",")
-
-		// },
+		},
 		components: {},
 	};
 </script>
@@ -634,7 +648,7 @@
 		color: #1d1d2e;
 		letter-spacing: 59rpx;
 		opacity: 1;
-		margin: 40rpx 40rpx;
+		margin: 40rpx;
 	}
 
 	.choosedImg {

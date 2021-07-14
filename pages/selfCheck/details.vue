@@ -1,4 +1,3 @@
-
 <!-- 自检详情页面 -->
 <template>
 	<view class="taskDetails">
@@ -9,14 +8,14 @@
 			</view>
 			<view class="taskContentInListTwo">
 				<!-- <text class="taskContentInListHead" v-if="loginType == 3 && currentIndex == 1">提醒内容</text> -->
-				<text class="taskContentInListHead" >任务内容</text>
+				<text class="taskContentInListHead">任务内容</text>
 				<text class="taskContentInListContent">{{ arr.contReport }}</text>
 			</view>
 			<!-- <view class="taskContentInListTwo" v-if="loginType == 3">
 				<text class="taskContentInListHead">整改单位</text>
 				<text class="taskContentInListContent">{{ arr.reform }}</text>
 			</view> -->
-			<view class="taskContentInList"  v-if="loginType == 3">
+			<view class="taskContentInList" v-if="loginType == 3">
 				<text class="taskContentInListHead">企业名称 </text>
 				<text class="taskContentInListContent">{{ arr.performOrgName }}</text>
 			</view>
@@ -71,10 +70,21 @@
 							<radio-group @change="radioChange(index,$event)">
 								<label v-for="(item1,index1) in item.taskItemOption" :key="item1.id" class="radioInput">
 									<radio :value="item1.id" style="transform: scale(0.60)" />
-									<text>{{item1.cont}}</text>
+									<text style="font-size: 28rpx;">{{item1.cont}}</text>
 								</label>
 							</radio-group>
 
+						</view>
+					</view>
+					<view class="photo" style="margin-top: 20rpx;">
+						<view class="photograp">
+							<image src="../../static/takephoto.png" mode="" @click="toPhoto(index)" />
+						</view>
+
+						<view class="choseImg" v-for="(item2, index2) in imgList[index].taskPic" :key="index2"
+							style="margin-left: 25rpx;">
+							<image :src="item2" mode="" class="imgs" @click="enlarge(index,index2)"/>
+							<image class="deleteImg" :src="del" mode="" @click="deleimg(index2,index)" />
 						</view>
 					</view>
 				</view>
@@ -93,9 +103,19 @@
 							</checkbox-group>
 						</view>
 					</view>
+					<view class="photo">
+						<view class="photograp">
+							<image src="../../static/takephoto.png" mode="" @click="toPhoto(index)" />
+						</view>
+
+						<view class="choseImg" v-for="(item2, index2) in imgList[index].taskPic" :key="index2">
+							<image :src="item2" mode="" class="imgs" @click="enlarge(index,index2)"/>
+							<image class="deleteImg" :src="del" mode="" @click="deleimg(index2,index)" />
+						</view>
+					</view>
 				</view>
 			</view>
-			<view class="photograpBox" v-if="currentIndex!=2">
+			<!-- <view class="photograpBox" v-if="currentIndex!=2">
 				<view class="title" style="font-size: 28rpx;">拍照上传 </view>
 				<view class="photo">
 					<view class="photograp" v-if="loginType == 1">
@@ -107,7 +127,7 @@
 						<image v-if="loginType == 1" class="deleteImg" :src="del" mode="" @click="deleimg(index)" />
 					</view>
 				</view>
-			</view>
+			</view> -->
 			<view class="note" v-if="currentIndex!=2">
 				<view class="noteTitle">备注</view>
 				<textarea v-if="loginType==1" v-model="textIn" class="textIn" name="" id="" cols="30" rows="10"
@@ -130,19 +150,24 @@
 					<view class="taskInCase" v-for="(item1,index1) in item.taskItemOption" :key="index">
 						<text v-if="item1.state==1">{{item1.cont}}</text>
 					</view>
+					<view class="photo" v-for="(item2,index2) in item.taskBillItem.taskPic" :key="index2"
+						style="margin-top: 0rpx;">
+						<image :src="item2" mode="" style="height: 160rpx; width: 160rpx;"
+							@click="enlargeTwo(index,index2)"></image>
+					</view>
 				</view>
 			</view>
-			<view class="choosedImg">
+			<!-- 	<view class="choosedImg">
 				<view class="imgContainer" >
 					<image v-for="(item,index) in arr.taskPic" :key="index" :src="item" mode="" @click="enlarge(index)"/>
 				</view>
-			</view>
+			</view> -->
 			<view class="note">
 				<view class="noteTitle" style="font-size: 28rpx;">
 					备注
 				</view>
-				<view class="noteContainer" style="font-size: 28rpx; margin-top: 15rpx;" >
-					{{arr.rmks}} 
+				<view class="noteContainer" style="font-size: 28rpx; margin-top: 15rpx;">
+					{{arr.rmks}}
 				</view>
 			</view>
 		</view>
@@ -157,13 +182,14 @@
 			return {
 				currentIndex: 1,
 				imgList: [],
+				picflag: false,
 				textIn: "",
 				loginType: 2,
 				del,
 				activeRadio: "",
 				check: "10",
 				checkTwo: "20",
-				
+
 				items: [{
 						name: "有",
 
@@ -172,19 +198,18 @@
 						name: "无",
 					},
 				],
-				taskItemList:[],
+				taskItemList: [],
 				arr: {
 
 				},
-				taskChoseArr: [
-				], 
-				taskItemOption:[],
-				list:{
-					
+				taskChoseArr: [],
+				taskItemOption: [],
+				list: {
+
 				}
 			};
 		},
-		computed:{
+		computed: {
 			currentState() {
 				return function(warningState) {
 					if (warningState == 1)
@@ -193,18 +218,23 @@
 						return "已逾期";
 					else if (warningState == 3)
 						return "已完成"
-					
-				}  
+
+				}
 			}
 		},
 		methods: {
-			async toPhoto() {
-				this.imgList = [...this.imgList, ...await this.api.chooseImages('', 9)];
-				let path = this.imgList;
-				console.log("wew", this.imgList)
-
+			async toPhoto(index) {
+				console.log("111222", index);
+				console.table({
+					orignlist: this.imgList[index].taskPic
+				});
+				this.imgList[index].taskPic = [...this.imgList[index].taskPic, ...await this.api.chooseImages('', 9)];
+				console.log("ssss", this.imgList[index]);
+				// console.log("wwwwww",await this.api.chooseImages('', 9));
+				let path = this.imgList[index].taskPic;
+				// console.log("wew", this.imgList[index].taskPic)
 				let path1 = [];
-				this.arr.taskPic = '';
+				// this.arr.taskPic = '';
 				for (let i = 0; i < path.length; i++) {
 					console.log(i, "dwsfsf54645646");
 					let res = await this.api.upLoad(path[i]);
@@ -212,60 +242,72 @@
 				}
 				this.arr.serverimgList = path1;
 				this.arr.taskPic = this.arr.serverimgList.join(",");
-
 			},
-			enlarge(index){
+			enlarge(index,index2) {
 				uni.previewImage({
-					current:this.arr.taskPic[index],
-					urls:this.arr.taskPic,
-					indicator:"default"
+					current: this.imgList[index].taskPic[index2],
+					urls:this.imgList[index].taskPic,
+					indicator: "default"
 				})
 			},
-			deleimg(index) {
-				this.arr.serverimgList.splice(index, 1)
-				this.imgList.splice(index, 1)
-				this.arr.taskPic = this.arr.serverimgList.join(",");
-
+			enlargeTwo(index, index2) {
+				uni.previewImage({
+					current: this.arr.taskItemList[index].taskBillItem.taskPic[index2],
+					urls: this.arr.taskItemList[index].taskBillItem.taskPic,
+					indicator: "default"
+				})
+			},
+			deleimg(index2, index) {
+				this.imgList[index].taskPic.splice(index2, 1)
+				this.imgList.push()
+				console.log(this.imgList[index])
 			},
 			backTo() {
 				uni.navigateBack()
 			},
 			sureTo() {
 				// this.arr.taskPic=this.arr.serverimgList.join(",");
-				this.list.rmks=this.textIn
-				if (this.imgList == "") {
+				this.list.rmks = this.textIn
+				for (let i = 0; i < this.this.arr.taskItemList.length; i++) {
+					if (this.imgList[i].taskPic.length == 0) {
+						this.picflag = false
+						break
+					} else {
+						this.picflag = true
+					}
+				}
+				if (this.picflag == false) {
 					uni.showToast({
-						title: "请选择照片",
+						title: "请拍照",
 						icon: "none"
 					})
 					return false
-				} 
-			
-				else if (this.list.rmks== "") {
+				} else if (this.list.rmks == "") {
 					uni.showToast({
 						title: "请输入备注",
 						icon: "none"
 					})
 					return false
-				}
-				else if(this.taskChoseArr.length != this.arr.taskItemList.length)
-				{
+				} else if (this.taskChoseArr.length != this.arr.taskItemList.length) {
 					uni.showToast({
-						title:"存在选项未选",
-						icon:"none"
+						title: "存在选项未选",
+						icon: "none"
 					})
 					return false
 				}
-				this.list.id=this.id
-				this.list.taskPic=this.arr.taskPic
-				
 				this.taskChoseArr.forEach(item=>{
 					this.taskItemOption=this.taskItemOption.concat(item.optionId)
 				})
-				this.list.taskItemOption=this.taskItemOption
-				console.log("aa",this.taskItemOption);
-				console.log(this.list);
-				this.api.postBillSubmit(this.list)
+			for(let i=0;i<this.arr.taskItemList.length;i++){
+				console.log(89898989);
+				console.log("qqw",this.arr.taskItemList[i].taskBillItem.id);
+				console.log("qqw",this.list.taskItemOption[i].id);
+				this.list.taskItemOption[i].id=this.taskItemOption[i]
+				this.list.taskItemOption[i].billId=this.id
+				this.list.taskItemOption[i].billItemId=this.arr.taskItemList[i].taskBillItem.id
+				this.list.taskItemOption[i].taskPic=this.imgList[i].taskPic.join(",")
+			}
+			this.api.postBillSubmit(this.list)
 				uni.navigateBack({
 
 				})
@@ -315,31 +357,39 @@
 						this.taskChoseArr.push(data)
 					}
 				}
-				console.log("11",this.taskChoseArr);
+				console.log("11", this.taskChoseArr);
 
 
 
 			}
 
 		},
-		onLoad(e) {
-			this.id = e.id
-			this.currentIndex = e.currentIndex
-			this.loginType = uni.getStorageSync("loginType")
-			// console.log(this.loginType)
-			// console.log(this.currentIndex)
-			// console.log(this.currentIndex);
-		},
-		async onShow() {
-			console.log(this.id)
-			this.arr = await this.api.getBillDetail({
-				id: this.id
-			})
-			this.arr.taskPic=this.arr.taskPic.split(",")
-			console.log('22',this.arr.taskPic)
+	async onLoad(e) {
+	
+		this.id = e.id
+		this.currentIndex = e.currentIndex;
+		// 从缓存中获取loginType,角色信息
+		this.loginType = uni.getStorageSync("loginType")
+		this.arr = await this.api.getBillDetail({
+			id: this.id
+		})
+		
+		this.list.taskItemOption=[]
+		
+		
+		for(var i=0; i<this.arr.taskItemList.length;i++){
+			this.imgList[i]={
+				taskPic:[]
+			}
 			
-
-			console.log("swqes", this.arr)
+			this.list.taskItemOption[i]={
+				
+			}
+			this.arr.taskItemList[i].taskBillItem.taskPic=this.arr.taskItemList[i].taskBillItem.taskPic.split(",")
+		}
+		console.log("77777",this.arr.taskItemList[i].taskBillItem.taskPic);
+	},
+		async onShow() {
 		},
 		components: {},
 	}
@@ -612,7 +662,7 @@
 		color: #1d1d2e;
 		letter-spacing: 59rpx;
 		opacity: 1;
-		margin: 40rpx 40rpx;
+		margin: 40rpx;
 	}
 
 	.choosedImg {
@@ -627,7 +677,7 @@
 
 	.imgContainer {
 		width: 600rpx;
-		
+
 		// height: 160rpx;
 		background: rgba(0, 0, 0, 0);
 		opacity: 1;
@@ -635,8 +685,8 @@
 	}
 
 	.imgContainer image {
-		margin-left:30rpx ;
-		width:160rpx;
+		margin-left: 30rpx;
+		width: 160rpx;
 		height: 160rpx;
 	}
 

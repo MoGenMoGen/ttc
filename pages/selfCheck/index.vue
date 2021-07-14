@@ -17,7 +17,7 @@
 				<searchBox :placeholderIn="placeholderIn" @search="search" ref="research"></searchBox>
 				<view class="taskContent">
 					<view class="taskContentIn" v-for="(item, index) in worksArr" :key="index"
-						@click="taskContentTo(item.id)">
+						@click="taskContentTo(item.id)" v-if="performOrgId==''||performOrgId==worksArr.performOrgId">
 						<view class="taskContentInList">
 							<image src="../../static/worktype.png" mode="" />
 							<text class="taskContentInListHead">任务编号 </text>
@@ -84,6 +84,7 @@
 			return {
 				loginType: 1,
 				backName:"",
+				performOrgId:"",
 				currentIndex: 0,
 				searchFlag:false,
 				placeholderIn: "任务编号",
@@ -195,7 +196,6 @@
 				current: 1, 
 				size: 5
 			}
-	
 			this.getList({
 				...{
 					state: this.currentIndex + 1,
@@ -203,7 +203,7 @@
 					types:1
 					
 				},
-				...this.page
+				...this.page 
 			})
 			this.searchFlag=false
 			this.$refs.research.cd=''
@@ -211,12 +211,18 @@
 			console.log("aaaa",this.userinfo)
 		},
 		onLoad(e) {
+			console.log("qkkkk",e);
 			this.loginType = uni.getStorageSync("loginType")
 			this.userinfo=uni.getStorageSync("userinfo")
+			
 			if(e.name=="firmdetail")
 			{
 				this.backName="firmdetail"
 			}
+			else if(e.id){
+				this.performOrgId=e.id
+			}
+			
 		},
 		onReachBottom() {
 			console.log("触底");

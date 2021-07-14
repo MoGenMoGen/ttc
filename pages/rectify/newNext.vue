@@ -54,12 +54,21 @@
 			</view>
 			<view class="newList" style="flex-direction: column;">
 				<view class="newListTitle">
-					责任整改人签字
+					服务商签字
 				</view>
-				<!-- <view class="signBox">
-					<sign @success="getSign" @signImage="signImage"></sign>
-				</view> -->
+				<view class="signBox" style="width: 100%;">
+					<sign @signImage="signImage"></sign>
+				</view>
 
+			</view>
+			<view class="newList" style="flex-direction: column;">
+				<view class="newListTitle">
+					企业签字
+				</view>
+			<view class="signBox" style="width: 100%;">
+				<sign @signImage="signImageTwo"></sign>
+			</view>
+			
 			</view>
 			<view class="newList">
 				<view class="newListTitle">
@@ -167,13 +176,29 @@
 				uni.navigateBack({})
 			},
 			nextTo() {
+				console.log("111",this.newList.issueSign);
+				console.log("222",this.newList.receiptSign);
+				if(!this.newList.issueSign){
+					uni.showToast({
+						title:"服务商未签字",
+						icon:"none",
+					})
+					return false
+				}
+				else if(!this.newList.receiptSign){
+					uni.showToast({
+						title:"企业未签字",
+						icon:"none"
+					})
+					return false
+				}
 				this.newList.reviewTime=this.nowDate
-				this.api.postNewList(this.newList).then(res=>{
-					console.log(res)
-				})
-				uni.reLaunch({
-					url: "./newDetail?cd="+this.newList.cd
-				})
+				// this.api.postNewList(this.newList).then(res=>{
+				// 	console.log(res)
+				// })
+				// uni.reLaunch({
+				// 	url: "./newDetail?cd="+this.newList.cd
+				// })
 					
 
 				
@@ -200,6 +225,14 @@
 				month = month > 9 ? month : '0' + month;;
 				day = day > 9 ? day : '0' + day;
 				return `${year}-${month}-${day}`;
+			},
+			async signImage(signImage){
+				this.newList.issueSign=await this.api.upLoad(signImage);
+				console.log("guagua",this.bodyList.receiptSign);
+			},
+			async signImageTwo(signImage){
+				this.newList.receiptSign=await this.api.upLoad(signImage);
+				console.log("guagua",this.bodyList.receiptSign);
 			},
 			
 		},
