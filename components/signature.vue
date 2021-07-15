@@ -1,229 +1,240 @@
 <template>
-  <view class="written" v-show="status == 'default'">
-    <canvas
-      :style="{ width: (canvaw-60)+'px', height: 250 + 'px' }"
-      class="firstCanvas"
-      canvas-id="firstCanvas"
-      @touchmove="move"
-      @touchend="end"
-      @error="error"
-      disable-scroll="true"
-      v-if="!signImage"
-    ></canvas>
-    <img :src="signImage" v-if="signImage">
-    <view class="button_clear" @click="clearClick()">重写</view>
-    <view class="button_submit" @click="saveClick()">保存</view>
-
-  </view>
+    <view class='contents'>
+        <canvas  v-if="!signImage" class='firstCanvas' canvas-id="secondCanvas" @touchmove='move' @touchstart='start($event)' @touchend='end'
+         @touchcancel='cancel' @longtap='tap' disable-scroll='true' @error='error'>
+        </canvas>
+		<image :src="signImage" mode="" v-if="signImage" ></image>
+        <view class="caozuo">
+            <view class="chongqian" @tap='clearClick'>
+                重签
+            </view>
+            <view class="over" @tap="overSign" v-if="!signImage">
+                完成签名
+            </view>
+        </view>
+    </view>
 </template>
 
 <script>
-  let content = null;
-  let touchs = [];
-  let canvasw = 0;
-  let canvash = 0;
-  export default {
-    data(){
-      return {
-        canvaw:0,
-        canvah:0,
-        src:`你的背景图片`,
-        flag:true,
-        // status:false
-      }
-    },
-    props:{
-      status:{
-        type:String,
-        default:'default',
-        required: false
-      },
-      signImage: {
-        type: String,
-        default: ""
-      }
-    },
-	lifetimes: {
-	    attached: function(options) {
-	      // 在组件实例进入页面节点树时执行
-	      console.log(options);
-		  var _this = this;
-		  uni.getSystemInfo({
-		    success: function (res) {
-		  		console.log(1223,res);
-		      canvasw = res.windowWidth;
-		      canvash = res.windowHeight;
-		      _this.canvaw = res.windowWidth;
-		      _this.canvah = res.windowHeight;
-		      content = uni.createCanvasContext('firstCanvas',this);
-		  		  console.log(11,content)
-		      uni.getImageInfo({
-		        src: _this.src,//服务器返回的图片地址
-		        success: function (res) {
-		          let num = res.width/res.height;
-		          let Path = res.path;
-		          //计算宽高，按照返回图片的比例来;
-		          content.drawImage(Path, 20,100,(canvash-200)*num ,canvash-200)
-		          content.draw();
-		        },
-		        fail: function (res) {
-		          console.error(res)
-		        }
-		      });
-		      content.setStrokeStyle("#000000");
-		      content.setLineWidth(5);
-		      content.setLineCap('round');
-		      content.setLineJoin('round')
-		    },
-		  		fail:function(res) {
-		  			console.log('fail',res)
-		  		},
-		  		complete:function(res){
-		  			console.log('complete',res);
-		  		}
-		  });
-	    }
-	  },
-    onLoad () {
-      
+    var content = null;
+    var touchs = [];
+    var canvasw = 0;
+    var canvash = 0;
+    var _that;
+    //获取系统信息
+    uni.getSystemInfo({
+        success: function(res) {
+            canvasw = res.windowWidth;
+            canvash = res.windowHeight;
+        },
+    })
+    export default {
+        data() {
+				
+            return {
+				content :"",
+                signImage: '',
+                isEnd: false // 是否签名
+            }
+        },
 
-    },
-    methods:{
-      error(e){
-        uni.showModal({
-          title:"初始化异常，请尝试刷新！"
-        });
-      },
-      move(e) {
-        // 开始清空背景图
-        if(this.flag){
-			console.log(content)
-          content.clearRect(0,0,canvasw,canvash);
-          this.flag = false;
-        }
-        let point = {x: e.touches[0].x, y: e.touches[0].y};
-        touchs.push(point);
-        if(touchs.length >= 2) {
-          this.draw(touchs)
-        }
-      },
-      end(e){
-        for (let i = 0 ;i < touchs.length;i++ ){
-          touchs.pop()
-        }
-      },
-      clearClick() {
-        this.signImage = ''
-        content.clearRect(0,0,canvasw,canvash);
-        uni.getImageInfo({
-          src: this.src,//服务器返回的图片地址
-          success: function (res) {
-            let num = res.width/res.height;
-            let Path = res.path;
-            //计算宽高，按照返回图片的比例来;
-            content.drawImage(Path, 20,100,(canvash-200)*num ,canvash-200)
-            content.draw(true);
+        methods: {
+            overSign: function() {
+				
+					_that=this
+                if (this.isEnd) {
+                    uni.canvasToTempFilePath({
+                        canvasId: 'secondCanvas',
+						fileType:'jpg',
+                        success: function(res) {
+                            //打印图片路径74
+							
+							uni.showToast({
+								title:"签名成功",
+								icon:"none"
+							})
+                            console.log(res.tempFilePath)
+                            console.log('完成签名')
+                            //设置图片
+                            _that.signImage = res.tempFilePath
+							console.log(_that.signImage)
+							_that.$emit("signImage", _that.signImage)
+                        }
+                    },this)
+                } else {
+                    uni.showToast({
+                        title: '请先完成签名',
+                        icon: "none",
+                        duration: 1500,
+                        mask: true
+                    })
+                }
 
-          },
-          fail: function (res) {
-            console.error(res)
-          }
-        });
-        this.flag = true;
-        // content.draw(true)
-      },
-      saveClick() {
-        let that = this;
-        uni.canvasToTempFilePath({
-          canvasId: 'firstCanvas',
-          success:function(res) {
-			  that.$emit("success",res.tempFilePath);
-            // that.signImage = res.tempFilePath;
-            // that.api.upLoad(res.tempFilePath).then(res => {
-            // })
-            // console.log(that.signImage);
+            },
 
-          }
-        },this)
-      },
-      draw(touchs) {
-        let point1 = touchs[0];
-        let point2 = touchs[1];
-        touchs.shift();
-        content.moveTo(point1.x, point1.y);
-        content.lineTo(point2.x, point2.y);
-        content.stroke();
-        content.draw(true);
-      }
+            // 画布的触摸移动开始手势响应
+            start: function(event) {
+                // console.log(event)
+                console.log("触摸开始" + event.changedTouches[0].x)
+                console.log("触摸开始" + event.changedTouches[0].y)
+                //获取触摸开始的 x,y
+                let point = {
+                    x: event.changedTouches[0].x,
+                    y: event.changedTouches[0].y
+                }
+                // console.log(point)
+                touchs.push(point);
+
+            },
+            // 画布的触摸移动手势响应
+            move: function(e) {
+                let point = {
+                    x: e.touches[0].x,
+                    y: e.touches[0].y
+                }
+                // console.log(point)
+                touchs.push(point)
+                if (touchs.length >= 2) {
+                    this.draw(touchs)
+                }
+            },
+
+            // 画布的触摸移动结束手势响应
+            end: function(e) {
+                console.log("触摸结束" + e)
+                // 设置为已经签名
+                this.isEnd = true
+                // 清空轨迹数组
+                for (let i = 0; i < touchs.length; i++) {
+                    touchs.pop()
+                }
+
+            },
+
+            // 画布的触摸取消响应
+            cancel: function(e) {
+                console.log("触摸取消" + e)
+            },
+
+            // 画布的长按手势响应
+            tap: function(e) {
+                console.log("长按手势" + e)
+            },
+
+            error: function(e) {
+                console.log("画布触摸错误" + e)
+            },
+
+            //绘制
+            draw: function(touchs) {
+                console.log(touchs[0],touchs[1])
+                let point1 = touchs[0]
+                let point2 = touchs[1]
+                touchs.shift()
+                this.content.moveTo(point1.x, point1.y)
+               this.content.lineTo(point2.x, point2.y)
+                this.content.stroke()
+                this.content.draw(true)
+            },
+            //清除操作
+            clearClick: function() {
+				//清除画布
+				this.content.clearRect(0, 0, canvasw, canvash)
+				this.content.draw(true)
+                // 设置为未签名
+                this.isEnd = false
+				this.signImage=''
+				this.$parent.bodyList.receiptSign=""
+                
+            },
+        },
+        /**
+         * 生命周期函数--监听页面加载
+         */
+        mounted() {
+            _that = this
+            //获得Canvas的上下文
+            this.content = uni.createCanvasContext('secondCanvas',this)
+            //设置线的颜色
+            this.content.setStrokeStyle("#000")
+            //设置线的宽度
+            this.content.setLineWidth(5)
+            //设置线两端端点样式更加圆润
+            this.content.setLineCap('round')
+            //设置两条线连接处更加圆润
+            this.content.setLineJoin('round')
+        },
+
     }
-  }
 </script>
 
-<style scoped >
-  .firstCanvas {
-    background-color: #fff;
-    width: 100%;
-    height: 100%;
-  }
+<style>
+    .ts {
+        color: #FF485D;
+        font-size: 30upx;
+        height: 100upx;
+        line-height: 100upx;
+        padding-left: 20upx;
+    }
 
-  .button_clear {
-    position: absolute;
-    /*transform: rotate(270deg);*/
-    /*-ms-transform: rotate(270deg); !* IE 9 *!*/
-    /*-moz-transform: rotate(270deg); !* Firefox *!*/
-    /*-webkit-transform: rotate(270deg); !* Safari 和 Chrome *!*/
-    /*-o-transform: rotate(270deg);*/
-    bottom: 0rpx;
-    left: 40rpx;
-    width: 213rpx;
-    height: 84rpx;
-    background-color: #fff;
-    border: #387ffb 1px solid;
-    text-align: center;
-    line-height: 80rpx;
-    border-radius: 40rpx;
-    color: #387ffb;
-    z-index: 10000;
-  }
-  .button_submit {
-    position: absolute;
-    /*transform: rotate(270deg);*/
-    /*-ms-transform: rotate(270deg); !* IE 9 *!*/
-    /*-moz-transform: rotate(270deg); !* Firefox *!*/
-    /*-webkit-transform: rotate(270deg); !* Safari 和 Chrome *!*/
-    /*-o-transform: rotate(270deg);*/
-    bottom: 00rpx;
-    right: 40rpx;
-    width: 213rpx;
-    height: 84rpx;
-    background-color: #2173f9;
-    border: #387ffb 1px solid;
-    text-align: center;
-    line-height: 80rpx;
-    border-radius: 40rpx;
-    color: #ffffff;
-    z-index: 10000;
-  }
-  .button {
-    flex: 1;
-    height: 80rpx;
-    line-height: 80rpx;
-    font-size: 30rpx;
-    text-align: center;
-    color: deepskyblue;
-    border-radius: 0;
-    background-color: #fff;
-    border-top: 1px solid #ddd;
-    outline: none;
-  }
-  .button:first-of-type {
-    border-right: 1px solid #ddd;
-  }
-  .button:last-of-type {
-    border-left: 1px solid #ddd;
-  }
-  .written {
-    position: relative;
-    background-color: #ffffff;
-  }
+    canvas {
+        background-color: #DDDDDD;
+        width: 100%;
+        margin: 0 30rpx 0 0;
+        height: 400rpx;  
+    }
+    image{
+		width: 100%;
+		margin: 0 30rpx 0 0;
+		height: 400rpx;
+	}
+    .contents {
+        padding-top: 20upx;
+        padding-bottom: 100upx;
+        box-sizing: border-box;
+    }
+
+    #signatureImg {
+        background-color: #EEEEEE;
+    }
+
+    .caozuo {
+        display: flex;
+		justify-content: space-around;
+
+        /* position: fixed; */
+        left: 0;
+        bottom: 0;
+    }
+	.caozuo view{
+		width: 240rpx;
+		height: 75rpx;
+		margin-top: 20rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 28rpx;
+		
+	}
+  
+
+    .caozuo view:active {
+        background-color: #CCCCCC;
+        color: #333333;
+    }
+
+    .chongqian {
+		
+		background: #FFFFFF;
+		border: 2rpx solid #50A1FF;
+		opacity: 1;
+		border-radius: 12rpx;
+    }
+
+    .over {
+        color:#ffffff ;
+        background: #50A1FF;
+        opacity: 1;
+        border-radius: 12rpx;
+    }
 </style>

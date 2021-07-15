@@ -91,7 +91,7 @@
 		</view>
 
 
-		<tabbar :loginType="loginType" :tabIndex="tabIndex"></tabbar>
+		<tabbar :loginType="loginType" :tabIndex="tabIndex" :name="'rectify'" @clearId="clearId"></tabbar>
 	</view>
 </template>
 
@@ -210,6 +210,9 @@
 				this.handelSearch(this.page1)
 			
 				
+			},
+			clearId(){
+				this.userinfo.dept_id=uni.getStorageSync("userinfo").dept_id
 			}
 		},
 		onLoad(e) {
@@ -223,7 +226,6 @@
 			
 		},
 		onShow() {
-			
 			uni.hideTabBar({
 				animation: false,
 

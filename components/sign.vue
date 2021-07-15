@@ -58,7 +58,7 @@
                             //设置图片
                             _that.signImage = res.tempFilePath
 							console.log(_that.signImage)
-							_that.$emit("signImage", _that.signImage)
+							_that.$emit("signImage1", _that.signImage)
                         }
                     },this)
                 } else {
@@ -138,15 +138,16 @@
             },
             //清除操作
             clearClick: function() {
-                // 设置为未签名
-                this.isEnd = false
-				this.signImage=''
-				this.$parent.bodyList.receiptSign=""
+               
                 //清除画布
                 this.content.clearRect(0, 0, canvasw, canvash)
                 this.content.draw(true)
+				// 设置为未签名
+				this.isEnd = false
+				this.signImage=''
+				this.$parent.bodyList.receiptSign=""
             },
-        },
+        },   
         /**
          * 生命周期函数--监听页面加载
          */

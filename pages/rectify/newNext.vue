@@ -57,7 +57,7 @@
 					服务商签字
 				</view>
 				<view class="signBox" style="width: 100%;">
-					<sign @signImage="signImage"></sign>
+					<sign @signImage1="signImage"></sign>
 				</view>
 
 			</view>
@@ -66,7 +66,7 @@
 					企业签字
 				</view>
 			<view class="signBox" style="width: 100%;">
-				<sign @signImage="signImageTwo"></sign>
+				<signature @signImage="signImageTwo"></signature>
 			</view>
 			
 			</view>
@@ -137,6 +137,7 @@
 <script>
 	import del from "static/delete.png";
 	import sign from './../../components/sign'
+	import signature from '../../components/signature.vue'
 	export default {
 		
 		data() {
@@ -193,12 +194,12 @@
 					return false
 				}
 				this.newList.reviewTime=this.nowDate
-				// this.api.postNewList(this.newList).then(res=>{
-				// 	console.log(res)
-				// })
-				// uni.reLaunch({
-				// 	url: "./newDetail?cd="+this.newList.cd
-				// })
+				this.api.postNewList(this.newList).then(res=>{
+					console.log(res)
+				})
+				uni.reLaunch({
+					url: "./newDetail?cd="+this.newList.cd
+				})
 					
 
 				
@@ -237,7 +238,8 @@
 			
 		},
 		components: {
-			sign
+			sign,
+			signature
 		},
 		onShow() {
 		this.newList=uni.getStorageSync('rectifyList');

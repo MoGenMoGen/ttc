@@ -39,6 +39,15 @@
 				default () {
 					return 0;
 				}
+			},
+			// 这个name是为了切换tab清空整改单首页userinfo.dept_id
+			// 原因：从企业查详情跳转到整改单，会传递该企业的deptid,这时整改单列表显示的是该企业的整改单，但切换tab后要显示全部的;
+			// 页面onload中接收了传递过来的deptid后一直存在，所以切换tab显示的仍然是该企业的整改单列表
+			name:{
+				type:String,
+				default(){
+					return '';
+				}
 			}
 		},
 		data() {
@@ -116,6 +125,11 @@
 				// this.current = this.tabIndex;
 				// console.log('tab',this.tabIndex);
 				console.log(index, item)
+				if(this.name=='rectify'){
+					//清空整改单主页userinfo.dept_id
+					this.$emit("clearId")
+					
+				}
 				uni.switchTab({
 					url: item.path
 				})
