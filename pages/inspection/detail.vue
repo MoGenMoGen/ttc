@@ -172,6 +172,11 @@
 				</view>
 			</view>
 		</view>
+		<view style="position: absolute; top: -9999rpx;">
+		<view>
+		<canvas :style="{'width':w,'height':h}" canvas-id="firstCanvas"></canvas>
+		</view>
+		</view>
 	</view>
 </template>
 
@@ -181,6 +186,8 @@
 		data() {
 			return {
 				currentIndex: 1,
+				w:'100px',
+				h:'100px',
 				loginType: 2,
 				picflag:false,
 				del,
@@ -202,12 +209,67 @@
 		},
 
 		methods: {
+			// async toPhoto(index) {
+			// 	console.log("111222",index);
+			// 	console.table({orignlist:this.imgList[index].taskPic});
+			// 	this.imgList[index].taskPic = [...this.imgList[index].taskPic, ...await this.api.chooseImages('', 9)];
+			// 	console.log("ssss",this.imgList[index]);
+			// 	// console.log("wwwwww",await this.api.chooseImages('', 9));
+			// 	let path = this.imgList[index].taskPic;
+			// 	// console.log("wew", this.imgList[index].taskPic)
+			// 	let path1 = [];
+			// 	// this.arr.taskPic = '';
+			// 	for (let i = 0; i < path.length; i++) {
+			// 		console.log(i, "dwsfsf54645646");
+			// 		let res = await this.api.upLoad(path[i]);
+			// 		path1.push(res)
+			// 	}
+			// 	this.arr.serverimgList = path1;
+			// 	this.arr.taskPic = this.arr.serverimgList.join(",");
+
+			// }, 
 			async toPhoto(index) {
-				console.log("111222",index);
-				console.table({orignlist:this.imgList[index].taskPic});
-				this.imgList[index].taskPic = [...this.imgList[index].taskPic, ...await this.api.chooseImages('', 9)];
-				console.log("ssss",this.imgList[index]);
-				// console.log("wwwwww",await this.api.chooseImages('', 9));
+				var that = this;
+				uni.chooseImage({
+					count: 1,
+					sourceType:['camera'],
+					success(res) {
+						uni.getImageInfo({
+							src: res.tempFilePaths[0],
+							success: (ress) => {
+								that.w = ress.width / 3 + 'px';
+								that.h = ress.height / 3 + 'px';
+								let ctx = uni.createCanvasContext('firstCanvas'); /** 创建画布 */
+								//将图片src放到cancas内，宽高为图片大小
+								ctx.drawImage(res.tempFilePaths[0], 0, 0, ress.width / 3, ress.height /
+									3)
+								ctx.setFontSize(30)
+								ctx.setFillStyle('#8a2929')
+								// ctx.rotate(30 * Math.PI / 180);
+								let textToWidth = ress.width / 3 * 0;
+								let textToHeight = ress.height / 3 * 0.2;
+								ctx.fillText(new Date().toLocaleString(), textToWidth, textToHeight)
+								/** 除了上面的文字水印，这里也可以加入图片水印 */
+								//ctx.drawImage('/static/watermark.png', 0, 0, ress.width / 3, ress.height / 3)
+								ctx.draw(false, () => {
+									setTimeout(() => {
+										uni.canvasToTempFilePath({
+											canvasId: 'firstCanvas',
+											success: (res1) => {
+												that.src = res1.tempFilePath;
+												console.log("qqqqqq" ,res1.tempFilePath);
+												that.imgList[index].taskPic.push(res1.tempFilePath)
+													that.imgList.push()
+												console.log(that.imgList);
+											}
+										});
+									}, 1000);
+								});
+							}
+						})
+					}
+				});
+				console.log("112121",this.imgList);
 				let path = this.imgList[index].taskPic;
 				// console.log("wew", this.imgList[index].taskPic)
 				let path1 = [];
@@ -219,7 +281,7 @@
 				}
 				this.arr.serverimgList = path1;
 				this.arr.taskPic = this.arr.serverimgList.join(",");
-
+				
 			}, 
 			deleimg(index2,index) {
 			// this.arr.serverimgList.splice(index, 1)

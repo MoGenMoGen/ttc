@@ -88,6 +88,7 @@
 						</view>
 					</view>
 				</view>
+				
 				<view class="taskChoseList" v-for="(item,index) in arr.taskItemList" :key="index"
 					v-if="item.taskBillItem.types==2">
 					<view class="ListHead">
@@ -147,7 +148,7 @@
 				<view class="taskInList" v-for="(item, index) in arr.taskItemList" :key="index">
 					<text>{{ index +1}}、 </text>
 					<text>{{ item.taskBillItem.name }}</text>
-					<view class="taskInCase" v-for="(item1,index1) in item.taskItemOption" :key="index">
+					<view class="taskInCase" v-for="(item1,index1) in item.taskItemOption" :key="index1">
 						<text v-if="item1.state==1">{{item1.cont}}</text>
 					</view>
 					<view class="photo" v-for="(item2,index2) in item.taskBillItem.taskPic" :key="index2"
@@ -171,7 +172,13 @@
 				</view>
 			</view>
 		</view>
+		<view style="position: absolute; top: -9999rpx;">
+		<view>
+		<canvas :style="{'width':w,'height':h}" canvas-id="firstCanvas"></canvas>
+		</view>
+		</view>
 	</view>
+
 
 </template>
 
@@ -181,6 +188,8 @@
 		data() {
 			return {
 				currentIndex: 1,
+				w:'100px',
+				h:'100px',
 				imgList: [],
 				picflag: false,
 				textIn: "",
@@ -223,26 +232,118 @@
 			}
 		},
 		methods: {
+			// async toPhoto(index) {
+			// 	console.log("111222", index);
+			// 	console.table({
+			// 		orignlist: this.imgList[index].taskPic
+			// 	});
+			// 	this.canvasImg=await this.api.chooseImages('', 9)
+			// 	uni.getImageInfo({
+			// 		src:this.canvasImg[0],
+			// 		success:res=>{
+			// 			this.canvasWidth=`${res.width}px`;
+			// 			this.canvasHeight=`${res.height}px`;
+			// 			var ctx=uni.createCanvasContext('myCanvas');
+			// 			ctx.clearRect(0,0,res.width,res.height);
+			// 			ctx.beginPath();
+			// 			ctx.drawImage(this.canvasImg[0],0,0,res.width,res.height); 
+			// 			ctx.translate(res.width/2,res.height/2);
+			// 			ctx.rotate(45 * Math.PI / 180);
+			// 			let horizontal=res.width/4;
+			// 			let vertical=res.height/3;	
+			// 			ctx.fillText("--晒渔--",horizontal,vertical);
+			// 			ctx.setFillStyle("rgba(255,255,255,0.4)");
+			// 			ctx.draw(false,()=>{
+			// 				setTimeout(()=>{
+			// 					console.log("qweq");
+			// 					uni.canvasToTempFilePath({
+			// 						canvasId:"myCanvas",
+			// 							success:res=>{
+			// 								console.log(res.tempFilePath);
+			// 								this.canvasImg=[]
+			// 								this.canvasImg.push(res.tempFilePath)
+			// 								callback();
+			// 							}
+			// 					})
+			// 				},500)
+			// 			});
+			// 		}
+			// 	})
+			// 	this.imgList[index].taskPic = [...this.imgList[index].taskPic, ...this.canvasImg];
+			// 	let content=uni.createCanvasContext('firstCanvas')
+			// 	console.log("ssss", this.imgList[index]);
+			// 	// console.log("wwwwww",await this.api.chooseImages('', 9));
+			// 	let path = this.imgList[index].taskPic;
+			// 	// console.log("wew", this.imgList[index].taskPic)
+			// 	let path1 = [];
+			// 	// this.arr.taskPic = '';
+			// 	for (let i = 0; i < path.length; i++) {
+			// 		console.log(i, "dwsfsf54645646");
+			// 		let res = await this.api.upLoad(path[i]);
+			// 		path1.push(res)
+			// 	}
+			// 	this.arr.serverimgList = path1;
+			// 	this.arr.taskPic = this.arr.serverimgList.join(",");
+			// },
 			async toPhoto(index) {
-				console.log("111222", index);
-				console.table({
-					orignlist: this.imgList[index].taskPic
+				var that = this;
+				uni.chooseImage({
+					count: 1,
+					sourceType:['camera'],
+					success(res) {
+						uni.getImageInfo({
+							src: res.tempFilePaths[0],
+							success: (ress) => {
+								that.w = ress.width / 3 + 'px';
+								that.h = ress.height / 3 + 'px';
+								let ctx = uni.createCanvasContext('firstCanvas'); /** 创建画布 */
+								//将图片src放到cancas内，宽高为图片大小
+								ctx.drawImage(res.tempFilePaths[0], 0, 0, ress.width / 3, ress.height /
+									3)
+								ctx.setFontSize(30)
+								ctx.setFillStyle('#white')
+								// ctx.rotate(30 * Math.PI / 180);
+								let textToWidth = ress.width / 3 * 0;
+								let textToHeight = ress.height / 3 * 0.2;
+								ctx.fillText(new Date().toLocaleString(), textToWidth, textToHeight)
+								/** 除了上面的文字水印，这里也可以加入图片水印 */
+								//ctx.drawImage('/static/watermark.png', 0, 0, ress.width / 3, ress.height / 3)
+								ctx.draw(false, () => {
+									setTimeout(() => {
+										uni.canvasToTempFilePath({
+											canvasId: 'firstCanvas',
+											success: (res1) => {
+												that.src = res1.tempFilePath;
+												console.log("qqqqqq" ,res1.tempFilePath);
+												that.imgList[index].taskPic.push(res1.tempFilePath)
+													that.imgList.push()
+												console.log(that.imgList);
+												let path = that.imgList[index].taskPic;
+												// console.log("wew", this.imgList[index].taskPic)
+												let path1 = [];
+												// this.arr.taskPic = '';
+												for (let i = 0; i < path.length; i++) {
+													console.log(i, "dwsfsf54645646");
+													 that.api.upLoad(path[i]).then(res=>{
+														 path1.push(res)
+													 });
+													
+												}
+												that.arr.serverimgList = path1;
+												that.arr.taskPic = that.arr.serverimgList.join(",");
+												// console.log("显示图片",that.info.troublePic,that.info.ser)
+						
+											}
+										});
+									}, 1000);
+								});
+							}
+						})
+					}
 				});
-				this.imgList[index].taskPic = [...this.imgList[index].taskPic, ...await this.api.chooseImages('', 9)];
-				console.log("ssss", this.imgList[index]);
-				// console.log("wwwwww",await this.api.chooseImages('', 9));
-				let path = this.imgList[index].taskPic;
-				// console.log("wew", this.imgList[index].taskPic)
-				let path1 = [];
-				// this.arr.taskPic = '';
-				for (let i = 0; i < path.length; i++) {
-					console.log(i, "dwsfsf54645646");
-					let res = await this.api.upLoad(path[i]);
-					path1.push(res)
-				}
-				this.arr.serverimgList = path1;
-				this.arr.taskPic = this.arr.serverimgList.join(",");
-			},
+				// console.log("112121",this.imgList);
+				// verimgList.join(","));
+			}, 
 			enlarge(index,index2) {
 				uni.previewImage({
 					current: this.imgList[index].taskPic[index2],
@@ -268,7 +369,7 @@
 			sureTo() {
 				// this.arr.taskPic=this.arr.serverimgList.join(",");
 				this.list.rmks = this.textIn
-				for (let i = 0; i < this.this.arr.taskItemList.length; i++) {
+				for (let i = 0; i < this.arr.taskItemList.length; i++) {
 					if (this.imgList[i].taskPic.length == 0) {
 						this.picflag = false
 						break
@@ -373,10 +474,7 @@
 		this.arr = await this.api.getBillDetail({
 			id: this.id
 		})
-		
-		this.list.taskItemOption=[]
-		
-		
+			this.list.taskItemOption=[]
 		for(var i=0; i<this.arr.taskItemList.length;i++){
 			this.imgList[i]={
 				taskPic:[]
@@ -388,8 +486,14 @@
 			this.arr.taskItemList[i].taskBillItem.taskPic=this.arr.taskItemList[i].taskBillItem.taskPic.split(",")
 		}
 		console.log("77777",this.arr.taskItemList[i].taskBillItem.taskPic);
+		
 	},
 		async onShow() {
+		
+			
+			
+		
+			
 		},
 		components: {},
 	}

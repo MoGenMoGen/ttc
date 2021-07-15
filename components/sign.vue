@@ -138,12 +138,12 @@
             },
             //清除操作
             clearClick: function() {
-               
-                //清除画布
-                this.content.clearRect(0, 0, canvasw, canvash)
-                this.content.draw(true)
-				// 设置为未签名
-				this.isEnd = false
+
+				//清除画布
+				this.content.clearRect(0, 0, canvasw, canvash)
+				this.content.draw(true)
+                // 设置为未签名
+                this.isEnd = false
 				this.signImage=''
 				this.$parent.bodyList.receiptSign=""
             },
