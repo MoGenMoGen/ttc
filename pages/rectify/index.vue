@@ -20,7 +20,7 @@
 
 			<searchBox :placeholderIn="placeholderIn" @search="search" ref="research"></searchBox>
 			<view class="rectifyBody">
-				<view class="rectifyList" v-for="(item,index) in listBody" :key="index" @click="changePage(item.id)" v-if="deptId==''||deptId==listBody.deptId">
+				<view class="rectifyList" v-for="(item,index) in listBody" :key="index" @click="changePage(item.id)">
 					<view class="rectifyListIn">
 						<image src="../../static/worktype.png" mode=""></image>
 						<view class="rectifyListTitle"> 
@@ -106,7 +106,7 @@
 				loginType: 2,
 				currentIndex: 0,
 				searchFlag:false,
-				deptId:"",
+				// deptId:"",
 				page1:{
 					
 				},
@@ -217,8 +217,8 @@
 			this.userinfo=uni.getStorageSync("userinfo")
 			if(e.id){
 				this.deptId=e.id
+				this.userinfo.dept_id=e.id
 			}
-			
 			
 			
 		},

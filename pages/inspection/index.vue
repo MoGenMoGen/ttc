@@ -35,7 +35,7 @@
 					</view>
 					<view class="taskContentInList">
 						<image src="../../static/clock.png" mode="" />
-						<view class="taskContentInListHead">截至日期 </view>
+						<view class="taskContentInListHead">截止日期 </view>
 						<view class="taskContentInListContent">{{ item.completeDate }}</view>
 					</view>
 				<!-- 	<view class="taskContentInList">

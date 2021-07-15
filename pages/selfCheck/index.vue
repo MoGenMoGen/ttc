@@ -17,7 +17,7 @@
 				<searchBox :placeholderIn="placeholderIn" @search="search" ref="research"></searchBox>
 				<view class="taskContent">
 					<view class="taskContentIn" v-for="(item, index) in worksArr" :key="index"
-						@click="taskContentTo(item.id)" v-if="performOrgId==''||performOrgId==worksArr.performOrgId">
+						@click="taskContentTo(item.id)">
 						<view class="taskContentInList">
 							<image src="../../static/worktype.png" mode="" />
 							<text class="taskContentInListHead">任务编号 </text>
@@ -84,7 +84,6 @@
 			return {
 				loginType: 1,
 				backName:"",
-				performOrgId:"",
 				currentIndex: 0,
 				searchFlag:false,
 				placeholderIn: "任务编号",
@@ -220,7 +219,8 @@
 				this.backName="firmdetail"
 			}
 			else if(e.id){
-				this.performOrgId=e.id
+				// this.performOrgId=e.id
+				this.userinfo.dept_id=e.id
 			}
 			
 		},

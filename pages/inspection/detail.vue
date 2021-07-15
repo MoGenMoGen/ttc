@@ -24,6 +24,10 @@
 				<text class="taskContentInListContent">{{ arr.issueUserName }}</text>
 			</view>
 			<view class="taskContentInList">
+				<text class="taskContentInListHead">巡查企业 </text>
+				<text class="taskContentInListContent">{{ arr.performDeptName }}</text>
+			</view>
+			<view class="taskContentInList">
 				<text class="taskContentInListHead">下发日期 </text>
 				<text class="taskContentInListContent">{{ arr.issueDate }}</text>
 			</view>
