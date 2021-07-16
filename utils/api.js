@@ -729,6 +729,16 @@ class api {
 						})
 				
 			}
+			//获取整改单隐患库
+			getDangerList(data){
+				return new Promise(resolve => {
+					get("/blade-system/user/updateAvatar", data, {
+						    "Content-Type":"application/json",
+							"Blade-Auth": uni.getStorageSync("Blade-Auth")
+						})
+						.then(res => resolve(res.data))
+						})
+			}
 			// 首页获取消息条数
 			getMessageNum(data){
 				return new Promise(resolve => {

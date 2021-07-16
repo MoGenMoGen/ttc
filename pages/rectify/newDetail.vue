@@ -62,6 +62,22 @@
 			</view>
 			<view class="newList">
 				<view class="newListTitle">
+					服务商签名
+				</view>
+				<view class="newListContent">
+					<image :src="detaliList.issueSign" mode=""></image>
+				</view>
+			</view>
+			<view class="newList">
+				<view class="newListTitle">
+					企业签名
+				</view>
+				<view class="newListContent">
+					<image :src="detaliList.receiptSign" mode=""></image>
+				</view>
+			</view>
+			<view class="newList">
+				<view class="newListTitle">
 					整改要求
 				</view>
 				<view class="newListContent">

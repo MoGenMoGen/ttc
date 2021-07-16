@@ -9,13 +9,13 @@
 					{{info.cd}}
 				</view>
 			</view>
-			<view class="newList">
+			<!-- <view class="newList">
 				<view class="newListTitle">
 					整改名称
 				</view>
 				<input type="text" v-model="info.title" value="" placeholder="请输入整改名称" placeholder-class="placeholderIn"
 					class="newListContent" />
-			</view>
+			</view> -->
 			<view class="newList">
 				<view class="newListTitle">
 					整改单位
@@ -65,13 +65,13 @@
 					</picker>
 				</view>
 			</view>
-			<view class="newList" style="display: flex; flex-direction: column;">
+		<!-- 	<view class="newList" style="display: flex; flex-direction: column;">
 				<view class="newListTitle">
 					整改要求
 				</view>
 				<textarea value="" v-model="info.requReport" placeholder="请按照要求进行整改" placeholder-class="placeholderIn"
 					class="text" />
-			</view>
+			</view> -->
 			<view class="newList">
 				<view class="newListTitle">
 					整改期限
@@ -112,9 +112,9 @@
 		</view>
 		<view style="position: absolute; top: -9999rpx;">
 		<view>
-		<canvas :style="{'width':w,'height':h}" canvas-id="firstCanvas"></canvas>
-		</view>
-		</view>
+		<canvas style="width:375px;height:500px" canvas-id="firstCanvas"></canvas> 
+		</view> 
+		</view> 
 	</view>
 </template>
 
@@ -234,24 +234,23 @@
 						uni.getImageInfo({
 							src: res.tempFilePaths[0],
 							success: (ress) => {
-								console.log("nnnnn",res);
+								console.log("nnnnn",res);   
 								console.log("mmmm",ress);
-								that.w = ress.width / 3 + 'px';
-								that.h = ress.height / 3 + 'px';
+								that.w = ress.width / 2+ 'px';
+								that.h = ress.height / 2 + 'px';
 								let ctx = uni.createCanvasContext('firstCanvas'); /** 创建画布 */
 								//将图片src放到cancas内，宽高为图片大小
-								ctx.drawImage(res.tempFilePaths[0], 0, 0, ress.width / 3, ress.height /
-									3)
+								ctx.drawImage(res.tempFilePaths[0], 0, 0, 375, 500)
 								ctx.setFontSize(30)
 								ctx.setFillStyle('white')
 								// ctx.rotate(30 * Math.PI / 180);
 								let textToWidth = ress.width / 3 * 0;
-								let textToHeight = ress.height / 3 * 0.2;
-								ctx.fillText(new Date().toLocaleString(), textToWidth, textToHeight)
+								let textToHeight = ress.height / 3 * 0.1;
+								ctx.fillText(that.dateFormat("YYYY-mm-dd HH:MM", new Date()), textToWidth, textToHeight)
 								/** 除了上面的文字水印，这里也可以加入图片水印 */
 								//ctx.drawImage('/static/watermark.png', 0, 0, ress.width / 3, ress.height / 3)
-								ctx.draw(false, (() => {
-									setTimeout(() => {
+								ctx.draw(false, (() => { 
+									setTimeout(() => { 
 										uni.canvasToTempFilePath({
 											canvasId: 'firstCanvas',
 											success: (res1) => {
@@ -282,12 +281,31 @@
 				
 				});
 				
-				console.log("显示图片",path1);
+				// console.log("显示图片",path1);
 				// this.info.serverimgList=path1;
 				// this.info.troublePic = that\.info.serverimgList.join(",");
 				
 		
 			}, 
+			dateFormat(fmt, date) {
+			    let ret;
+			    const opt = {
+			        "Y+": date.getFullYear().toString(),        // 年
+			        "m+": (date.getMonth() + 1).toString(),     // 月
+			        "d+": date.getDate().toString(),            // 日
+			        "H+": date.getHours().toString(),           // 时
+			        "M+": date.getMinutes().toString(),         // 分
+			        "S+": date.getSeconds().toString()          // 秒
+			        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+			    };
+			    for (let k in opt) {
+			        ret = new RegExp("(" + k + ")").exec(fmt);
+			        if (ret) {
+			            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+			        };
+			    };
+			    return fmt;
+			},
 			enlarge(index) {
 				uni.previewImage({
 					current: this.info.imgList[index],
@@ -327,19 +345,21 @@
 			},
 			changePageTo() {
 				this.info.troublePic = this.info.serverimgList.join(",");
-				if (this.info.title == "") {
-					uni.showToast({
-						title: "请填写整改名称",
-						icon: "none"
-					})
-					return false
-				} else if (this.info.AttrSystem == "") {
+				// if (this.info.title == "") {
+				// 	uni.showToast({
+				// 		title: "请填写整改名称",
+				// 		icon: "none"
+				// 	})
+				// 	return false
+				// } 
+				 if (this.info.AttrSystem == "") {
 					uni.showToast({
 						title: "请选择整改单位",
 						icon: "none"
 					})
 					return false
-				} else if (this.info.examRegion == "") {
+				} 
+				else if (this.info.examRegion == "") {
 					uni.showToast({
 						title: "请选择检查区域",
 						icon: "none"
@@ -363,13 +383,15 @@
 						icon: "none"
 					})
 					return false
-				} else if (this.info.requReport == "") {
-					uni.showToast({
-						title: "请填写整改要求",
-						icon: "none"
-					})
-					return false
-				} else if (this.info.troublePic == "") {
+				} 
+				// else if (this.info.requReport == "") {
+				// 	uni.showToast({
+				// 		title: "请填写整改要求",
+				// 		icon: "none"
+				// 	})
+				// 	return false
+				// } 
+				else if (this.info.troublePic == "") {
 					uni.showToast({
 						title: "请选择隐患图片",
 						icon: "none"

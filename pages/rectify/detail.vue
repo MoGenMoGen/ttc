@@ -64,6 +64,23 @@
 						{{bodyList.troubleReport}}
 					</view>
 				</view>
+				<view class="bodyList" >
+					<view class="bodyListTitle">
+						服务商签字
+					</view>
+					<view class="bodyListImg">
+						<image :src="bodyList.issueSign" mode="" @click="enlargeThree()"></image>
+					</view>
+				</view>
+				<view class="bodyList" >
+					<view class="bodyListTitle">
+						服务商签字
+					</view>
+					<view class="bodyListImg">
+						<image :src="bodyList.receiptSign" mode="" @click="enlargeFour()"></image>
+					</view>
+				</view>
+				
 				<view class="bodyList">
 					<view class="bodyListTitle">
 						整改要求
@@ -478,6 +495,23 @@
 				uni.previewImage({
 					current:this.bodyList.rectifyPic[index],
 					urls:this.bodyList.rectifyPic,
+					indicator:"default"
+				})
+			},
+			enlargeThree(){
+				console.log(1111);
+				console.log(this.bodyList.issueSign);
+				uni.previewImage({
+					current:this.bodyList.issueSign,
+					urls:this.bodyList.issueSign,
+					indicator:"default"
+				})
+			},
+			enlargeFour(){
+				console.log(1222222);
+				uni.previewImage({
+					current:this.bodyList.receiptSign,
+					urls:this.bodyList.receiptSign,
 					indicator:"default"
 				})
 			}

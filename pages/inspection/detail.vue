@@ -174,7 +174,7 @@
 		</view>
 		<view style="position: absolute; top: -9999rpx;">
 		<view>
-		<canvas :style="{'width':w,'height':h}" canvas-id="firstCanvas"></canvas>
+		<canvas style="width:375px;height:500px" canvas-id="firstCanvas"></canvas>
 		</view>
 		</view>
 	</view>
@@ -241,14 +241,13 @@
 								that.h = ress.height / 3 + 'px';
 								let ctx = uni.createCanvasContext('firstCanvas'); /** 创建画布 */
 								//将图片src放到cancas内，宽高为图片大小
-								ctx.drawImage(res.tempFilePaths[0], 0, 0, ress.width / 3, ress.height /
-									3)
+								ctx.drawImage(res.tempFilePaths[0], 0, 0, 375,500)
 								ctx.setFontSize(30)
 								ctx.setFillStyle('#8a2929')
 								// ctx.rotate(30 * Math.PI / 180);
 								let textToWidth = ress.width / 3 * 0;
 								let textToHeight = ress.height / 3 * 0.2;
-								ctx.fillText(new Date().toLocaleString(), textToWidth, textToHeight)
+								ctx.fillText(that.dateFormat("YYYY-mm-dd HH:MM", new Date()), textToWidth, textToHeight)
 								/** 除了上面的文字水印，这里也可以加入图片水印 */
 								//ctx.drawImage('/static/watermark.png', 0, 0, ress.width / 3, ress.height / 3)
 								ctx.draw(false, () => {
@@ -261,6 +260,21 @@
 												that.imgList[index].taskPic.push(res1.tempFilePath)
 													that.imgList.push()
 												console.log(that.imgList);
+												let path = that.imgList[index].taskPic;
+												// console.log("wew", this.imgList[index].taskPic)
+												let path1 = [];
+												// this.arr.taskPic = '';
+												for (let i = 0; i < path.length; i++) {
+													console.log(i, "dwsfsf54645646");
+													 that.api.upLoad(path[i]).then(res=>{
+														 path1.push(res)
+														 that.arr.serverimgList[index] = path1;
+													 });
+													
+												}
+												
+												
+												// that.arr.taskPic = that.arr.serverimgList.join(",");
 											}
 										});
 									}, 1000);
@@ -269,20 +283,29 @@
 						})
 					}
 				});
-				console.log("112121",this.imgList);
-				let path = this.imgList[index].taskPic;
-				// console.log("wew", this.imgList[index].taskPic)
-				let path1 = [];
-				// this.arr.taskPic = '';
-				for (let i = 0; i < path.length; i++) {
-					console.log(i, "dwsfsf54645646");
-					let res = await this.api.upLoad(path[i]);
-					path1.push(res)
-				}
-				this.arr.serverimgList = path1;
-				this.arr.taskPic = this.arr.serverimgList.join(",");
+				// console.log("112121",this.imgList);
+			
 				
 			}, 
+			 dateFormat(fmt, date) {
+			    let ret;
+			    const opt = {
+			        "Y+": date.getFullYear().toString(),        // 年
+			        "m+": (date.getMonth() + 1).toString(),     // 月
+			        "d+": date.getDate().toString(),            // 日
+			        "H+": date.getHours().toString(),           // 时
+			        "M+": date.getMinutes().toString(),         // 分
+			        "S+": date.getSeconds().toString()          // 秒
+			        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+			    };
+			    for (let k in opt) {
+			        ret = new RegExp("(" + k + ")").exec(fmt);
+			        if (ret) {
+			            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+			        };
+			    };
+			    return fmt;
+			},
 			deleimg(index2,index) {
 			// this.arr.serverimgList.splice(index, 1)
 			
@@ -314,7 +337,7 @@
 				// this.arr.taskPic = this.arr.serverimgList.join(",");
 			this.list.rmks=this.textIn
 			console.log(this.list.imgList);
-				for(let i=0;i<this.this.arr.taskItemList.length;i++){
+				for(let i=0;i<this.arr.taskItemList.length;i++){
 					if(this.imgList[i].taskPic.length==0)
 					{
 						this.picflag=false
@@ -334,13 +357,13 @@
 					return false
 				}
 				 
-				 else if (this.list.rmks == "") {
-					uni.showToast({
-						title: "请输入备注",
-						icon: "none"
-					})
-					return false
-				}
+				//  else if (this.list.rmks == "") {
+				// 	uni.showToast({
+				// 		title: "请输入备注",
+				// 		icon: "none"
+				// 	})
+				// 	return false
+				// }
 				else if(this.taskChoseArr.length != this.arr.taskItemList.length)
 				{
 					uni.showToast({
@@ -362,7 +385,7 @@
 					this.list.taskItemOption[i].id=this.taskItemOption[i]
 					this.list.taskItemOption[i].billId=this.id
 					this.list.taskItemOption[i].billItemId=this.arr.taskItemList[i].taskBillItem.id
-					this.list.taskItemOption[i].taskPic=this.imgList[i].taskPic.join(",")
+					this.list.taskItemOption[i].taskPic=this.arr.serverimgList[i].join(",")
 				}
 				// this.list.imgList=this.imgList
 				// this.list.id=this.id
@@ -433,24 +456,27 @@
 			this.currentIndex = e.currentIndex;
 			// 从缓存中获取loginType,角色信息
 			this.loginType = uni.getStorageSync("loginType")
-			this.arr = await this.api.getBillDetail({
-				id: this.id
-			})
-			
-			this.list.taskItemOption=[]
-			
-			
-			for(var i=0; i<this.arr.taskItemList.length;i++){
-				this.imgList[i]={
-					taskPic:[]
+		this.api.getBillDetail({
+			id: this.id
+		}).then(res => {
+			this.arr = res
+			this.arr.serverimgList = []
+		
+			this.list.taskItemOption = []
+			for (var i = 0; i < this.arr.taskItemList.length; i++) {
+				this.imgList[i] = {
+					taskPic: []
 				}
-				
-				this.list.taskItemOption[i]={
-					
+				this.arr.serverimgList[i] = []
+				this.list.taskItemOption[i] = {
+		
 				}
-				this.arr.taskItemList[i].taskBillItem.taskPic=this.arr.taskItemList[i].taskBillItem.taskPic.split(",")
+				this.arr.taskItemList[i].taskBillItem.taskPic = this.arr.taskItemList[i].taskBillItem
+					.taskPic
+					.split(",")
 			}
-			console.log("77777",this.arr.taskItemList[i].taskBillItem.taskPic);
+		})
+			// console.log("77777",this.arr.taskItemList[i].taskBillItem.taskPic);
 		},
 		async onShow() {
 			

@@ -83,12 +83,12 @@
 
 						<view class="choseImg" v-for="(item2, index2) in imgList[index].taskPic" :key="index2"
 							style="margin-left: 25rpx;">
-							<image :src="item2" mode="" class="imgs" @click="enlarge(index,index2)"/>
+							<image :src="item2" mode="" class="imgs" @click="enlarge(index,index2)" />
 							<image class="deleteImg" :src="del" mode="" @click="deleimg(index2,index)" />
 						</view>
 					</view>
 				</view>
-				
+
 				<view class="taskChoseList" v-for="(item,index) in arr.taskItemList" :key="index"
 					v-if="item.taskBillItem.types==2">
 					<view class="ListHead">
@@ -110,7 +110,7 @@
 						</view>
 
 						<view class="choseImg" v-for="(item2, index2) in imgList[index].taskPic" :key="index2">
-							<image :src="item2" mode="" class="imgs" @click="enlarge(index,index2)"/>
+							<image :src="item2" mode="" class="imgs" @click="enlarge(index,index2)" />
 							<image class="deleteImg" :src="del" mode="" @click="deleimg(index2,index)" />
 						</view>
 					</view>
@@ -173,9 +173,9 @@
 			</view>
 		</view>
 		<view style="position: absolute; top: -9999rpx;">
-		<view>
-		<canvas :style="{'width':w,'height':h}" canvas-id="firstCanvas"></canvas>
-		</view>
+			<view>
+				<canvas  style="width:375px;height:500px" canvas-id="firstCanvas"></canvas>
+			</view>
 		</view>
 	</view>
 
@@ -188,8 +188,8 @@
 		data() {
 			return {
 				currentIndex: 1,
-				w:'100px',
-				h:'100px',
+				w: '100px',
+				h: '100px',
 				imgList: [],
 				picflag: false,
 				textIn: "",
@@ -289,23 +289,24 @@
 				var that = this;
 				uni.chooseImage({
 					count: 1,
-					sourceType:['camera'],
+					sourceType: ['camera'],
 					success(res) {
 						uni.getImageInfo({
 							src: res.tempFilePaths[0],
 							success: (ress) => {
 								that.w = ress.width / 3 + 'px';
 								that.h = ress.height / 3 + 'px';
+								
 								let ctx = uni.createCanvasContext('firstCanvas'); /** 创建画布 */
 								//将图片src放到cancas内，宽高为图片大小
-								ctx.drawImage(res.tempFilePaths[0], 0, 0, ress.width / 3, ress.height /
-									3)
+								ctx.drawImage(res.tempFilePaths[0], 0, 0,375,500)
 								ctx.setFontSize(30)
-								ctx.setFillStyle('#white')
+								ctx.setFillStyle('white')
 								// ctx.rotate(30 * Math.PI / 180);
 								let textToWidth = ress.width / 3 * 0;
 								let textToHeight = ress.height / 3 * 0.2;
-								ctx.fillText(new Date().toLocaleString(), textToWidth, textToHeight)
+								ctx.fillText(that.dateFormat("YYYY-mm-dd HH:MM", new Date()),textToWidth,
+									textToHeight)
 								/** 除了上面的文字水印，这里也可以加入图片水印 */
 								//ctx.drawImage('/static/watermark.png', 0, 0, ress.width / 3, ress.height / 3)
 								ctx.draw(false, () => {
@@ -313,26 +314,47 @@
 										uni.canvasToTempFilePath({
 											canvasId: 'firstCanvas',
 											success: (res1) => {
-												that.src = res1.tempFilePath;
-												console.log("qqqqqq" ,res1.tempFilePath);
-												that.imgList[index].taskPic.push(res1.tempFilePath)
-													that.imgList.push()
-												console.log(that.imgList);
-												let path = that.imgList[index].taskPic;
+												that.src = res1
+													.tempFilePath;
+												console.log("qqqqqq",
+													res1
+													.tempFilePath);
+												that.imgList[index]
+													.taskPic.push(res1
+														.tempFilePath)
+												that.imgList.push()
+												console.log(that
+													.imgList);
+												let path = that
+													.imgList[index]
+													.taskPic;
 												// console.log("wew", this.imgList[index].taskPic)
 												let path1 = [];
 												// this.arr.taskPic = '';
-												for (let i = 0; i < path.length; i++) {
-													console.log(i, "dwsfsf54645646");
-													 that.api.upLoad(path[i]).then(res=>{
-														 path1.push(res)
-													 });
-													
+												for (let i = 0; i <
+													path.length; i++) {
+													console.log(i,
+														"dwsfsf54645646"
+													);
+													that.api.upLoad(
+															path[i])
+														.then(res => {
+															path1
+																.push(
+																	res
+																)
+															that.arr
+																.serverimgList[
+																	index
+																] =
+																path1;
+														});
+
 												}
-												that.arr.serverimgList = path1;
-												that.arr.taskPic = that.arr.serverimgList.join(",");
+
+												// that.arr.taskPic = that.arr.serverimgList.join(",");
 												// console.log("显示图片",that.info.troublePic,that.info.ser)
-						
+
 											}
 										});
 									}, 1000);
@@ -343,11 +365,30 @@
 				});
 				// console.log("112121",this.imgList);
 				// verimgList.join(","));
-			}, 
-			enlarge(index,index2) {
+			},
+			 dateFormat(fmt, date) {
+			    let ret;
+			    const opt = {
+			        "Y+": date.getFullYear().toString(),        // 年
+			        "m+": (date.getMonth() + 1).toString(),     // 月
+			        "d+": date.getDate().toString(),            // 日
+			        "H+": date.getHours().toString(),           // 时
+			        "M+": date.getMinutes().toString(),         // 分
+			        "S+": date.getSeconds().toString()          // 秒
+			        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+			    };
+			    for (let k in opt) {
+			        ret = new RegExp("(" + k + ")").exec(fmt);
+			        if (ret) {
+			            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+			        };
+			    };
+			    return fmt;
+			},
+			enlarge(index, index2) {
 				uni.previewImage({
 					current: this.imgList[index].taskPic[index2],
-					urls:this.imgList[index].taskPic,
+					urls: this.imgList[index].taskPic,
 					indicator: "default"
 				})
 			},
@@ -383,32 +424,35 @@
 						icon: "none"
 					})
 					return false
-				} else if (this.list.rmks == "") {
-					uni.showToast({
-						title: "请输入备注",
-						icon: "none"
-					})
-					return false
-				} else if (this.taskChoseArr.length != this.arr.taskItemList.length) {
+				} 
+				// else if (this.list.rmks == "") {
+				// 	uni.showToast({
+				// 		title: "请输入备注",
+				// 		icon: "none"
+				// 	})
+				// 	return false
+				// } 
+				else if (this.taskChoseArr.length != this.arr.taskItemList.length) {
 					uni.showToast({
 						title: "存在选项未选",
 						icon: "none"
 					})
 					return false
 				}
-				this.taskChoseArr.forEach(item=>{
-					this.taskItemOption=this.taskItemOption.concat(item.optionId)
+				this.taskChoseArr.forEach(item => {
+					this.taskItemOption = this.taskItemOption.concat(item.optionId)
 				})
-			for(let i=0;i<this.arr.taskItemList.length;i++){
-				console.log(89898989);
-				console.log("qqw",this.arr.taskItemList[i].taskBillItem.id);
-				console.log("qqw",this.list.taskItemOption[i].id);
-				this.list.taskItemOption[i].id=this.taskItemOption[i]
-				this.list.taskItemOption[i].billId=this.id
-				this.list.taskItemOption[i].billItemId=this.arr.taskItemList[i].taskBillItem.id
-				this.list.taskItemOption[i].taskPic=this.imgList[i].taskPic.join(",")
-			}
-			this.api.postBillSubmit(this.list)
+				for (let i = 0; i < this.arr.taskItemList.length; i++) {
+					console.log(89898989);
+					console.log("qqw", this.arr.taskItemList[i].taskBillItem.id);
+					console.log("qqw", this.list.taskItemOption[i].id);
+					this.list.taskItemOption[i].id = this.taskItemOption[i]
+					this.list.taskItemOption[i].billId = this.id
+					this.list.taskItemOption[i].billItemId = this.arr.taskItemList[i].taskBillItem.id
+					this.list.taskItemOption[i].taskPic = this.arr.serverimgList[i].join(",")
+					console.log(this.arr.serverimgList[i]);
+				}
+				this.api.postBillSubmit(this.list)
 				uni.navigateBack({
 
 				})
@@ -465,35 +509,43 @@
 			}
 
 		},
-	async onLoad(e) {
-	
-		this.id = e.id
-		this.currentIndex = e.currentIndex;
-		// 从缓存中获取loginType,角色信息
-		this.loginType = uni.getStorageSync("loginType")
-		this.arr = await this.api.getBillDetail({
-			id: this.id
-		})
-			this.list.taskItemOption=[]
-		for(var i=0; i<this.arr.taskItemList.length;i++){
-			this.imgList[i]={
-				taskPic:[]
-			}
-			
-			this.list.taskItemOption[i]={
-				
-			}
-			this.arr.taskItemList[i].taskBillItem.taskPic=this.arr.taskItemList[i].taskBillItem.taskPic.split(",")
-		}
-		console.log("77777",this.arr.taskItemList[i].taskBillItem.taskPic);
-		
-	},
+		async onLoad(e) {
+
+			this.id = e.id
+			this.currentIndex = e.currentIndex;
+			// 从缓存中获取loginType,角色信息
+			this.loginType = uni.getStorageSync("loginType")
+			this.api.getBillDetail({
+				id: this.id
+			}).then(res => {
+				this.arr = res
+				this.arr.serverimgList = []
+
+				this.list.taskItemOption = []
+				for (var i = 0; i < this.arr.taskItemList.length; i++) {
+					this.imgList[i] = {
+						taskPic: []
+					}
+					this.arr.serverimgList[i] = []
+					this.list.taskItemOption[i] = {
+
+					}
+					this.arr.taskItemList[i].taskBillItem.taskPic = this.arr.taskItemList[i].taskBillItem
+						.taskPic
+						.split(",")
+				}
+			})
+		},
+
+		// console.log("77777", this.arr.taskItemList[i].taskBillItem.taskPic);
+
+
 		async onShow() {
-		
-			
-			
-		
-			
+
+
+
+
+
 		},
 		components: {},
 	}

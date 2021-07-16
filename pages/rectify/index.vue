@@ -196,10 +196,11 @@
 			 search(data){
 				// console.log({...data,state:this.currentIndex + 1});
 				this.page1={
-					state:this.currentIndex + 1,
+					state:this.currentIndex + 2,
 					current: 1,
 					size: 5,
-					cd:data.cd
+					cd:data.cd,
+					rectifyOrgId:this.userinfo.dept_id
 				}
 				this.model=data
 				console.log('进来了',this.model)
