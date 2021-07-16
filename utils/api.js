@@ -597,6 +597,7 @@ class api {
 			}).then(res => resolve(res.data))
 		})
 	}
+	
 	// 个人中心资料库详情
 	getlibDetail(data) {
 		return new Promise(resolve => {
@@ -604,6 +605,16 @@ class api {
 				"Content-Type": "application/json",
 				"Blade-Auth": uni.getStorageSync("Blade-Auth")
 
+			}).then(res => resolve(res.data))
+		})
+	}
+	// 帮助中心列表
+	gethelpList(){
+		return new Promise(resolve => {
+			get("/blade-works/helpdata/helpList", {}, {
+				"Content-Type": "application/json",
+				"Blade-Auth": uni.getStorageSync("Blade-Auth")
+		
 			}).then(res => resolve(res.data))
 		})
 	}

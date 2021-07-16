@@ -14,9 +14,9 @@ export default {
 			content:""
 		}
 	},
- async onLoad() {
+ async onLoad(e) {
   	this.loginType = uni.getStorageSync("loginType")
-	let data=await this.api.gethelpDetail({helpOrgId:uni.getStorageSync("userinfo").dept_id})	
+	let data=await this.api.gethelpDetail({id:e.id})	
 	this.content=data.helpInformContent
   }
 }

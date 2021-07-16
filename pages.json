@@ -106,7 +106,7 @@
 			}
 		},
 		{
-			"path": "pages/profile/help",
+			"path": "pages/profile/helpdetail",
 			"style": {
 				"navigationBarTitleText": "帮助中心"
 
@@ -153,7 +153,16 @@
 
 
 
-	],
+	    ,{
+            "path" : "pages/profile/helplist",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "帮助中心",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"tabBar": {
 		"custom": true,
 		"selectedColor": "#79D5AD",

@@ -224,9 +224,6 @@
 // 				// 	})
 
 // 				// });
-
-
-
 // 			},
 			async toPhoto() {
 				var that = this;

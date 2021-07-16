@@ -456,7 +456,7 @@
 			// 进入帮助中心
 			goTohelp() {
 				uni.navigateTo({
-					url: '/pages/profile/help'
+					url: '/pages/profile/helplist'
 				});
 			},
 			// 进入修改密码
