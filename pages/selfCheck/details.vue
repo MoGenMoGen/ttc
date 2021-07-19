@@ -151,10 +151,14 @@
 					<view class="taskInCase" v-for="(item1,index1) in item.taskItemOption" :key="index1">
 						<text v-if="item1.state==1">{{item1.cont}}</text>
 					</view>
+					<view style="display: flex;">
+						
+					
 					<view class="photo" v-for="(item2,index2) in item.taskBillItem.taskPic" :key="index2"
-						style="margin-top: 0rpx;">
-						<image :src="item2" mode="" style="height: 160rpx; width: 160rpx;"
+						style="margin-top: 0rpx;height: 160rpx; width: 160rpx; margin-left: 20rpx">
+						<image :src="item2" mode="" style="height: 100%; width: 100%;"
 							@click="enlargeTwo(index,index2)"></image>
+					</view>
 					</view>
 				</view>
 			</view>
@@ -174,7 +178,7 @@
 		</view>
 		<view style="position: absolute; top: -9999rpx;">
 			<view>
-				<canvas  style="width:375px;height:500px" canvas-id="firstCanvas"></canvas>
+				<canvas style="width:375px;height:500px" canvas-id="firstCanvas"></canvas>
 			</view>
 		</view>
 	</view>
@@ -296,16 +300,17 @@
 							success: (ress) => {
 								that.w = ress.width / 3 + 'px';
 								that.h = ress.height / 3 + 'px';
-								
+
 								let ctx = uni.createCanvasContext('firstCanvas'); /** 创建画布 */
 								//将图片src放到cancas内，宽高为图片大小
-								ctx.drawImage(res.tempFilePaths[0], 0, 0,375,500)
+								ctx.drawImage(res.tempFilePaths[0], 0, 0, 375, 500)
 								ctx.setFontSize(30)
 								ctx.setFillStyle('white')
 								// ctx.rotate(30 * Math.PI / 180);
 								let textToWidth = ress.width / 3 * 0;
 								let textToHeight = ress.height / 3 * 0.2;
-								ctx.fillText(that.dateFormat("YYYY-mm-dd HH:MM", new Date()),textToWidth,
+								ctx.fillText(that.dateFormat("YYYY-mm-dd HH:MM", new Date()),
+									textToWidth,
 									textToHeight)
 								/** 除了上面的文字水印，这里也可以加入图片水印 */
 								//ctx.drawImage('/static/watermark.png', 0, 0, ress.width / 3, ress.height / 3)
@@ -366,24 +371,24 @@
 				// console.log("112121",this.imgList);
 				// verimgList.join(","));
 			},
-			 dateFormat(fmt, date) {
-			    let ret;
-			    const opt = {
-			        "Y+": date.getFullYear().toString(),        // 年
-			        "m+": (date.getMonth() + 1).toString(),     // 月
-			        "d+": date.getDate().toString(),            // 日
-			        "H+": date.getHours().toString(),           // 时
-			        "M+": date.getMinutes().toString(),         // 分
-			        "S+": date.getSeconds().toString()          // 秒
-			        // 有其他格式化字符需求可以继续添加，必须转化成字符串
-			    };
-			    for (let k in opt) {
-			        ret = new RegExp("(" + k + ")").exec(fmt);
-			        if (ret) {
-			            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-			        };
-			    };
-			    return fmt;
+			dateFormat(fmt, date) {
+				let ret;
+				const opt = {
+					"Y+": date.getFullYear().toString(), // 年
+					"m+": (date.getMonth() + 1).toString(), // 月
+					"d+": date.getDate().toString(), // 日
+					"H+": date.getHours().toString(), // 时
+					"M+": date.getMinutes().toString(), // 分
+					"S+": date.getSeconds().toString() // 秒
+					// 有其他格式化字符需求可以继续添加，必须转化成字符串
+				};
+				for (let k in opt) {
+					ret = new RegExp("(" + k + ")").exec(fmt);
+					if (ret) {
+						fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+					};
+				};
+				return fmt;
 			},
 			enlarge(index, index2) {
 				uni.previewImage({
@@ -424,7 +429,7 @@
 						icon: "none"
 					})
 					return false
-				} 
+				}
 				// else if (this.list.rmks == "") {
 				// 	uni.showToast({
 				// 		title: "请输入备注",

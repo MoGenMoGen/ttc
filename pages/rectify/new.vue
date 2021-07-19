@@ -1,5 +1,35 @@
 <template>
 	<view class="newContainer">
+		<view class="mask" v-if="chooseListShow==true">
+			
+		</view>
+		<view class="chooseList" v-if="chooseListShow==true" style="position: fixed;bottom: 0;left: 0;background-color: #fff; z-index: 199;width: 100%;">
+			<view class="listSearch">
+				<input type="text"style="border:1rpx solid #555555 ;" v-model="textIn" value="" placeholder="请输入隐患内容" />
+				<button type="default" style="margin-right: 50rpx;" @click="listSearchTo">搜索</button>
+
+			</view>
+			<view class="swiper">
+				<swiper :current="current" vertical="true" previous-margin="30rpx" next-margin="30rpx"
+					@change="swiperChangeBig" style="height: 120rpx;width: 100%; ">
+					<block v-for="(item,index) in info.chooseList" :key="index">
+						<swiper-item class="swiperBox">
+							<p :class="{active:index==current}">
+								{{item.dangerReport}}
+							</p>
+						</swiper-item>
+					</block>
+				</swiper>
+			</view>
+			<view class="modalFooter">
+				<view class="btnCancel">
+					<button type="default" @click="tapCancel">取消</button>
+				</view>
+				<view class="btnConfirm">
+					<button type="default" @click="confirmSend">确认添加</button>
+				</view>
+			</view>
+		</view>
 		<view class="newBody">
 			<view class="newList">
 				<view class="newListTitle">
@@ -52,6 +82,34 @@
 				<textarea value="" v-model="info.troubleReport" placeholder="请输入主要事项内容详情"
 					placeholder-class="placeholderIn" class="text" />
 			</view>
+			<view class="newList" style="display: flex;">
+				<view class="newListTitle">
+					隐患说明
+				</view>
+				<view class="newListContent" @click="chooseListOnShow">
+					<text>请选择隐患说明</text>
+				</view>
+
+			</view>
+			<view class="newList"  v-for="(item,index) in info.rectifyBillItem" :key="index">
+				<view class="newListTitle">
+					<text> {{item.dangerReport}}</text>
+				</view>
+				<view class="newListContent" style="margin-top: 20rpx; margin-left: 0;display: flex; flex-wrap: wrap;width: 400rpx;">
+					<view class="goPhoto" @click="toPhoto(index)" style="width: 160rpx; height: 160rpx;">
+						<image src="/static/takephoto.png" mode="" style="width: 100%; height: 100%;"></image>
+					</view>
+					<view class="imageBox"style="margin-left: 20rpx;position: relative;" v-for="(item1,index1) in info.rectifyBillItem[index].taskPicBf">
+						<image :src="item1" mode="" style="width: 160rpx;height: 160rpx;"@click="enlarge(index,index1)"></image>
+						<image :src="del" mode="" style="position: absolute;top: -16rpx;right: -16rpx;width: 32rpx;height: 32rpx;" class="deleteImg" @click="deleimg(index,index1)"></image>
+					</view>
+				</view>
+				<view class="deleteItem" @click="toDelete(index)" style="position: absolute;right: 20rpx;top: 50%;transform: translateY(-50%);font-size: 50rpx;">
+					x
+				</view>
+			</view>
+			
+
 			<view class="newList">
 				<view class="newListTitle">
 					责任整改人
@@ -65,7 +123,7 @@
 					</picker>
 				</view>
 			</view>
-		<!-- 	<view class="newList" style="display: flex; flex-direction: column;">
+			<!-- 	<view class="newList" style="display: flex; flex-direction: column;">
 				<view class="newListTitle">
 					整改要求
 				</view>
@@ -86,8 +144,8 @@
 
 				</view>
 			</view>
-			
-			<view class="photograpBox">
+
+		<!-- 	<view class="photograpBox">
 				<view class="newListTitle">
 					隐患图片
 				</view>
@@ -104,17 +162,17 @@
 						<image :src="del" mode="" class="deleteImg" @click="deleimg(index)"></image>
 					</view>
 				</view>
-			</view>
+			</view> -->
 		</view>
 		<view class="newBtn">
 			<button type="default" class="cancel" @click="backTo">取消</button>
 			<button type="default" class="next" @click="changePageTo">下一步 </button>
 		</view>
 		<view style="position: absolute; top: -9999rpx;">
-		<view>
-		<canvas style="width:375px;height:500px" canvas-id="firstCanvas"></canvas> 
-		</view> 
-		</view> 
+			<view>
+				<canvas style="width:375px;height:500px" canvas-id="firstCanvas"></canvas>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -126,13 +184,17 @@
 				format: true
 			})
 			return {
+				chooseListShow: false,
 				del,
+				textIn:"",
+				dangerReport:"",
 				index2: 0,
 				index1: 0,
-				w:'100px',
-				h:'100px',
-				canvasWidth:"",
-				canvasHeight:"", 
+				current: 0,
+				w: '100px',
+				h: '100px',
+				canvasWidth: "",
+				canvasHeight: "",
 				info: {
 					cd: "",
 					personList: [],
@@ -154,89 +216,95 @@
 					AttrSystem: "", //当前选择的整改单位
 					imgList: [],
 					serverimgList: [], //上传到服务器的图片地址
+					rectifyBillItem:[],
+					chooseList:[],
 				}
 			}
 		},
 		methods: {
-// 			async toPhoto() {
-// 				let that=this
-// 				this.canvasImg=await this.api.chooseImages('', 9)
-// 				console.log("qweqeqweqewqe",this.canvasImg);
-// 				uni.getImageInfo({
-// 					src:that.canvasImg[0],
+			// 			async toPhoto() {
+			// 				let that=this
+			// 				this.canvasImg=await this.api.chooseImages('', 9)
+			// 				console.log("qweqeqweqewqe",this.canvasImg);
+			// 				uni.getImageInfo({
+			// 					src:that.canvasImg[0],
 
-// 					success:res=>{
-// 						console.log("我进来了");
-// 						console.log("宽度",res.width);
-// 						console.log("高度",res.height);
-// 						that.canvasWidth=`${res.width}px`;
-// 						that.canvasHeight=`${res.height}px`;
-// 						console.log("111",that.canvasWidth,that.canvasHeight);
-// 						var ctx=uni.createCanvasContext('firstCanvas');
-// 						ctx.clearRect(0,0,res.width,res.height);
-// 						ctx.beginPath();
-// 						ctx.setFontSize(170);
-// 						ctx.drawImage(that.canvasImg[0],0,0,res.width,res.height); 
-// 						// ctx.translate(res.width/2,res.height/2);
-// 						// ctx.rotate(45 * Math.PI / 180);
-// 						let horizontal=res.width/4;
-// 						let vertical=res.height/3;	
-// 						ctx.fillText("--晒渔--",horizontal,vertical);
-// 						ctx.setFillStyle("rgba(255,255,255,0.4)");
-// 						console.log("看看画布",ctx);
-// 						ctx.draw(false,()=>{
-// 							setTimeout(()=>{
-// 								console.log("qweq");
-// 								uni.canvasToTempFilePath({
-// 									canvasId:"firstCanvas",
-// 										success:res=>{
-// 											console.log("我又进来了");
-// 											console.log(res.tempFilePath);
-// 											// that.canvasImg=[]
-// 											that.info.imgList.push(res.tempFilePath)
-											
-// 										}
-// 								})
-// 							},500)
-// 						});
-// 					}
-// 				})
+			// 					success:res=>{
+			// 						console.log("我进来了");
+			// 						console.log("宽度",res.width);
+			// 						console.log("高度",res.height);
+			// 						that.canvasWidth=`${res.width}px`;
+			// 						that.canvasHeight=`${res.height}px`;
+			// 						console.log("111",that.canvasWidth,that.canvasHeight);
+			// 						var ctx=uni.createCanvasContext('firstCanvas');
+			// 						ctx.clearRect(0,0,res.width,res.height);
+			// 						ctx.beginPath();
+			// 						ctx.setFontSize(170);
+			// 						ctx.drawImage(that.canvasImg[0],0,0,res.width,res.height); 
+			// 						// ctx.translate(res.width/2,res.height/2);
+			// 						// ctx.rotate(45 * Math.PI / 180);
+			// 						let horizontal=res.width/4;
+			// 						let vertical=res.height/3;	
+			// 						ctx.fillText("--晒渔--",horizontal,vertical);
+			// 						ctx.setFillStyle("rgba(255,255,255,0.4)");
+			// 						console.log("看看画布",ctx);
+			// 						ctx.draw(false,()=>{
+			// 							setTimeout(()=>{
+			// 								console.log("qweq");
+			// 								uni.canvasToTempFilePath({
+			// 									canvasId:"firstCanvas",
+			// 										success:res=>{
+			// 											console.log("我又进来了");
+			// 											console.log(res.tempFilePath);
+			// 											// that.canvasImg=[]
+			// 											that.info.imgList.push(res.tempFilePath)
 
-// console.table(this.info.imgList)
-// 				// this.info.imgList = [...this.info.imgList,...this.canvasImg];
-// 				// console.log(1111, this.info.imgList);
-// 				let path = this.info.imgList; //所有上传的图片的地址
-// 				let path1=[];//上传到服务器的图片
-// 				this.info.troublePic = '';
-// 				// console.log('path222222222',path);
-// 				for(let i=0;i<path.length;i++){
-// 					// console.log(i,"dwsfsf54645646");
-// 					let res=await this.api.upLoad(path[i]); 	
-// 					path1.push(res)
-// 				}
-// 				this.info.serverimgList=path1;
-// 				this.info.troublePic = this.info.serverimgList.join(",");
-// 				// console.log("图片上传到服务器",path1);
-// 				// path.forEach((item, index, arr) => {
-// 				// 	this.api.upLoad(item).then(res=>{
-// 				// 		 console.log('图片上传',res);
-// 				// 		 path1.push(res)
-// 				// 	})
+			// 										}
+			// 								})
+			// 							},500)
+			// 						});
+			// 					}
+			// 				})
 
-// 				// });
-// 			},
-			async toPhoto() {
+			// console.table(this.info.imgList)
+			// 				// this.info.imgList = [...this.info.imgList,...this.canvasImg];
+			// 				// console.log(1111, this.info.imgList);
+			// 				let path = this.info.imgList; //所有上传的图片的地址
+			// 				let path1=[];//上传到服务器的图片
+			// 				this.info.troublePic = '';
+			// 				// console.log('path222222222',path);
+			// 				for(let i=0;i<path.length;i++){
+			// 					// console.log(i,"dwsfsf54645646");
+			// 					let res=await this.api.upLoad(path[i]); 	
+			// 					path1.push(res)
+			// 				}
+			// 				this.info.serverimgList=path1;
+			// 				this.info.troublePic = this.info.serverimgList.join(",");
+			// 				// console.log("图片上传到服务器",path1);
+			// 				// path.forEach((item, index, arr) => {
+			// 				// 	this.api.upLoad(item).then(res=>{
+			// 				// 		 console.log('图片上传',res);
+			// 				// 		 path1.push(res)
+			// 				// 	})
+
+			// 				// });
+
+
+
+			// 			},
+			async toPhoto(index) {
 				var that = this;
+				console.log("看看下标",index);
 				uni.chooseImage({
 					count: 1,
-					sourceType:['camera'], 
+					sourceType: ['camera'],
 					success(res) {
 						uni.getImageInfo({
 							src: res.tempFilePaths[0],
 							success: (ress) => {
-								console.log("nnnnn",res);   
-								console.log("mmmm",ress);
-								that.w = ress.width / 2+ 'px';
+								console.log("nnnnn", res);
+								console.log("mmmm", ress);
+								that.w = ress.width / 2 + 'px';
 								that.h = ress.height / 2 + 'px';
 								let ctx = uni.createCanvasContext('firstCanvas'); /** 创建画布 */
 								//将图片src放到cancas内，宽高为图片大小
@@ -246,74 +314,131 @@
 								// ctx.rotate(30 * Math.PI / 180);
 								let textToWidth = ress.width / 3 * 0;
 								let textToHeight = ress.height / 3 * 0.1;
-								ctx.fillText(that.dateFormat("YYYY-mm-dd HH:MM", new Date()), textToWidth, textToHeight)
+								ctx.fillText(that.dateFormat("YYYY-mm-dd HH:MM", new Date()),
+									textToWidth, textToHeight)
 								/** 除了上面的文字水印，这里也可以加入图片水印 */
 								//ctx.drawImage('/static/watermark.png', 0, 0, ress.width / 3, ress.height / 3)
-								ctx.draw(false, (() => { 
-									setTimeout(() => { 
+								ctx.draw(false, (() => {
+									setTimeout(() => {
 										uni.canvasToTempFilePath({
 											canvasId: 'firstCanvas',
 											success: (res1) => {
-												that.src = res1.tempFilePath;
-												console.log("qqqqqq" ,res1.tempFilePath);
-												that.info.imgList.push(res1.tempFilePath)
-												that.info.imgList.push()
-												let path = that.info.imgList; //所有上传的图片的地址
-												console.log("显示图片列表",that.info.imgList);
-												let path1=[];//上传到服务器的图片
-												that.info.troublePic = '';
+												that.src = res1
+													.tempFilePath;
+												console.log(
+													"qqqqqq",
+													res1
+													.tempFilePath
+													);
+												that.info.rectifyBillItem[index].taskPicBf
+													.push(res1
+														.tempFilePath
+														)
+												that.info.rectifyBillItem
+													.push()
+												let path = that.info.rectifyBillItem[index].taskPicBf //所有上传的图片的地址
+								
+												let
+											path1 = []; //上传到服务器的图片
+						
 												// console.log('path222222222',path);
-												for(let i=0;i<path.length;i++){
+												for (let i = 0; i <
+													path
+													.length; i++) {
 													// console.log(i,"dwsfsf54645646");
-													that.api.upLoad(path[i]).then(res=>{
-														path1.push(res)
-														that.info.serverimgList=path1;
-													})
-													
+													that.api
+														.upLoad(
+															path[i]
+															).then(
+															res => {
+																path1
+																	.push(
+																		res
+																		)
+																that.info
+																	.serverimgList[index] =
+																	path1;
+																	that.info.serverimgList.push()
+																	console.log("keyi",that.info
+																	.serverimgList);
+															})
+
 												}
 											}
 										});
-									}, 1000);  
+									}, 1000);
 								})());
 							}
 						})
 					}
-				
+
 				});
-				
+
 				// console.log("显示图片",path1);
 				// this.info.serverimgList=path1;
 				// this.info.troublePic = that\.info.serverimgList.join(",");
-				
-		
-			}, 
-			dateFormat(fmt, date) {
-			    let ret;
-			    const opt = {
-			        "Y+": date.getFullYear().toString(),        // 年
-			        "m+": (date.getMonth() + 1).toString(),     // 月
-			        "d+": date.getDate().toString(),            // 日
-			        "H+": date.getHours().toString(),           // 时
-			        "M+": date.getMinutes().toString(),         // 分
-			        "S+": date.getSeconds().toString()          // 秒
-			        // 有其他格式化字符需求可以继续添加，必须转化成字符串
-			    };
-			    for (let k in opt) {
-			        ret = new RegExp("(" + k + ")").exec(fmt);
-			        if (ret) {
-			            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-			        };
-			    };
-			    return fmt;
+
+
 			},
-			enlarge(index) {
+			dateFormat(fmt, date) {
+				let ret;
+				const opt = {
+					"Y+": date.getFullYear().toString(), // 年
+					"m+": (date.getMonth() + 1).toString(), // 月
+					"d+": date.getDate().toString(), // 日
+					"H+": date.getHours().toString(), // 时
+					"M+": date.getMinutes().toString(), // 分
+					"S+": date.getSeconds().toString() // 秒
+					// 有其他格式化字符需求可以继续添加，必须转化成字符串
+				};
+				for (let k in opt) {
+					ret = new RegExp("(" + k + ")").exec(fmt);
+					if (ret) {
+						fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+					};
+				};
+				return fmt;
+			},
+			swiperChangeBig(e) {
+				console.log("你是猪", e);
+				this.current = e.mp.detail.current
+			},
+			tapCancel(){
+				this.chooseListShow=false
+				
+			},
+			listSearchTo(){
+				this.dangerReport=this.textIn
+				this.api.getDangerReport({dangerReport:this.dangerReport}).then(res=>{
+					console.log("1122",res);
+					this.info.chooseList=res
+				})
+			},
+			confirmSend(){
+					this.chooseListShow=false
+					let objmel={
+						code:this.info.chooseList[this.current].id,
+						dangerReport:this.info.chooseList[this.current].dangerReport,
+						taskPicBf:[],
+						taskPicAf:"",
+					}
+					this.info.rectifyBillItem.push(objmel)
+					console.log("收尾",this.info.rectifyBillItem);
+			},
+			chooseListOnShow() {
+				this.chooseListShow = true
+			},
+			toDelete(index){
+				this.info.rectifyBillItem.splice(index,1)
+			},
+			enlarge(index,index1) {
 				uni.previewImage({
-					current: this.info.imgList[index],
-					urls: this.info.imgList,
+					current: this.info.rectifyBillItem[index].taskPicBf[index1],
+					urls: this.info.rectifyBillItem[index].taskPicBf,
 					indicator: "default"
 				})
 			},
-		
+
 			async bindPickerChange(e) {
 				this.index2 = e.mp.detail.value;
 				// console.log(e.mp.detail.value, typeof(e.mp.detail.value));
@@ -339,12 +464,13 @@
 				this.info.responsibleId = this.info.personList[this.index1].id;
 
 			},
-			deleimg(index) {
-				this.info.imgList.splice(index, 1)
-				this.info.troublePic = this.info.imgList.join(",");
+			deleimg(index,index1) {
+				this.info.rectifyBillItem[index].taskPicBf.splice(index1, 1)
+				// this.info.troublePic = this.info.imgList.join(",");
 			},
 			changePageTo() {
-				this.info.troublePic = this.info.serverimgList.join(",");
+				// this.info.troublePic = this.info.serverimgList.join(",");
+				
 				// if (this.info.title == "") {
 				// 	uni.showToast({
 				// 		title: "请填写整改名称",
@@ -352,14 +478,13 @@
 				// 	})
 				// 	return false
 				// } 
-				 if (this.info.AttrSystem == "") {
+				if (this.info.AttrSystem == "") {
 					uni.showToast({
 						title: "请选择整改单位",
 						icon: "none"
 					})
 					return false
-				} 
-				else if (this.info.examRegion == "") {
+				} else if (this.info.examRegion == "") {
 					uni.showToast({
 						title: "请选择检查区域",
 						icon: "none"
@@ -371,19 +496,29 @@
 						icon: "none"
 					})
 					return false
-				} else if (this.info.troubleReport == "") {
+				} 
+				else if(this.info.rectifyBillItem.length!=this.info.serverimgList.length)
+				{
 					uni.showToast({
-						title: "请填写隐患说明",
-						icon: "none"
+						title:"存在隐患项未拍照",
+						icon:"none"
 					})
 					return false
-				} else if (this.info.person == "") {
+				}
+				// else if (this.info.troubleReport == "") {
+				// 	uni.showToast({
+				// 		title: "请填写隐患说明",
+				// 		icon: "none"
+				// 	})
+				// 	return false
+				// }
+				 else if (this.info.person == "") {
 					uni.showToast({
 						title: "请选择责任整改人",
 						icon: "none"
 					})
 					return false
-				} 
+				}
 				// else if (this.info.requReport == "") {
 				// 	uni.showToast({
 				// 		title: "请填写整改要求",
@@ -391,13 +526,17 @@
 				// 	})
 				// 	return false
 				// } 
-				else if (this.info.troublePic == "") {
-					uni.showToast({
-						title: "请选择隐患图片",
-						icon: "none"
-					})
-					return false
-				}
+				// else if (this.info.troublePic == "") {
+				// 	uni.showToast({
+				// 		title: "请选择隐患图片",
+				// 		icon: "none"
+				// 	})
+				// 	return false
+				// }
+				// for(let i=0;i<this.info.rectifyBillItem.length;i++){
+				// 	this.info.rectifyBillItem[i].taskPicBf=this.info.serverimgList[i].join(",")
+				// }
+				console.log(this.info.rectifyBillItem);
 				uni.setStorageSync('rectifyList', this.info);
 				uni.navigateTo({
 					url: "./newNext"
@@ -474,7 +613,9 @@
 				id: this.info.buildOrgId
 			});
 			this.info.AttrSystems = unitList
-			console.log("显示", unitList)
+			let chooseList = await this.api.getDangerList({})
+			this.info.chooseList = chooseList
+			console.log("显示", chooseList)
 
 
 		},
@@ -485,6 +626,88 @@
 </script>
 
 <style lang="scss" scoped>
+	.mask{
+		position: fixed;
+		top: 0;
+		left: 0;
+		background-color: rgba(0,0,0, .4);
+		z-index: 180;
+		width: 100vw;
+		height: 100vh;
+	}
+	.chooseList {
+		background-color: #FFFFFF;
+		padding: 100rpx 0;
+		.listSearch {
+			width: 100%;
+			display: flex;
+
+			input {
+				
+				font-size: 28rpx;
+				width: 60%;
+				margin-left: 50rpx;
+				height: 65rpx;
+
+			}
+
+			button {
+				width: 135rpx;
+				font-size: 28rpx;
+				color: #FFFFFF;
+				background-color: #2B89F7;
+				margin-left: 100rpx;
+
+
+
+			}
+		}
+
+		.swiper {
+			padding-top: 22rpx;
+
+			.swiperBox {
+				p {
+					text-align: center;
+					font-size: 32rpx;
+					padding: 10rpx 0;
+					color: #9FA0A0;
+				}
+
+				.active {
+					color: #000000;
+				}
+			}
+		}
+		.modalFooter{
+			margin-top: 30rpx;
+			display: flex;
+			justify-content: space-around;
+			.btnCancel{
+				button{
+					width: 200rpx;
+					height: 65rpx;
+					color: #FFFFFF;
+					background-color: #2B89F7;
+					font-size: 30rpx;
+					line-height: 65rpx;
+				}
+				
+			}
+			.btnConfirm{
+				button{
+					width: 200rpx;
+					height: 65rpx;
+					color: #FFFFFF;
+					background-color: #2B89F7;
+					font-size: 30rpx;
+					line-height: 65rpx;
+				}
+			}
+		}
+
+	}
+
 	.newContainer {
 		background-color: #fafafa;
 		display: flex;
@@ -564,7 +787,7 @@
 					margin-left: 30rpx;
 					word-wrap: break-word;
 					font-size: 28rpx;
-
+					
 					.location {
 						width: 48rpx;
 						height: 48rpx;

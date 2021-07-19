@@ -20,6 +20,11 @@
 						<image src="../../static/workcontent.png" mode="" />
 						<view class="taskContentInListHead">任务内容 </view>
 						<view class="taskContentInListContent">{{ item.contReport }}</view>
+					</view>	
+					<view class="taskContentInList ">
+						<image src="../../static/qiye.png" mode="" />
+						<view class="taskContentInListHead">巡查企业 </view>
+						<view class="taskContentInListContent">{{ item.contReport }}</view>
 					</view>
 					<view class="taskContentInList">
 						<image src="../../static/person.png" mode="" />

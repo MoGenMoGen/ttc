@@ -56,15 +56,65 @@
 						{{bodyList.examRegion}}
 					</view>
 				</view>
-				<view class="bodyList">
+				<view class="bodyList" v-for="(item,index) in bodyList.rectifyBillItem" :key="index"
+					style="display: flex;flex-direction: column;">
+
+
 					<view class="bodyListTitle">
-						隐患说明
+						<text> {{item.codeName}}</text>
 					</view>
-					<view class="bodyListContent">
-						{{bodyList.troubleReport}}
+
+					<view style="display: flex; margin-top: 20rpx;">
+						<view class="bodyListTitle">
+							<text>整改前照片</text>
+						</view>
+
+						<view class="bodyListContent"
+							style="margin-top:0rpx; margin-left: 0;display: flex; flex-wrap: wrap;width: 500rpx;">
+							<view class="imageBox" style="margin-left: 20rpx;position: relative;"
+								v-for="(item1,index1) in bodyList.rectifyBillItem[index].taskPicBf" :key="index1">
+								<image :src="item1" mode="" style="width: 160rpx;height: 160rpx;margin-right: 0;"@click="enlargeFirst(index,index1)">
+								</image>
+							</view>
+
+						</view>
+					</view>
+					<view style="display: flex;margin-top: 20rpx;">
+
+
+						<view class="bodyListTitle">
+							<text>整改后照片</text>
+						</view>
+						<view class="bodyListContent"
+							style="margin-top: 0rpx; margin-left: 0;display: flex; flex-wrap: wrap;width:500rpx;"
+							v-if="currentIndex==0">
+							<view class="goPhoto" @click="toPhoto(index)"
+								style="width: 160rpx; height: 160rpx;margin-left: 20rpx;">
+								<image src="/static/takephoto.png" mode="" style="width: 100%; height: 100%;"></image>
+							</view>
+							<view class="imageBox" style="margin-left: 20rpx;position: relative;"
+								v-for="(item2,index2) in bodyList.rectifyBillItem[index].taskPicAf":key="index2">
+								<image :src="item2" mode="" style="width: 160rpx;height: 160rpx;margin-right: 0;"@click="enlargeSecond(index,index2)">
+								</image>
+								<image :src="del" mode=""
+									style="position: absolute;top: -16rpx;right:-36rpx;width: 32rpx;height: 32rpx;"
+									class="deleteImg" @click="deleimg(index,index2)"></image>
+							</view>
+						</view>
+						<view class="bodyListContent"
+							style="margin-top: 0rpx; margin-left: 0;display: flex; flex-wrap: wrap;width:500rpx;"
+							v-if="currentIndex==1||currentIndex==2">
+
+							<view class="imageBox" style="margin-left: 20rpx;position: relative;"
+								v-for="(item3,index3) in bodyList.rectifyBillItem[index].taskPicAf" :key="index3"@click="enlargeSecond(index,index3)">
+								<image :src="item3" mode="" style="width: 160rpx;height:160rpx;margin-right: 0;">
+								</image>
+
+							</view>
+						</view>
 					</view>
 				</view>
-				<view class="bodyList" >
+				<view class="bodyList">
 					<view class="bodyListTitle">
 						服务商签字
 					</view>
@@ -72,7 +122,7 @@
 						<image :src="bodyList.issueSign" mode="" @click="enlargeThree()"></image>
 					</view>
 				</view>
-				<view class="bodyList" >
+				<view class="bodyList">
 					<view class="bodyListTitle">
 						服务商签字
 					</view>
@@ -80,15 +130,15 @@
 						<image :src="bodyList.receiptSign" mode="" @click="enlargeFour()"></image>
 					</view>
 				</view>
-				
-				<view class="bodyList">
+
+				<!-- 		<view class="bodyList">
 					<view class="bodyListTitle">
 						整改要求
 					</view>
 					<view class="bodyListContent">
 						{{bodyList.requReport}}
 					</view>
-				</view>
+				</view> -->
 				<view class="bodyList" v-if="bodyList.reissueReport">
 					<view class="bodyListTitle">
 						二次下发说明
@@ -97,7 +147,7 @@
 						{{bodyList.reissueReport}}
 					</view>
 				</view>
-				
+
 				<view class="bodyList">
 					<view class="bodyListTitle">
 						复查人
@@ -114,14 +164,14 @@
 						{{bodyList.reviewTime}}
 					</view>
 				</view>
-				<view class="bodyList" style="border-bottom:0">
+				<!-- <view class="bodyList" style="border-bottom:0">
 					<view class="bodyListTitle">
 						隐患图片
 					</view>
 					<view class="bodyListImg">
 						<image v-for="(item,index) in bodyList.troublePic" :key="index" :src="item" mode="" @click="enlargeOne(index)"></image>
 					</view>
-				</view>
+				</view> -->
 
 
 			</view>
@@ -138,14 +188,15 @@
 						{{bodyList.rectifyReport}}
 					</view>
 				</view>
-				<view class="bodyList">
+				<!-- <view class="bodyList">
 					<view class="bodyListTitle">
 						整改照片
 					</view>
 					<view class="bodyListImg">
-						<image v-for="(item,index) in bodyList.rectifyPic" :key="index" :src="item" mode="" @click="enlargeTwo(index)"></image>
+						<image v-for="(item,index) in bodyList.rectifyPic" :key="index" :src="item" mode=""
+							@click="enlargeTwo(index)"></image>
 					</view>
-				</view>
+				</view> -->
 				<view class="bodyList">
 					<view class="bodyListTitle">
 						上报日期
@@ -190,7 +241,7 @@
 
 			</view>
 		</view>
-			<!-- <view class="detailContent" style="margin-top: 20rpx; padding: 20rpx 40rpx;" v-if="currentIndex==2">
+		<!-- <view class="detailContent" style="margin-top: 20rpx; padding: 20rpx 40rpx;" v-if="currentIndex==2">
 			<view class="contentBody" style="margin-top: 0rpx;">
 				<view class="bodyList" style="border-bottom: 0;">
 					<view class="bodyListTitle">
@@ -202,14 +253,14 @@
 				</view>
 			</view>
 		</view> -->
-	<!-- 	<view class="contentText" v-if="currentIndex==0&&loginType==1">
+		<!-- 	<view class="contentText" v-if="currentIndex==0&&loginType==1">
 			<view class="TextTitle">
 				确认签收
 			</view>
 			 <view class="signBox" style="width: 100%;">
 				<sign @signImage="signImage"></sign>
 			</view> -->
-			<!-- <textarea v-model="signs" placeholder="在此签名" class="textareaIn" placeholder-class="placeholderIn" />
+		<!-- <textarea v-model="signs" placeholder="在此签名" class="textareaIn" placeholder-class="placeholderIn" />
 			<view class="textBtn">
 				<button class="btn1" type="default" @click="Resign">重签</button>
 				<button class="btn2" type="default" @click="preservation">保存</button>
@@ -224,9 +275,10 @@
 			<view class="TextTitle">
 				结案内容
 			</view>
-			<textarea v-model="closingContent" placeholder="多行输入" class="textareaInTwo" placeholder-class="placeholderIn" />
+			<textarea v-model="closingContent" placeholder="多行输入" class="textareaInTwo"
+				placeholder-class="placeholderIn" />
 		</view>
-		<view class="photograpBox" v-if="currentIndex==0&&loginType==1">
+		<!-- <view class="photograpBox" v-if="currentIndex==0&&loginType==1">
 			<view class="title">拍照上传 </view>
 			<view class="photo">
 
@@ -235,12 +287,12 @@
 					<image src="../../static/takephoto.png" mode="" @click="toPhoto()" />
 				</view>
 
-				<view class="choseImg" v-for="(item, index) in imgList" :key="index">
+				<view class="choseImg" v-for="(item, index) in imgList" :key="index" @click="enlargeFive(index)">
 					<image :src="item" mode="" class="imgs" v-if="loginType == 1" />
 					<image v-if="loginType == 1" class="deleteImg" :src="del" mode="" @click="deleimg(index)" />
 				</view>
 			</view>
-		</view>
+		</view> -->
 		<view class="lastBtn" v-if="loginType==1&&currentIndex!=1">
 			<button type="default" class="cancel" v-if="currentIndex==0" @click="cancelTo">取消</button>
 			<!-- <button type="default" class="confirm" v-if="currentIndex==0" @click="confirmTO">确认</button> -->
@@ -273,6 +325,11 @@
 				<view class="btn2" type="default" @click="finishshowpop">确定</view>
 			</view>
 		</view>
+		<view style="position: absolute; top: -9999rpx;">
+			<view>
+				<canvas style="width:375px;height:500px" canvas-id="firstCanvas"></canvas>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -283,7 +340,8 @@
 		data() {
 
 			return {
-				confirmDate:"",
+				confirmDate: "",
+				 picFlag : true,
 				showCanvas: false,
 				ctx: '', //绘图图像
 				points: [], //路径点集合 
@@ -295,9 +353,9 @@
 				popshow: false,
 				currentIndex: 1,
 				imgList: [],
-				report:"",
-				closingContent:"",
-				twice:"",
+				report: "",
+				closingContent: "",
+				twice: "",
 				bodyList: {
 
 				},
@@ -308,66 +366,205 @@
 			sign
 		},
 		methods: {
-			async toPhoto() {
-				// uni.chooseImage({
-				// 	sourceType: ["camera", "album "],
-				// 	success: function(res) {
-				// 		console.log(JSON.stringify(res.tempFilePaths));
-				// 	},
-				// 	fail(err) {
-				// 		console.log(err);
-				// 	},
-				// });
-				this.imgList = [...this.imgList, ...await this.api.chooseImages('', 9)];
-				// console.log(1111, this.bodylist.imgList);
-				let path = this.imgList; //所有上传的图片的地址
-				let path1 = []; //上传到服务器的图片
-				this.bodyList.rectifyPic = '';
-				console.log('path222222222', path);
-				for (let i = 0; i < path.length; i++) {
-					console.log(i, "dwsfsf54645646");
-					let res = await this.api.upLoad(path[i]);
-					path1.push(res)
-				}
-				this.bodyList.serverimgList = path1;
-				this.bodyList.rectifyPic = this.bodyList.serverimgList.join(",");
-				console.log("图片上传到服务器", this.bodyList.serverimgList);
-	
+			// 		async toPhoto() {
+			// 			// uni.chooseImage({
+			// 			// 	sourceType: ["camera", "album "],
+			// 			// 	success: function(res) {
+			// 			// 		console.log(JSON.stringify(res.tempFilePaths));
+			// 			// 	},
+			// 			// 	fail(err) {
+			// 			// 		console.log(err);
+			// 			// 	},
+			// 			// });
+			// 			this.imgList = [...this.imgList, ...await this.api.chooseImages('', 9)];
+			// 			// console.log(1111, this.bodylist.imgList);
+			// 			let path = this.imgList; //所有上传的图片的地址
+			// 			let path1 = []; //上传到服务器的图片
+			// 			this.bodyList.rectifyPic = '';
+			// 			console.log('path222222222', path);
+			// 			for (let i = 0; i < path.length; i++) {
+			// 				console.log(i, "dwsfsf54645646");
+			// 				let res = await this.api.upLoad(path[i]);
+			// 				path1.push(res)
+			// 			}
+			// 			this.bodyList.serverimgList = path1;
+			// 			this.bodyList.rectifyPic = this.bodyList.serverimgList.join(",");
+			// 			console.log("图片上传到服务器", this.bodyList.serverimgList);
+
+			// 		},
+			async toPhoto(index) {
+				var that = this;
+
+				uni.chooseImage({
+					count: 1,
+					sourceType: ['camera'],
+					success(res) {
+						uni.getImageInfo({
+							src: res.tempFilePaths[0],
+							success: (ress) => {
+								console.log("nnnnn", res);
+								console.log("mmmm", ress);
+								that.w = ress.width / 2 + 'px';
+								that.h = ress.height / 2 + 'px';
+								let ctx = uni.createCanvasContext('firstCanvas'); /** 创建画布 */
+								//将图片src放到cancas内，宽高为图片大小
+								ctx.drawImage(res.tempFilePaths[0], 0, 0, 375, 500)
+								ctx.setFontSize(30)
+								ctx.setFillStyle('white')
+								// ctx.rotate(30 * Math.PI / 180);
+								let textToWidth = ress.width / 3 * 0;
+								let textToHeight = ress.height / 3 * 0.1;
+								ctx.fillText(that.dateFormat("YYYY-mm-dd HH:MM", new Date()),
+									textToWidth, textToHeight)
+								/** 除了上面的文字水印，这里也可以加入图片水印 */
+								//ctx.drawImage('/static/watermark.png', 0, 0, ress.width / 3, ress.height / 3)
+								ctx.draw(false, (() => {
+									setTimeout(() => {
+										uni.canvasToTempFilePath({
+											canvasId: 'firstCanvas',
+											success: (res1) => {
+												that.src = res1
+													.tempFilePath;
+												console.log(
+													"qqqqqq",
+													res1
+													.tempFilePath
+													);
+												that.bodyList
+													.rectifyBillItem[
+														index]
+													.taskPicAf
+													.push(res1
+														.tempFilePath
+														)
+												that.bodyList
+													.rectifyBillItem
+													.push()
+												let path = that
+													.bodyList
+													.rectifyBillItem[
+														index]
+													.taskPicAf;
+													 that.bodyList.rectifyBillItem.push() //所有上传的图片的地址
+												console.log(
+													"显示图片列表",
+													path);
+												let
+											path1 = []; //上传到服务器的图片
+
+												// console.log('path222222222',path);
+												for (let i = 0; i <
+													path
+													.length; i++) {
+													// console.log(i,"dwsfsf54645646");
+													that.api
+														.upLoad(
+															path[i]
+															).then(
+															res => {
+																path1
+																	.push(
+																		res
+																		)
+																that.bodyList
+																	.serverimgList[
+																		index
+																		] =
+																	path1;
+																	that.bodyList.serverimgList.push()	
+																console
+																	.log(
+																		"硕士生",
+																		that
+																		.bodyList
+																		.serverimgList
+																		);
+															})
+
+												}
+											}
+										});
+									}, 1000);
+								})());
+							}
+						})
+					}
+
+				});
+
+				// console.log("显示图片",path1);
+				// this.info.serverimgList=path1;
+				// this.info.troublePic = that\.info.serverimgList.join(",");
+
+
 			},
-			deleimg(index) {
-			// this.bodyList.serverimgList.splice(index, 1)
-			this.imgList.splice(index, 1)
-			this.bodyList.rectifyPic = this.imgList.join(",");
+			dateFormat(fmt, date) {
+				let ret;
+				const opt = {
+					"Y+": date.getFullYear().toString(), // 年
+					"m+": (date.getMonth() + 1).toString(), // 月
+					"d+": date.getDate().toString(), // 日
+					"H+": date.getHours().toString(), // 时
+					"M+": date.getMinutes().toString(), // 分
+					"S+": date.getSeconds().toString() // 秒
+					// 有其他格式化字符需求可以继续添加，必须转化成字符串
+				};
+				for (let k in opt) {
+					ret = new RegExp("(" + k + ")").exec(fmt);
+					if (ret) {
+						fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+					};
+				};
+				return fmt;
+			},
+			deleimg(index,index2) {
+				this.info.rectifyBillItem[index].taskPicAf.splice(index2, 1)
+			},
+			enlargeFirst(index,index1){
+				uni.previewImage({
+					current: this.bodyList.rectifyBillItem[index].taskPicBf[index1],
+					urls: this.bodyList.rectifyBillItem[index].taskPicBf,
+					indicator: "default"
+				})
+			},
+			enlargeSecond(index,index2){
+				uni.previewImage({
+					current: this.bodyList.rectifyBillItem[index].taskPicAf[index2],
+					urls: this.bodyList.rectifyBillItem[index].taskPicAf,
+					indicator: "default"
+				})
 			},
 			pop() {
 				this.popshow = true
-				
+
 			},
 			unshowpop() {
 				this.popshow = false
 			},
-			async signImage(signImage){
-				this.bodyList.receiptSign=await this.api.upLoad(signImage);
-				console.log("guagua",this.bodyList.receiptSign);
+			async signImage(signImage) {
+				this.bodyList.receiptSign = await this.api.upLoad(signImage);
+				console.log("guagua", this.bodyList.receiptSign);
 			},
-			
+
 			finishshowpop() {
-				
-				if(this.twice==""){
+
+				if (this.twice == "") {
 					uni.showToast({
-						title:"请输入二次下发说明",
-						icon:"none"
+						title: "请输入二次下发说明",
+						icon: "none"
 					})
 					return false
 				}
-				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
-				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
-				this.bodyList.reissueReport=this.twice;
+				for (let i = 0; i < this.bodyList.rectifyBillItem.length; i++) {
+					this.bodyList.rectifyBillItem[i].taskPicBf = this.bodyList.rectifyBillItem[i].taskPicBf.join(",")
+					this.bodyList.rectifyBillItem[i].taskPicAf = this.bodyList.rectifyBillItem[i].taskPicAf.join(",")
+				}
+				this.bodyList.reissueReport = this.twice;
 				// this.bodyList.requReport=this.twice
 				this.api.postRectifyClose(this.bodyList)
 				this.popshow = false;
 				uni.navigateBack({
-				
+
 				})
 
 			},
@@ -382,59 +579,68 @@
 
 				})
 			},
-			sureTo(){
-			
-				if(this.closingContent==""){
+			sureTo() {
+
+				if (this.closingContent == "") {
 					uni.showToast({
-						title:"请输入结案内容",
-						icon:"none"
+						title: "请输入结案内容",
+						icon: "none"
 					})
 					return false
 				}
-				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
-				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
-				this.bodyList.closeReport=this.closingContent
-				this.bodyList.closeUserId=this.userinfo.user_id
-				 
+				for (let i = 0; i < this.bodyList.rectifyBillItem.length; i++) {
+					this.bodyList.rectifyBillItem[i].taskPicBf = this.bodyList.rectifyBillItem[i].taskPicBf.join(",")
+					this.bodyList.rectifyBillItem[i].taskPicAf = this.bodyList.rectifyBillItem[i].taskPicAf.join(",")
+				}
+				this.bodyList.closeReport = this.closingContent
+				this.bodyList.closeUserId = this.userinfo.user_id
+
 				this.api.postRectifyClose(this.bodyList)
-				
+
 				uni.navigateBack({
-					
+
 				})
 			},
-			async getList() {
-				console.log(1111);
-				let data = await this.api.getRecityDetail({
-					id: this.id
-					
-				})
-				// this.=data.records;
-				console.log(data);
-				this.bodyList = data
-				this.currentIndex = data.state - 2
-				this.bodyList.troublePic=this.bodyList.troublePic.split(",")
-				this.bodyList.rectifyPic=this.bodyList.rectifyPic.split(",")
-				
-			},
+			// async getList() {
+			// 	console.log(1111);
+			// 	let data = await this.api.getRecityDetail({
+			// 		id: this.id
+
+			// 	})
+			// 	// this.=data.records;
+			// 	console.log(data);
+			// 	this.bodyList = data
+			// 	this.currentIndex = data.state - 2
+			// 	this.bodyList.serverimgList=[]
+			// 	for(let i=0;i<this.bodyList.rectifyBillItem.length;i++){
+			// 		this.bodyList.rectifyBillItem[i].taskPicBf=this.bodyList.rectifyBillItem[i].taskPicBf.split(",")
+			// 		this.bodyList.rectifyBillItem[i].taskPicAf=this.bodyList.rectifyBillItem[i].taskPicAf.split(",")
+
+			// 		this.bodyList.rectifyBillItem[i].taskPicAf.splice(0,1)
+			// 		this.bodyList.serverimgList[i]=[]
+			// 	}
+
+
+			// },
 			close: function() {
 				this.showCanvas = false;
 				this.clear();
 			},
-			confirmTO() {
-				
-				if(this.bodyList.receiptSign==""){
-					uni.showToast({
-						title:"请完成签名",
-						icon:"none"
-					})
-					return false
-				}
-				this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
-				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
-				this.api.postRectifyAccept(this.bodyList)
+			// confirmTO() {
 
-				uni.navigateBack({})
-			},
+			// 	if(this.bodyList.receiptSign==""){
+			// 		uni.showToast({
+			// 			title:"请完成签名",
+			// 			icon:"none"
+			// 		})
+			// 		return false
+			// 	}
+			// 	this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
+			// 	this.bodyList.troublePic=this.bodyList.troublePic.join(",")
+			// 	this.api.postRectifyAccept(this.bodyList)
+
+			// 	uni.navigateBack({})
+			// },
 			preservation() {
 				this.bodyList.receiptSign = this.signs
 			},
@@ -442,31 +648,40 @@
 				this.signs = ""
 			},
 			reportSure() {
-				console.log("111",this.bodyList.rectifyPic,"222",this.bodyList.troublePic);
 				
+				for (var i = 0; i < this.bodyList.rectifyBillItem.length; i++) {
+					if (!this.bodyList.rectifyBillItem[i].taskPicAf) {
+						this.picFlag = false
+						break
+					}
+				}
 				// this.bodyList.troublePic=this.bodyList.troublePic.join(",")
-				if(this.report==""){
+				if (this.report == "") {
 					uni.showToast({
-						title:"请输入整改上报内容",
-						icon:"none"
+						title: "请输入整改上报内容",
+						icon: "none"
 					})
 					return false
-				}
-				else if(this.bodyList.rectifyPic==""){
+				} else if (this.picFlag == false) {
 					uni.showToast({
-						title:"请选择整改照片",
-						icon:"none"
+						title: "存在整改照片未拍摄",
+						icon: "none"
 					})
 					return false
 				}
 				// this.bodyList.rectifyPic = this.bodyList.rectifyPic.join(",");
-				this.bodyList.troublePic=this.bodyList.troublePic.join(",")
+				for (var i = 0; i < this.bodyList.rectifyBillItem.length; i++) {
+					console.log("列表", this.bodyList.rectifyBillItem);
+					this.bodyList.rectifyBillItem[i].taskPicBf = this.bodyList.rectifyBillItem[i].taskPicBf.join(",")
+					this.bodyList.rectifyBillItem[i].taskPicAf = this.bodyList.serverimgList[i].join(",")
+					// this.bodyList.rectifyBillItem[i].code=
+				}
 				this.bodyList.rectifyReport = this.report
-				this.bodyList.reportUserId=this.userinfo.user_id
+				this.bodyList.reportUserId = this.userinfo.user_id
 				this.api.postRectifyReport(this.bodyList)
-				
+
 				uni.navigateBack({
-					
+
 				})
 			},
 			getDate(type) {
@@ -474,7 +689,7 @@
 				let year = date.getFullYear();
 				let month = date.getMonth() + 1;
 				let day = date.getDate();
-			
+
 				if (type === "start") {
 					year = year - 60;
 				} else if (type === "end") {
@@ -484,35 +699,42 @@
 				day = day > 9 ? day : "0" + day;
 				return `${year}-${month}-${day}`;
 			},
-			enlargeOne(index){
+			enlargeOne(index) {
 				uni.previewImage({
-					current:this.bodyList.troublePic[index],
-					urls:this.bodyList.troublePic,
-					indicator:"default"
+					current: this.bodyList.troublePic[index],
+					urls: this.bodyList.troublePic,
+					indicator: "default"
 				})
 			},
-			enlargeTwo(index){
+			enlargeTwo(index) {
 				uni.previewImage({
-					current:this.bodyList.rectifyPic[index],
-					urls:this.bodyList.rectifyPic,
-					indicator:"default"
+					current: this.bodyList.rectifyPic[index],
+					urls: this.bodyList.rectifyPic,
+					indicator: "default"
 				})
 			},
-			enlargeThree(){
+			enlargeThree() {
 				console.log(1111);
 				console.log(this.bodyList.issueSign);
 				uni.previewImage({
-					current:this.bodyList.issueSign,
-					urls:this.bodyList.issueSign,
-					indicator:"default"
+					current: this.bodyList.issueSign,
+					urls: this.bodyList.issueSign,
+					indicator: "default"
 				})
 			},
-			enlargeFour(){
+			enlargeFour() {
 				console.log(1222222);
 				uni.previewImage({
-					current:this.bodyList.receiptSign,
-					urls:this.bodyList.receiptSign,
-					indicator:"default"
+					current: this.bodyList.receiptSign,
+					urls: this.bodyList.receiptSign,
+					indicator: "default"
+				})
+			},
+			enlargeFive(index) {
+				uni.previewImage({
+					current: this.imgList[index],
+					urls: this.imgList,
+					indicator: "default"
 				})
 			}
 		},
@@ -521,20 +743,53 @@
 			this.id = e.id;
 			// console.log(data);
 			this.loginType = uni.getStorageSync("loginType")
-			this.userinfo=uni.getStorageSync("userinfo")
+			this.userinfo = uni.getStorageSync("userinfo")
+			// this.getList()
+			this.api.getRecityDetail({
+				id: this.id
+
+			}).then(res => {
+				this.bodyList = res
+				this.bodyList.serverimgList = []
+				this.currentIndex = res.state - 2
+				// console.log("下标",this.bodyList.rectifyBillItem.length);
+				// console.log("列表",this.bodyList.rectifyBillItem);
+				for (var i = 0; i < this.bodyList.rectifyBillItem.length; i++) {
+					console.log("列表", this.bodyList.rectifyBillItem);
+					this.bodyList.rectifyBillItem[i].taskPicBf = this.bodyList.rectifyBillItem[i].taskPicBf
+						.split(",")
+					if(this.bodyList.rectifyBillItem[i].taskPicAf==""){
+						this.bodyList.rectifyBillItem[i].taskPicAf=[]
+					}
+					else{
+						this.bodyList.rectifyBillItem[i].taskPicAf = this.bodyList.rectifyBillItem[i].taskPicAf
+							.split(",")
+						
+					}
+					
+					// this.bodyList.rectifyBillItem[i].taskPicAf.splice(0, 1)	
+					this.bodyList.serverimgList[i] = []
+					console.log("循环1");
+				}
+			})
+			// this.=data.records;
+			// console.log(data);
+			// this.bodyList = data
+			// this.currentIndex = data.state - 2
+			// this.bodyList.serverimgList=[]
+
+
 
 		},
 		onShow() {
-			var str= new Date();
-			var str2= str.getFullYear() + "-"
-			 + (str.getMonth() + 1) + "-" + str.getDate();
-			this.confirmDate=str2;
-			this.getList()
-			
-			
-			
+			var str = new Date();
+			var str2 = str.getFullYear() + "-" +
+				(str.getMonth() + 1) + "-" + str.getDate();
+			this.confirmDate = str2;
+
+
 		},
-		
+
 		computed: {
 			currentState() {
 				let state = this.bodyList.state;
@@ -642,9 +897,10 @@
 					.bodyListImg {
 						width: 456rpx;
 						word-wrap: break-word;
+
 						image {
 							width: 160rpx;
-							height:160rpx;
+							height: 160rpx;
 							margin-left: 30rpx;
 						}
 					}
@@ -764,7 +1020,6 @@
 
 		.photograpBox {
 			width: 710rpx;
-			height: 368rpx;
 			background: #ffffff;
 			box-shadow: 0rpx 4rpx 10rpx rgba(0, 0, 0, 0.04);
 			opacity: 1;

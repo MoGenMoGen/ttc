@@ -732,7 +732,7 @@ class api {
 			//获取整改单隐患库
 			getDangerList(data){
 				return new Promise(resolve => {
-					get("/blade-system/user/updateAvatar", data, {
+					get("/blade-works/dangerlib/getDangerList", data, {
 						    "Content-Type":"application/json",
 							"Blade-Auth": uni.getStorageSync("Blade-Auth")
 						})
@@ -760,7 +760,16 @@ class api {
 						})
 				
 			}
-			
+			//获取隐患库搜索内容
+			getDangerReport(data){
+				return new Promise(resolve => {
+					get("/blade-works/dangerlib/dangerSearch", data, {
+						    "Content-Type":"application/json",
+							"Blade-Auth": uni.getStorageSync("Blade-Auth")
+						})
+						.then(res => resolve(res.data))
+						})
+			}
 			
 		
 	

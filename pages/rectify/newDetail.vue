@@ -52,12 +52,23 @@
 					{{detaliList.examRegion}}
 				</view>
 			</view>
-			<view class="newList">
+			<!-- <view class="newList">
 				<view class="newListTitle">
 					隐患说明
 				</view>
 				<view class="newListContent">
 					{{detaliList.troubleReport}}
+				</view>
+			</view> -->
+			<view class="newList"  v-for="(item,index) in detaliList.rectifyBillItem" :key="index">
+				<view class="newListTitle">
+					<text> {{item.codeName}}</text>
+				</view>
+				<view class="newListContent" style="margin-top: 20rpx; margin-left: 0;display: flex; flex-wrap: wrap;width: 500rpx;">
+					<view class="imageBox"style="margin-left: 20rpx;position: relative;" v-for="(item1,index1) in detaliList.rectifyBillItem[index].taskPicBf" :key="index">
+						<image :src="item1" mode="" style="width: 160rpx;height: 160rpx;" @click="enlarge(index,index1)"></image>
+						
+					</view>
 				</view>
 			</view>
 			<view class="newList">
@@ -76,14 +87,14 @@
 					<image :src="detaliList.receiptSign" mode=""></image>
 				</view>
 			</view>
-			<view class="newList">
+			<!-- <view class="newList">
 				<view class="newListTitle">
 					整改要求
 				</view>
 				<view class="newListContent">
 					{{detaliList.requReport}}
 				</view>
-			</view>
+			</view> -->
 			<view class="newList">
 				<view class="newListTitle">
 					复查人
@@ -100,14 +111,14 @@
 					{{detaliList.reviewTime}}
 				</view>
 			</view>
-			<view class="newList" style="border-bottom: 0;">
+			<!-- <view class="newList" style="border-bottom: 0;">
 				<view class="newListTitle">
 					隐患图片
 				</view>
 				<view class="newListContent">
 					<image v-for="(item,index) in detaliList.troublePic" :key="index" :src="item" mode=""  @click="enlarge(index)"></image>
 				</view>
-			</view>
+			</view> -->
 
 		</view>
 		<view class="lastBtn">
@@ -131,20 +142,25 @@ export default{
 				url:"/pages/rectify/index"
 			})
 		},
-		enlarge(index){
+		enlarge(index,index1){
 			uni.previewImage({
-				current:"",
-				urls:this.detaliList.troublePic,
+				current:this.detaliList.rectifyBillItem[index].taskPicBf[index1],
+				urls:this.detaliList.rectifyBillItem[index].taskPicBf,
 				indicator:"default"
 			})
 		}
 	},
 	onLoad(e) {
 		this.cd=e.cd
-		// console.log(1231231,this.cd);
+		console.log(1231231,this.cd);
 		this.api.getAddDetail({cd:this.cd}).then(res=>{
 			this.detaliList=res 
-			this.detaliList.troublePic=this.detaliList.troublePic.split(",")
+			console.log(this.detaliList);
+			for(let i=0;i<this.detaliList.rectifyBillItem.length;i++){
+				this.detaliList.rectifyBillItem[i].taskPicBf=this.detaliList.rectifyBillItem[i].taskPicBf.split(",")
+			}
+			console.log("show",this.detaliList.rectifyBillItem);
+			
 		})
 		
 		

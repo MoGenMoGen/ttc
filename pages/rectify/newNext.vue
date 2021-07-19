@@ -9,7 +9,7 @@
 					{{newList.cd}}
 				</view>
 			</view>
-			<view class="newList">
+			<!-- <view class="newList">
 				<view class="newListTitle">
 					整改名称
 				</view>
@@ -17,7 +17,7 @@
 					{{newList.title}}
 				</view>
 
-			</view>
+			</view> -->
 			<view class="newList">
 				<view class="newListTitle">
 					整改单位
@@ -34,14 +34,14 @@
 					<text>{{newList.troubleReport}}</text>
 				</view>
 			</view>
-			<view class="newList" style="display: flex; flex-direction: column;">
+		<!-- 	<view class="newList" style="display: flex; flex-direction: column;">
 				<view class="newListTitle">
 					整改要求
 				</view>
 				<view class="textBox">
 					<text>{{newList.requReport}}</text>
 				</view>
-			</view>
+			</view> -->
 
 
 			<view class="newList">
@@ -50,6 +50,17 @@
 				</view>
 				<view class="newListContent">
 					{{newList.person}}
+				</view>
+			</view>
+			<view class="newList"  v-for="(item,index) in newList.rectifyBillItem" :key="index">
+				<view class="newListTitle">
+					<text> {{item.dangerReport}}</text>
+				</view>
+				<view class="newListContent" style="margin-top: 20rpx; margin-left: 0;display: flex; flex-wrap: wrap;width: 500rpx;">
+					<view class="imageBox"style="margin-left: 20rpx;position: relative;" v-for="(item1,index1) in newList.rectifyBillItem[index].taskPicBf" :key="index">
+						<image :src="item1" mode="" style="width: 160rpx;height: 160rpx;" @click="enlarge(index,index1)"></image>
+						
+					</view>
 				</view>
 			</view>
 			<view class="newList" style="flex-direction: column;">
@@ -61,6 +72,8 @@
 				</view>
 
 			</view>
+		
+			
 			<view class="newList" style="flex-direction: column;">
 				<view class="newListTitle">
 					企业签字
@@ -115,7 +128,7 @@
 
 
 
-			<view class="photograpBox">
+			<!-- <view class="photograpBox">
 				<view class="newListTitle">
 					隐患图片
 				</view>
@@ -125,7 +138,7 @@
 						<image :src="item" mode="" class="imgs" @click="enlarge(index)"></image>
 					</view>
 				</view>
-			</view>
+			</view> -->
 		</view>
 		<view class="newBtn">
 			<button type="default" class="cancel" @click="backTo">上一步</button>
@@ -162,10 +175,10 @@
 					},
 				}); 
 			},
-			enlarge(index){
+			enlarge(index,index1){
 				uni.previewImage({
-					current:this.newList.imgList[index],
-					urls:this.newList.imgList,
+					current:this.rectifyBillItem[index].taskPicBf[index1],
+					urls:this.rectifyBillItem[index].taskPicBf,
 					indicator:"default"
 				})
 			},
@@ -192,6 +205,9 @@
 						icon:"none"
 					})
 					return false
+				}
+				for(let i=0;i<this.newList.rectifyBillItem.length;i++){
+					this.newList.rectifyBillItem[i].taskPicBf=this.newList.serverimgList[i].join(",")
 				}
 				this.newList.reviewTime=this.nowDate
 				this.api.postNewList(this.newList).then(res=>{

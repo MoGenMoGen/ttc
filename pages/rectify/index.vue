@@ -30,13 +30,13 @@
 							{{item.cd}}
 						</view> 
 					</view>
-					<view class="rectifyListIn">
+					<view class="rectifyListIn" v-for="(item1,index1) in item.rectifyBillItem" :key="index">
 						<image src="../../static/workcontent.png" mode=""></image>
 						<view class="rectifyListTitle">
-							整改内容
+							隐患说明
 						</view>
 						<view class="rectifyListContent">
-							{{item.requReport}}
+							{{item1.codeName}}
 						</view>
 					</view>
 					<view class="rectifyListIn">
